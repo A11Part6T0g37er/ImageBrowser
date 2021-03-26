@@ -7,8 +7,48 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    <Page.Resources>
+        <DataTemplate x:Key="ImageGridView_SmallItemTemplate"
+              x:DataType="local:ImageFileInfo">
 
+            <!-- Create image grid -->
+            <Grid Height="{Binding ItemSize, ElementName=page}"
+          Width="{Binding ItemSize, ElementName=page}">
+
+                <!-- Place image in grid, stretching it to fill the pane-->
+                <Image x:Name="ItemImage"
+               Source="{x:Bind ImageSource, Mode=OneWay}"
+               Stretch="UniformToFill">
+                </Image>
+
+            </Grid>
+        </DataTemplate>
+        
+            <CollectionViewSource x:Name="ImageFileCollection" Source="{x:Bind ViewModel.ObservableCollection}"/>
+       
+    </Page.Resources>
     <Grid>
+        <TextBlock Text="{x:Bind ViewModel.DefaultImageFileInfo.ImageName}" FontSize="24" HorizontalAlignment="Center" Margin="354,158,10,10"/>
+        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Top">
+            <ListView  ItemsSource="{Binding Source={StaticResource ImageFileCollection}}" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="150,150,0,0">
+                <ListView.ItemTemplate>
+                    <DataTemplate x:DataType="local:ImageFileInfo">
+                        <StackPanel  Orientation="Horizontal" Margin="6">
+                            <SymbolIcon Symbol="BrowsePhotos" Margin="0,0,12,0"/>
+                            <StackPanel  >
+                                <TextBlock Text="{x:Bind ImageName}" FontWeight="ExtraBold"/>
+                                <TextBlock Text="{x:Bind ImageTitle}"/>
 
+                            </StackPanel>
+                        </StackPanel>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+
+            </ListView>
+            <StackPanel DataContext="{Binding Source={StaticResource ImageFileCollection}}" Margin="50,24,0,0">
+                <TextBlock Text="{ Binding  ElementName=ImageFilesList}" FontWeight="ExtraBold"/>
+            </StackPanel>
+        </StackPanel>
+        <Button x:Name="button" Content="Hello, world!" HorizontalAlignment="Center" Margin = "150,600,0,0" VerticalAlignment="Top"/>
     </Grid>
 </Page>

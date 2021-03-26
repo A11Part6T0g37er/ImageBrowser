@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ImageBrowser.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -25,6 +26,10 @@ namespace ImageBrowser
         public MainPage()
         {
             this.InitializeComponent();
+            this.ViewModel = new ImageFileInfoViewModel();
+            this.imageFile = new ImageFileInfo();
         }
+        internal ImageFileInfoViewModel ViewModel {get;set;}
+        internal ImageFileInfo imageFile { get; set; }
     }
 }
