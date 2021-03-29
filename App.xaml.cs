@@ -7,6 +7,7 @@ using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -54,7 +55,8 @@ namespace ImageBrowser
                 {
                     //TODO: Load state from previously suspended application
                 }
-
+                SystemNavigationManager.GetForCurrentView().BackRequested
+           += System_BackRequested;
                 // Place the frame in the current Window
                 Window.Current.Content = rootFrame;
             }
@@ -95,6 +97,25 @@ namespace ImageBrowser
             var deferral = e.SuspendingOperation.GetDeferral();
             //TODO: Save application state and stop any background activity
             deferral.Complete();
+        }
+
+        public static bool TryGoBack()
+        {
+            Frame rootFrame = Window.Current.Content as Frame;
+            if (rootFrame.CanGoBack)
+            {
+                rootFrame.GoBack();
+                return true;
+            }
+            return false;
+        }
+        // Handle system back requests.
+        private void System_BackRequested(object sender, BackRequestedEventArgs e)
+        {
+            if (!e.Handled)
+            {
+                e.Handled = TryGoBack();
+            }
         }
     }
 }

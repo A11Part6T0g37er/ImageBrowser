@@ -17,9 +17,9 @@ namespace ImageBrowser.ViewModels
 
         public ImageFileInfoViewModel()
         {
-            observableCollection.Add(new ImageFileInfo("NAme1",null,"affsf"));
-            observableCollection.Add(new ImageFileInfo("Some Pict", null, "Pict 2 Title"));
-            observableCollection.Add(new ImageFileInfo("Another One", null, "Picture Title"));
+            observableCollection.Add(new ImageFileInfo("NAme1",new Windows.UI.Xaml.Media.Imaging.BitmapImage(new Uri(@"Assets\backlit-photography-10.jpg")),"affsf"));
+            observableCollection.Add(new ImageFileInfo("Some Pict", new Windows.UI.Xaml.Media.Imaging.BitmapImage(new Uri(@"Assets\rule_of_thirds_landscape_2048x2048.jpg")), "Pict 2 Title"));
+            observableCollection.Add(new ImageFileInfo("Another One", new Windows.UI.Xaml.Media.Imaging.BitmapImage(new Uri(@"Assets\stock-photo-104292369.jpg")), "Picture Title"));
         }
     }
 }
