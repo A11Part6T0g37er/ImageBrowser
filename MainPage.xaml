@@ -9,6 +9,9 @@
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
     <Page.Resources>
+
+        <Thickness x:Key="LargeItemMargin">8</Thickness>
+
         <ItemsPanelTemplate x:Key="ImageGridView_ItemsPanelTemplate">
             <ItemsWrapGrid Orientation="Horizontal"
                            HorizontalAlignment="Center" />
@@ -19,14 +22,15 @@
             <Setter Property="Background"
                     Value="Gray" />
             <Setter Property="Margin"
-                    Value="10" />
+                    Value="{StaticResource LargeItemMargin}" />
         </Style>
 
         <CollectionViewSource x:Name="ImageFileCollection" Source="{x:Bind Images}"/>
         <DataTemplate x:Key="ImagesGridCollection_Default" x:DataType="local:ImageFileInfo">
-            <Grid Margin="5">
+            <Grid Margin="{StaticResource LargeItemMargin}"
+                  Width="50" Height="50">
                
-                <Image x:Name="ItemImage" Opacity="0.8" Stretch="Uniform" />
+                <Image x:Name="ItemImage" Opacity="0" Stretch="UniformToFill" Source="{Binding ImageFile.Path}"/>
                 <ToolTipService.ToolTip>
                     <ToolTip x:Name="toolTipImage">
                         <StackPanel Orientation="Vertical">
@@ -66,6 +70,7 @@
 
         <Image Stretch="Uniform" Source="Assets\backlit-photography-10.jpg" 
                Width="190" Height="130" RelativePanel.Below="leftControlPanel" Margin="100"/>
+        
         <GridView x:Name="PicturesInGrid" IsItemClickEnabled="True" 
                   ItemClick="PicturesInGrid_ItemClick" SelectionMode="Single" 
                   ItemTemplate="{StaticResource ImagesGridCollection_Default}" 

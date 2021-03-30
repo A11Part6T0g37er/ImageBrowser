@@ -33,11 +33,19 @@ namespace ImageBrowser
         {
             InitializeComponent();
             Current = this;
+             //NewMethod().Wait();
 
+            //PicturesInGrid.Items.Add(Images);
             ViewModel = new ImageFileInfoViewModel();
-           
+
 
         }
+
+        private async Task NewMethod()
+        {
+            await GetItemsAsync();
+        }
+
         private void BackButton_Click(object sender, RoutedEventArgs e)
         {
             App.TryGoBack();
