@@ -11,26 +11,69 @@
     <Page.Resources>
 
         <Thickness x:Key="LargeItemMargin">8</Thickness>
+        <Thickness x:Key="SmallItemMargin">0</Thickness>
 
         <ItemsPanelTemplate x:Key="ImageGridView_ItemsPanelTemplate">
             <ItemsWrapGrid Orientation="Horizontal"
-                           HorizontalAlignment="Center" />
+                           HorizontalAlignment="Center" 
+                           MaximumRowsOrColumns="5"/>
         </ItemsPanelTemplate>
 
         <Style x:Key="ImageGridView_DefaultItemContainerStyle"
                TargetType="GridViewItem">
             <Setter Property="Background"
-                    Value="Gray" />
+                    Value="White" />
             <Setter Property="Margin"
                     Value="{StaticResource LargeItemMargin}" />
         </Style>
 
-        <CollectionViewSource x:Name="ImageFileCollection" Source="{x:Bind Images}"/>
+        <Style x:Key="ImageGridView_SmallItemContainerStyle"
+               TargetType="GridViewItem">
+            <Setter Property="Background"
+                    Value="Violet" />
+            <Setter Property="Margin"
+                    Value="{StaticResource SmallItemMargin}" />
+        </Style>
+        
+
+        <DataTemplate x:Key="ImagesGridCollection_Small" x:DataType="local:ImageFileInfo">
+            <Grid Margin="{StaticResource SmallItemMargin}" 
+                  Width="60" Height="60">
+                <Image x:Name="ItemImage" Stretch="UniformToFill" />
+                <ToolTipService.ToolTip>
+                    <ToolTip x:Name="toolTipImage">
+                        <StackPanel Orientation="Vertical">
+                            <TextBlock Text="{Binding ImageTitle, Mode=OneWay}" HorizontalAlignment="Center"/>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                                <TextBlock Text="{Binding ImageFileType, Mode=OneWay}"/>
+                                <TextBlock Text="{Binding ImageName, Mode=OneWay}" 
+                                           HorizontalAlignment="Right" Margin="10,0,0,8"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </ToolTip>
+                </ToolTipService.ToolTip>
+                
+            </Grid>
+        </DataTemplate>
+        
         <DataTemplate x:Key="ImagesGridCollection_Default" x:DataType="local:ImageFileInfo">
             <Grid Margin="{StaticResource LargeItemMargin}"
-                  Width="50" Height="50">
-               
-                <Image x:Name="ItemImage" Opacity="0" Stretch="UniformToFill" Source="{Binding ImageFile.Path}"/>
+                  Width="{Binding ItemSize, ElementName=page}" Height="{Binding ItemSize, ElementName=page}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="100"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <Image x:Name="ItemImage"  Stretch="Uniform" 
+                       Source="{Binding ImageFile.Path}" HorizontalAlignment="Center" Grid.Row="0"/>
+                <StackPanel Orientation="Vertical" Grid.Row="1">
+                    <TextBlock Text="{Binding ImageName, Mode=OneWay}"/>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="{Binding ImageProperties.Keywords}" Margin="5,0,0,5"/>
+                        <TextBlock Text="{Binding ImageProperties.Height}"/>
+                    </StackPanel>
+
+                </StackPanel>
                 <ToolTipService.ToolTip>
                     <ToolTip x:Name="toolTipImage">
                         <StackPanel Orientation="Vertical">
@@ -69,22 +112,62 @@
         </StackPanel>
 
         <Image Stretch="Uniform" Source="Assets\backlit-photography-10.jpg" 
-               Width="190" Height="130" RelativePanel.Below="leftControlPanel" Margin="100"/>
+               Width="190" Height="130" RelativePanel.Below="leftControlPanel" Margin="200"/>
         
         <GridView x:Name="PicturesInGrid" IsItemClickEnabled="True" 
                   ItemClick="PicturesInGrid_ItemClick" SelectionMode="Single" 
                   ItemTemplate="{StaticResource ImagesGridCollection_Default}" 
                   ItemsPanel="{StaticResource ImageGridView_ItemsPanelTemplate}"
                   ItemsSource="{x:Bind Images, Mode=OneWay}"
-                  Margin="20"
+                  Margin="18"
                   RelativePanel.AlignLeftWithPanel="True"
                   RelativePanel.AlignRightWithPanel="True" RelativePanel.Below="leftControlPanel"
                   ItemContainerStyle="{StaticResource ImageGridView_DefaultItemContainerStyle}">
+
             
+
         </GridView>
 
         <Button Grid.Row="1" x:Name="button" Content="Hello, world!" 
                HorizontalAlignment="Center" Margin = "150,60,0,0" VerticalAlignment="Top"
                 RelativePanel.AlignRightWith="PicturesInGrid"/>
+
+
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup>
+                <VisualState>
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="{StaticResource LargeWindowBreakpoint}" />
+                    </VisualState.StateTriggers>
+                </VisualState>
+                <VisualState>
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="{StaticResource MediumWindowBreakpoint}" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="PicturesInGrid.ItemPanel"
+                                Value="{StaticResource ImagesGridCollection_Default}" />
+                        <Setter Target="ImageGridView.ItemContainerStyle"
+                                Value="{StaticResource ImageGridView_DefaultItemContainerStyle}" />
+
+
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState>
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="{StaticResource MinWindowBreakpoint}" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="PicturesInGrid.ItemPanel"
+                                Value="{StaticResource ImagesGridCollection_Small}" />
+                        <Setter Target="ImageGridView.ItemContainerStyle"
+                                Value="{StaticResource ImageGridView_SmallItemContainerStyle}" />
+
+                        
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+
     </RelativePanel>
 </Page>
