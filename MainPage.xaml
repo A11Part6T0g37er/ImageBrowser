@@ -4,19 +4,50 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:ImageBrowser"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+  
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
     <Page.Resources>
+        <ItemsPanelTemplate x:Key="ImageGridView_ItemsPanelTemplate">
+            <ItemsWrapGrid Orientation="Horizontal"
+                           HorizontalAlignment="Center" />
+        </ItemsPanelTemplate>
 
+        <Style x:Key="ImageGridView_DefaultItemContainerStyle"
+               TargetType="GridViewItem">
+            <Setter Property="Background"
+                    Value="Gray" />
+            <Setter Property="Margin"
+                    Value="10" />
+        </Style>
 
-        <CollectionViewSource x:Name="ImageFileCollection" Source="{x:Bind ViewModel.ObservableCollection}"/>
-
+        <CollectionViewSource x:Name="ImageFileCollection" Source="{x:Bind Images}"/>
+        <DataTemplate x:Key="ImagesGridCollection_Default" x:DataType="local:ImageFileInfo">
+            <Grid Margin="5">
+               
+                <Image x:Name="ItemImage" Opacity="0.8" Stretch="Uniform" />
+                <ToolTipService.ToolTip>
+                    <ToolTip x:Name="toolTipImage">
+                        <StackPanel Orientation="Vertical">
+                            <TextBlock Text="{Binding ImageTitle, Mode=OneWay}" HorizontalAlignment="Center"/>
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+                                <TextBlock Text="{Binding ImageFileType, Mode=OneWay}"/>
+                                <TextBlock Text="{Binding ImageName, Mode=OneWay}" 
+                                           HorizontalAlignment="Right" Margin="10,0,0,8"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </ToolTip>
+                </ToolTipService.ToolTip>
+                
+            </Grid>
+        </DataTemplate>
     </Page.Resources>
 
 
-    <Grid>
-        <Pivot Title="Image Browser">
+    <RelativePanel>
+        <Pivot x:Name="leftControlPanel" Title="Image Browser" 
+               Margin="25,10,0,20" RelativePanel.Below="TopButtons">
             <PivotItem Header="All">
                 <TextBlock Text="all pictures go here." />
             </PivotItem>
@@ -27,14 +58,28 @@
         </Pivot>
 
 
-        <StackPanel Orientation="Horizontal" Grid.Row="0" >
-            <Button  Content="Refresh"  ToolTipService.ToolTip="Refresh" Background="White" />
+        <StackPanel x:Name="TopButtons" Orientation="Horizontal" 
+                     >
+            <Button  Content="Refresh"  ToolTipService.ToolTip="Refresh"  />
             <Button Content="Open"/>
         </StackPanel>
 
-        <Image Stretch="UniformToFill" Source="Assets\backlit-photography-10.jpg" Width="190" Height="130"/>
-        <GridView x:Name="PicturesInGrid" IsItemClickEnabled="True" ItemClick="PicturesInGrid_ItemClick" SelectionMode="Single" ItemTemplate="{StaticResource ImageFileCollection}"/>
+        <Image Stretch="Uniform" Source="Assets\backlit-photography-10.jpg" 
+               Width="190" Height="130" RelativePanel.Below="leftControlPanel" Margin="100"/>
+        <GridView x:Name="PicturesInGrid" IsItemClickEnabled="True" 
+                  ItemClick="PicturesInGrid_ItemClick" SelectionMode="Single" 
+                  ItemTemplate="{StaticResource ImagesGridCollection_Default}" 
+                  ItemsPanel="{StaticResource ImageGridView_ItemsPanelTemplate}"
+                  ItemsSource="{x:Bind Images, Mode=OneWay}"
+                  Margin="20"
+                  RelativePanel.AlignLeftWithPanel="True"
+                  RelativePanel.AlignRightWithPanel="True" RelativePanel.Below="leftControlPanel"
+                  ItemContainerStyle="{StaticResource ImageGridView_DefaultItemContainerStyle}">
+            
+        </GridView>
 
-        <Button Grid.Row="1" x:Name="button" Content="Hello, world!" HorizontalAlignment="Center" Margin = "150,60,0,0" VerticalAlignment="Top"/>
-    </Grid>
+        <Button Grid.Row="1" x:Name="button" Content="Hello, world!" 
+               HorizontalAlignment="Center" Margin = "150,60,0,0" VerticalAlignment="Top"
+                RelativePanel.AlignRightWith="PicturesInGrid"/>
+    </RelativePanel>
 </Page>
