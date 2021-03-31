@@ -23,28 +23,20 @@ namespace ImageBrowser
     {
     public static MainPage Current;
 
-        internal ImageFileInfoViewModel ViewModel { get; set; }
+     
 
-        internal ImageFileInfo imageFile { get; set; }
-
-        internal ObservableCollection<ImageFileInfo> Images { get; }= new ObservableCollection<ImageFileInfo>();
+        internal ObservableCollection<ImageFileInfo> Images { get; set; } = new ObservableCollection<ImageFileInfo>();
 
         public MainPage()
         {
             InitializeComponent();
             Current = this;
-             //NewMethod().Wait();
-
-            //PicturesInGrid.Items.Add(Images);
-            ViewModel = new ImageFileInfoViewModel();
+           
 
            
         }
 
-        private async Task NewMethod()
-        {
-            await GetItemsAsync();
-        }
+        
 
         private void BackButton_Click(object sender, RoutedEventArgs e)
         {
@@ -123,8 +115,25 @@ namespace ImageBrowser
             return info;
         }
 
-        private void ButtonOpen_Click(object sender, RoutedEventArgs e)
+        private async void ButtonOpen_Click(object sender, RoutedEventArgs e)
         {
+            await PickSinglePicture();
+        }
+
+        private  async Task PickSinglePicture()
+        {
+            var picker = new Windows.Storage.Pickers.FileOpenPicker();
+            picker.ViewMode = Windows.Storage.Pickers.PickerViewMode.List;
+            picker.SuggestedStartLocation = Windows.Storage.Pickers.PickerLocationId.PicturesLibrary;
+            picker.FileTypeFilter.Add(".jpg");
+            picker.FileTypeFilter.Add(".jpeg");
+            picker.FileTypeFilter.Add(".png");
+            Windows.Storage.StorageFile file = await picker.PickSingleFileAsync();
+            if (file != null)
+            {
+                Images.Clear();
+                Images.Add(await LoadImageInfo(file));
+            }
 
         }
     }

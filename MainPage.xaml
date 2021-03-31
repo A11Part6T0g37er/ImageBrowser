@@ -68,7 +68,7 @@
                 </Grid.RowDefinitions>
 
                 <Image x:Name="ItemImage"  Stretch="Uniform" 
-                       Source="{Binding ImageFile.Path}" HorizontalAlignment="Center" Grid.Row="0"/>
+                       Source="{x:Bind ImageFile.Path, Mode=TwoWay}" HorizontalAlignment="Center" Grid.Row="0"/>
                 <StackPanel Orientation="Vertical" Grid.Row="1">
                     <TextBlock Text="{Binding ImageName, Mode=OneWay}"  Style="{StaticResource SubtitleTextBlockStyle}" />
                     <StackPanel Orientation="Horizontal">
@@ -79,14 +79,16 @@
                                 <ListView.ItemTemplate>
                                
                                     <DataTemplate x:Name="KeyWordds" x:DataType="local:ImageFileInfo" >
+                                    <ListViewItem >
 
-                                        <TextBlock Text="{Binding}" FontSize="12" Height="14" Margin="0,0,0,0"/>
+                                        <TextBlock Text="{Binding}" FontSize="12" Height="14" />
+                                    </ListViewItem>
 
                                     </DataTemplate>
                                 
                             </ListView.ItemTemplate>
                             </ListView>
-                        
+                        <TextBlock Text="{Binding ImageFile.Path}"/>
                         <TextBlock Text="{Binding ImageProperties.Height}"/>
                     </StackPanel>
 
@@ -94,7 +96,7 @@
                 <ToolTipService.ToolTip>
                     <ToolTip x:Name="toolTipImage">
                         <StackPanel Orientation="Vertical">
-                            <!--<TextBlock Text="{Binding ImageTitle, Mode=OneWay}" HorizontalAlignment="Center"/>-->
+                            <TextBlock Text="{Binding ImageTitle, Mode=OneWay}" HorizontalAlignment="Center"/>
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
                                 <TextBlock Text="{Binding ImageFileType, Mode=OneWay}"/>
                                 <TextBlock Text="{Binding ImageName, Mode=OneWay}" 
