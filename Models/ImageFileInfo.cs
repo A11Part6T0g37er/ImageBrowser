@@ -17,24 +17,9 @@ namespace ImageBrowser
 
         public ImageProperties ImageProperties { get; }
         public StorageFile ImageFile { get; }
-
+        public string ImagePath { get { return ImageFile.Path.ToString(); } }
         public string ImageFileType { get; private set; }
         
-
-        public ImageFileInfo()
-        {
-        }
-
-        public ImageFileInfo(string imageName,StorageFile storageFile, ImageProperties imageProperties, string type)
-        {
-            ImageName = imageName;
-            ImageProperties = imageProperties;
-            
-           
-            ImageFileType = type;
-            ImageFile = storageFile;
-        }
-
         public string ImageDimensions => $"{ImageProperties.Width} x {ImageProperties.Height}";
 
         public string ImageTitle
@@ -52,6 +37,22 @@ namespace ImageBrowser
 
            
         }
+
+        public ImageFileInfo()
+        {
+        }
+
+        public ImageFileInfo(string imageName,StorageFile storageFile, ImageProperties imageProperties, string type)
+        {
+            ImageName = imageName;
+            ImageProperties = imageProperties;
+            
+           
+            ImageFileType = type;
+            ImageFile = storageFile;
+        }
+
+
         public async Task<BitmapImage> GetImageSourceAsync()
         {
             using (IRandomAccessStream fileStream = await ImageFile.OpenReadAsync())

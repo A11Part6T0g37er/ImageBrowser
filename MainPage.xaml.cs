@@ -117,7 +117,7 @@ namespace ImageBrowser
 
         private async void ButtonOpen_Click(object sender, RoutedEventArgs e)
         {
-            await PickSinglePicture();
+             PickSinglePicture();
         }
 
         private  async Task PickSinglePicture()
