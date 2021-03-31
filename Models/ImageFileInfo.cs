@@ -17,7 +17,7 @@ namespace ImageBrowser
 
         public ImageProperties ImageProperties { get; }
         public StorageFile ImageFile { get; }
-        public string ImagePath { get { return ImageFile.Path.ToString(); } }
+        public string ImagePath { get { return ImageFile.Path.ToString();  } }
         public string ImageFileType { get; private set; }
         
         public string ImageDimensions => $"{ImageProperties.Width} x {ImageProperties.Height}";
