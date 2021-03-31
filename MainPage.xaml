@@ -25,7 +25,7 @@
                     Value="White" />
             <Setter Property="Margin"
                     Value="{StaticResource LargeItemMargin}" />
-        </Style>
+                    </Style>
 
         <Style x:Key="ImageGridView_SmallItemContainerStyle"
                TargetType="GridViewItem">
@@ -39,7 +39,8 @@
         <DataTemplate x:Key="ImagesGridCollection_Small" x:DataType="local:ImageFileInfo">
             <Grid Margin="{StaticResource SmallItemMargin}" 
                   Width="60" Height="60">
-                <Image x:Name="ItemImage" Stretch="UniformToFill" />
+                <Image x:Name="ItemImage" Stretch="UniformToFill"  Source="{Binding ImageFile.Path, Mode=OneWay}" 
+                       HorizontalAlignment="Center" />
                 <ToolTipService.ToolTip>
                     <ToolTip x:Name="toolTipImage">
                         <StackPanel Orientation="Vertical">
@@ -56,20 +57,36 @@
             </Grid>
         </DataTemplate>
         
+       
+        
         <DataTemplate x:Key="ImagesGridCollection_Default" x:DataType="local:ImageFileInfo">
             <Grid Margin="{StaticResource LargeItemMargin}"
-                  Width="{Binding ItemSize, ElementName=page}" Height="{Binding ItemSize, ElementName=page}">
+                  Width="250" Height="{Binding ItemSize, ElementName=page}">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="100"/>
+                    <RowDefinition />
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
 
                 <Image x:Name="ItemImage"  Stretch="Uniform" 
                        Source="{Binding ImageFile.Path}" HorizontalAlignment="Center" Grid.Row="0"/>
                 <StackPanel Orientation="Vertical" Grid.Row="1">
-                    <TextBlock Text="{Binding ImageName, Mode=OneWay}"/>
+                    <TextBlock Text="{Binding ImageName, Mode=OneWay}"  Style="{StaticResource SubtitleTextBlockStyle}" />
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="{Binding ImageProperties.Keywords}" Margin="5,0,0,5"/>
+
+                    
+                            <ListView ItemsSource="{x:Bind ImageProperties.Keywords}" SelectionMode="Single"  Height="50" VerticalAlignment="Center" Width="50" >
+                            
+                                <ListView.ItemTemplate>
+                               
+                                    <DataTemplate x:Name="KeyWordds" x:DataType="local:ImageFileInfo" >
+
+                                        <TextBlock Text="{Binding}" FontSize="12" Height="14" Margin="0,0,0,0"/>
+
+                                    </DataTemplate>
+                                
+                            </ListView.ItemTemplate>
+                            </ListView>
+                        
                         <TextBlock Text="{Binding ImageProperties.Height}"/>
                     </StackPanel>
 
@@ -77,11 +94,12 @@
                 <ToolTipService.ToolTip>
                     <ToolTip x:Name="toolTipImage">
                         <StackPanel Orientation="Vertical">
-                            <TextBlock Text="{Binding ImageTitle, Mode=OneWay}" HorizontalAlignment="Center"/>
+                            <!--<TextBlock Text="{Binding ImageTitle, Mode=OneWay}" HorizontalAlignment="Center"/>-->
                             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
                                 <TextBlock Text="{Binding ImageFileType, Mode=OneWay}"/>
                                 <TextBlock Text="{Binding ImageName, Mode=OneWay}" 
                                            HorizontalAlignment="Right" Margin="10,0,0,8"/>
+                                
                             </StackPanel>
                         </StackPanel>
                     </ToolTip>
@@ -94,12 +112,16 @@
 
     <RelativePanel>
         <Pivot x:Name="leftControlPanel" Title="Image Browser" 
-               Margin="25,10,0,20" RelativePanel.Below="TopButtons">
+               Margin="25,0,0,0" RelativePanel.Below="TopButtons">
             <PivotItem Header="All">
                 <TextBlock Text="all pictures go here." />
             </PivotItem>
             <PivotItem Header="Unsaved">
-                <TextBlock Text="other pictures go here." />
+                <StackPanel>
+                    <TextBlock Text="other pictures go here." Margin="0,0,0,10 "/>
+                    <Image Stretch="Uniform" Source="Assets\backlit-photography-10.jpg" 
+               Width="190" Height="130"  Margin="20,0,0,0"/>
+                </StackPanel>
             </PivotItem>
 
         </Pivot>
@@ -108,14 +130,13 @@
         <StackPanel x:Name="TopButtons" Orientation="Horizontal" 
                      >
             <Button  Content="Refresh"  ToolTipService.ToolTip="Refresh"  />
-            <Button Content="Open"/>
+            <Button Content="Open" Click="ButtonOpen_Click"/>
         </StackPanel>
 
-        <Image Stretch="Uniform" Source="Assets\backlit-photography-10.jpg" 
-               Width="190" Height="130" RelativePanel.Below="leftControlPanel" Margin="200"/>
         
         <GridView x:Name="PicturesInGrid" IsItemClickEnabled="True" 
                   ItemClick="PicturesInGrid_ItemClick" SelectionMode="Single" 
+                  
                   ItemTemplate="{StaticResource ImagesGridCollection_Default}" 
                   ItemsPanel="{StaticResource ImageGridView_ItemsPanelTemplate}"
                   ItemsSource="{x:Bind Images, Mode=OneWay}"

@@ -38,7 +38,7 @@ namespace ImageBrowser
             //PicturesInGrid.Items.Add(Images);
             ViewModel = new ImageFileInfoViewModel();
 
-
+           
         }
 
         private async Task NewMethod()
@@ -68,7 +68,7 @@ namespace ImageBrowser
 
             base.OnNavigatedTo(e);
         }
-        private async Task GetItemsAsync()
+        private async Task GetItemsAsync(string path = "Assets\\")
         {
             QueryOptions options = new QueryOptions();
             options.FolderDepth = FolderDepth.Deep;
@@ -81,7 +81,7 @@ namespace ImageBrowser
             // OR
             // Get the Sample pictures.
             StorageFolder appInstalledFolder = Package.Current.InstalledLocation;
-            StorageFolder picturesFolder = await appInstalledFolder.GetFolderAsync("Assets\\");
+            StorageFolder picturesFolder = await appInstalledFolder.GetFolderAsync(path);
 
             var result = picturesFolder.CreateFileQueryWithOptions(options);
 
@@ -121,6 +121,11 @@ namespace ImageBrowser
                  file.DisplayType);
 
             return info;
+        }
+
+        private void ButtonOpen_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 
