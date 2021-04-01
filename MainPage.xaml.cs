@@ -152,6 +152,40 @@ namespace ImageBrowser
             Page_Loaded();
             return null;
         }
+
+        private void PicturesInGrid_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            var _panel = (ItemsWrapGrid)PicturesInGrid.ItemsPanelRoot;
+            //VisualState _actual = VisualStateGroup.CurrentState;
+            int _gridColumnNumber = 2;
+            //switch (_actual.Name)
+            //{
+            //    case "medium":
+            //        {
+            //            _gridColumnNumber = 2;
+            //            break;
+            //        }
+            //    case "large":
+            //        {
+            //            _gridColumnNumber = 3;
+            //            break;
+            //        }
+            //    default:
+            //        {
+            //            _gridColumnNumber = 1;
+            //            break;
+            //        }
+            //}
+            _panel.ItemWidth = e.NewSize.Width / _gridColumnNumber;
+        }
+
+        private void Page_SizeChanged(object sender, WindowSizeChangedEventArgs e)
+        {
+            if (e.Size.Width > 1000)
+                VisualStateManager.GoToState(this, "LargeWindowBreakpoint", false);
+            else
+                VisualStateManager.GoToState(this, "MinWindowBreakpoint", false);
+        }
     }
 
 }
