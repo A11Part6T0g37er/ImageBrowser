@@ -17,7 +17,9 @@
                            HorizontalAlignment="Center" 
                            MaximumRowsOrColumns="5"/>
         </ItemsPanelTemplate>
-        <CollectionViewSource x:Name="ImagesCollection" Source="{x:Bind Images}"/>
+
+        <!--<CollectionViewSource x:Name="ImagesCollection" Source="{x:Bind imageFileInfoViewModel}" IsSourceGrouped="True"/>-->
+        
         <Style x:Key="ImageGridView_DefaultItemContainerStyle"
                TargetType="GridViewItem">
             <Setter Property="Background"
@@ -70,7 +72,7 @@
                        Source="{x:Bind ImageSource, Mode=OneWay}" HorizontalAlignment="Center" Grid.Row="0"/>
                 <StackPanel Orientation="Vertical" Grid.Row="1">
                     <TextBlock Text="{x:Bind ImageName, Mode=OneWay}"  Style="{StaticResource SubtitleTextBlockStyle}" />
-                    <TextBlock Text="Catcha!"/>
+                    
                     <StackPanel Orientation="Horizontal">
 
                     
@@ -147,15 +149,21 @@
                   RelativePanel.AlignRightWithPanel="True" RelativePanel.Below="leftControlPanel"
                   ItemContainerStyle="{StaticResource ImageGridView_DefaultItemContainerStyle}">
 
-            
 
+            
         </GridView>
 
         <Button Grid.Row="1" x:Name="button" Content="Hello, world!" 
                HorizontalAlignment="Center" Margin = "150,60,0,0" VerticalAlignment="Top"
                 RelativePanel.AlignRightWith="PicturesInGrid"/>
       
-        <ListView ItemsSource="{x:Bind Images}" RelativePanel.Below="button" Margin="50" Width="200" Height="300" Background="BlanchedAlmond">
+        <!--<ListView ItemsSource="{Binding Source={StaticResource ImagesCollection}}" RelativePanel.Below="button" Margin="50" Width="200" Height="300" Background="BlanchedAlmond">
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem" BasedOn="{StaticResource ListViewItemExpanded}">
+                    <Setter Property="HorizontalAlignment" Value="Center"/>
+                    <Setter Property="HorizontalContentAlignment" Value="Left"/>
+                </Style>
+            </ListView.ItemContainerStyle>
             <ListView.ItemTemplate>
                 <DataTemplate x:DataType="local:ImageFileInfo">
                     <Grid>
@@ -165,13 +173,22 @@
                             <RowDefinition/>
                         </Grid.RowDefinitions>
                         <TextBlock Text="{x:Bind ImageName}" Grid.Row="0"/>
-                        <Image Source="{x:Bind ImagePath,Mode=OneWay}" Stretch="Fill" Height="{Binding ItemSize,ElementName=page}" Grid.Row="2"/>
-                        <Image Source="C:\\Users\\dct\\source\\repos\\ImageBrowser\\bin\\x86\\Debug\\AppX\\Assets\\backlit-photography-10.jpg" Stretch="Fill" Height="{Binding ItemSize,ElementName=page}" Grid.Row="2"/>
-
+                        <TextBlock Text="{x:Bind ImageDimensions}" Grid.Row="1"/>
+                        <Image Source="{x:Bind ImageSource,Mode=OneWay}" Stretch="Fill" Height="{Binding ItemSize,ElementName=page}" Grid.Row="2"/>
+                       
                     </Grid>
                 </DataTemplate>
             </ListView.ItemTemplate>
-        </ListView>
+            <ListView.GroupStyle>
+                <GroupStyle>
+                    <GroupStyle.HeaderTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Key}" FontWeight="Bold" FontSize="14" Foreground="Black" Margin="15,0"/>
+                        </DataTemplate>
+                    </GroupStyle.HeaderTemplate>
+                </GroupStyle>
+            </ListView.GroupStyle>
+        </ListView>-->
 
         <VisualStateManager.VisualStateGroups>
             <VisualStateGroup>

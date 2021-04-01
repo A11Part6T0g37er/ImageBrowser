@@ -23,19 +23,24 @@ namespace ImageBrowser
         public static MainPage Current;
 
 
-
+        internal ImageBrowser.ViewModels.ImageFileInfoViewModel imageFileInfoViewModel; 
         internal ObservableCollection<ImageFileInfo> Images { get; set; } = new ObservableCollection<ImageFileInfo>();
 
         public MainPage()
         {
             InitializeComponent();
             Current = this;
-
-
+ imageFileInfoViewModel= new ViewModels.ImageFileInfoViewModel();
 
         }
 
+        private void Page_Loaded()
 
+        {
+            imageFileInfoViewModel.observableCollection = Images;
+            imageFileInfoViewModel.Initialize();
+
+        }
 
         private void BackButton_Click(object sender, RoutedEventArgs e)
         {
@@ -57,6 +62,8 @@ namespace ImageBrowser
                 await GetItemsAsync();
             }
 
+            //Page_Loaded();
+            //DataContext = imageFileInfoViewModel;
             base.OnNavigatedTo(e);
         }
         private async Task GetItemsAsync(string path = "Assets\\")
@@ -139,9 +146,6 @@ namespace ImageBrowser
                 
                 }
             }
-
-
-           
 
             return null;
         }
