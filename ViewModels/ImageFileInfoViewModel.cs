@@ -21,7 +21,7 @@ namespace ImageBrowser.ViewModels
         {
             observableCollection = images;
         }
-        private ObservableCollection<GroupInfoList> groupedImagesInfos = new ObservableCollection<GroupInfoList>() { new GroupInfoList() {Key = "sss" } };
+        private ObservableCollection<GroupInfoList> groupedImagesInfos = new ObservableCollection<GroupInfoList>();
         public ObservableCollection<GroupInfoList> GroupedImagesInfos { get => groupedImagesInfos; set => groupedImagesInfos = value; }
         public void GenerateByDateGroup(ObservableCollection<ImageFileInfo> lisOfImages)
         {
