@@ -31,13 +31,13 @@ namespace ImageBrowser
             InitializeComponent();
             Current = this;
  imageFileInfoViewModel= new ViewModels.ImageFileInfoViewModel();
-
+            DataContext = imageFileInfoViewModel.GroupedImagesInfos;
         }
 
         private void Page_Loaded()
 
         {
-            imageFileInfoViewModel.observableCollection = Images;
+            imageFileInfoViewModel.ChangeObservCollection(Images);
             imageFileInfoViewModel.Initialize();
 
         }
@@ -62,7 +62,7 @@ namespace ImageBrowser
                 await GetItemsAsync();
             }
 
-            //Page_Loaded();
+            Page_Loaded();
             //DataContext = imageFileInfoViewModel;
             base.OnNavigatedTo(e);
         }
@@ -139,14 +139,17 @@ namespace ImageBrowser
             if (files != null)
             {
                 Images.Clear();
+                imageFileInfoViewModel.ObservableCollection.Clear();
+                imageFileInfoViewModel.GroupedImagesInfos.Clear();
                 foreach(var file in files)
                 {
-
-                Images.Add(await LoadImageInfo(file));
-                
+                    ImageFileInfo item = await LoadImageInfo(file);
+                    
+                Images.Add(item);
+                   
                 }
             }
-
+            Page_Loaded();
             return null;
         }
     }

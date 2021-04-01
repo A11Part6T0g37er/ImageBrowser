@@ -8,17 +8,20 @@ namespace ImageBrowser.ViewModels
 {
     internal class ImageFileInfoViewModel
     {
-        private ImageFileInfo defaultImageInfo = new ImageFileInfo();
-        public ObservableCollection<ImageFileInfo> observableCollection = new ObservableCollection<ImageFileInfo>();
-        public ImageFileInfo DefaultImageFileInfo { get { return defaultImageInfo; } }
+      
+        private ObservableCollection<ImageFileInfo> observableCollection = new ObservableCollection<ImageFileInfo>() { new ImageFileInfo("NotNull", null, null, "jpg") };
+       
 
         public ObservableCollection<ImageFileInfo> ObservableCollection { get => observableCollection; }
         public ImageFileInfoViewModel()
         {
 
         }
-
-        private ObservableCollection<GroupInfoList> groupedImagesInfos = new ObservableCollection<GroupInfoList>();
+        public void ChangeObservCollection(ObservableCollection<ImageFileInfo> images)
+        {
+            observableCollection = images;
+        }
+        private ObservableCollection<GroupInfoList> groupedImagesInfos = new ObservableCollection<GroupInfoList>() { new GroupInfoList() {Key = "sss" } };
         public ObservableCollection<GroupInfoList> GroupedImagesInfos { get => groupedImagesInfos; set => groupedImagesInfos = value; }
         public void GenerateByDateGroup(ObservableCollection<ImageFileInfo> lisOfImages)
         {

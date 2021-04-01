@@ -18,7 +18,7 @@
                            MaximumRowsOrColumns="5"/>
         </ItemsPanelTemplate>
 
-        <!--<CollectionViewSource x:Name="ImagesCollection" Source="{x:Bind imageFileInfoViewModel}" IsSourceGrouped="True"/>-->
+        <CollectionViewSource x:Name="ImagesCollection" Source="{x:Bind imageFileInfoViewModel.GroupedImagesInfos}" IsSourceGrouped="True"/>
         
         <Style x:Key="ImageGridView_DefaultItemContainerStyle"
                TargetType="GridViewItem">
@@ -157,7 +157,7 @@
                HorizontalAlignment="Center" Margin = "150,60,0,0" VerticalAlignment="Top"
                 RelativePanel.AlignRightWith="PicturesInGrid"/>
       
-        <!--<ListView ItemsSource="{Binding Source={StaticResource ImagesCollection}}" RelativePanel.Below="button" Margin="50" Width="200" Height="300" Background="BlanchedAlmond">
+        <ListView ItemsSource="{Binding Source={StaticResource ImagesCollection}}" RelativePanel.Below="button" Margin="50" Width="200" Height="300" Background="BlanchedAlmond">
             <ListView.ItemContainerStyle>
                 <Style TargetType="ListViewItem" BasedOn="{StaticResource ListViewItemExpanded}">
                     <Setter Property="HorizontalAlignment" Value="Center"/>
@@ -188,7 +188,7 @@
                     </GroupStyle.HeaderTemplate>
                 </GroupStyle>
             </ListView.GroupStyle>
-        </ListView>-->
+        </ListView>
 
         <VisualStateManager.VisualStateGroups>
             <VisualStateGroup>
