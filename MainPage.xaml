@@ -67,9 +67,10 @@
                 </Grid.RowDefinitions>
 
                 <Image x:Name="ItemImage"  Stretch="Uniform" 
-                       Source="{x:Bind ImageFile.Path}" HorizontalAlignment="Center" Grid.Row="0"/>
+                       Source="{x:Bind ImageSource, Mode=OneWay}" HorizontalAlignment="Center" Grid.Row="0"/>
                 <StackPanel Orientation="Vertical" Grid.Row="1">
                     <TextBlock Text="{x:Bind ImageName, Mode=OneWay}"  Style="{StaticResource SubtitleTextBlockStyle}" />
+                    <TextBlock Text="Catcha!"/>
                     <StackPanel Orientation="Horizontal">
 
                     

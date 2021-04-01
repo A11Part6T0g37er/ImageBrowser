@@ -1,5 +1,4 @@
-﻿using ImageBrowser.ViewModels;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
@@ -21,9 +20,9 @@ namespace ImageBrowser
     /// </summary>
     public sealed partial class MainPage : Page
     {
-    public static MainPage Current;
+        public static MainPage Current;
 
-     
+
 
         internal ObservableCollection<ImageFileInfo> Images { get; set; } = new ObservableCollection<ImageFileInfo>();
 
@@ -31,12 +30,12 @@ namespace ImageBrowser
         {
             InitializeComponent();
             Current = this;
-           
 
-           
+
+
         }
 
-        
+
 
         private void BackButton_Click(object sender, RoutedEventArgs e)
         {
@@ -48,7 +47,7 @@ namespace ImageBrowser
 
         }
 
-        protected async override void OnNavigatedTo(NavigationEventArgs e)
+        protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
             SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility =
                 AppViewBackButtonVisibility.Collapsed;
@@ -105,26 +104,27 @@ namespace ImageBrowser
                 ContentDialogResult resultNotUsed = await unsupportedFilesDialog.ShowAsync();
             }
         }
-        public async static Task<ImageFileInfo> LoadImageInfo(StorageFile file)
+        public static async Task<ImageFileInfo> LoadImageInfo(StorageFile file)
         {
             var properties = await file.Properties.GetImagePropertiesAsync();
             ImageFileInfo info = new ImageFileInfo(
                 file.DisplayName, file, properties,
                  file.DisplayType);
-
+            await info.GetImageSourceAsync();
             return info;
         }
 
         private async void ButtonOpen_Click(object sender, RoutedEventArgs e)
         {
-             PickSinglePicture();
+            await PickSinglePicture();
         }
 
-        private  async Task PickSinglePicture()
+        private async Task<ObservableCollection<ImageFileInfo>> PickSinglePicture()
         {
             var picker = new Windows.Storage.Pickers.FileOpenPicker();
-            picker.ViewMode = Windows.Storage.Pickers.PickerViewMode.List;
-            picker.SuggestedStartLocation = Windows.Storage.Pickers.PickerLocationId.PicturesLibrary;
+            picker.ViewMode = Windows.Storage.Pickers.PickerViewMode.Thumbnail;
+            picker.SuggestedStartLocation = Windows.Storage.Pickers.PickerLocationId.Desktop;
+
             picker.FileTypeFilter.Add(".jpg");
             picker.FileTypeFilter.Add(".jpeg");
             picker.FileTypeFilter.Add(".png");
@@ -133,8 +133,9 @@ namespace ImageBrowser
             {
                 Images.Clear();
                 Images.Add(await LoadImageInfo(file));
+                return Images;
             }
-
+            return null;
         }
     }
 

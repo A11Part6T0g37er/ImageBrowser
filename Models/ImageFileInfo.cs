@@ -19,7 +19,14 @@ namespace ImageBrowser
         public StorageFile ImageFile { get; }
         public string ImagePath { get { return ImageFile.Path.ToString();  } }
         public string ImageFileType { get; private set; }
-        
+
+        private BitmapImage _imageSource = null;
+        public BitmapImage ImageSource {
+            get => _imageSource;
+            set => SetProperty(ref _imageSource, value);
+        }
+
+
         public string ImageDimensions => $"{ImageProperties.Width} x {ImageProperties.Height}";
 
         public string ImageTitle
@@ -58,10 +65,10 @@ namespace ImageBrowser
             using (IRandomAccessStream fileStream = await ImageFile.OpenReadAsync())
             {
                 // Create a bitmap to be the image source.
-                BitmapImage bitmapImage = new BitmapImage();
-                bitmapImage.SetSource(fileStream);
+                this._imageSource = new BitmapImage();
+                _imageSource.SetSource(fileStream);
 
-                return bitmapImage;
+                return _imageSource;
             }
         }
         protected void OnPropertyChanged([CallerMemberName] string propertyName = null) =>
