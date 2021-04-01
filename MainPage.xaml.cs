@@ -128,13 +128,21 @@ namespace ImageBrowser
             picker.FileTypeFilter.Add(".jpg");
             picker.FileTypeFilter.Add(".jpeg");
             picker.FileTypeFilter.Add(".png");
-            Windows.Storage.StorageFile file = await picker.PickSingleFileAsync();
-            if (file != null)
+            IReadOnlyCollection<StorageFile> files = await picker.PickMultipleFilesAsync();
+            if (files != null)
             {
                 Images.Clear();
+                foreach(var file in files)
+                {
+
                 Images.Add(await LoadImageInfo(file));
-                return Images;
+                
+                }
             }
+
+
+           
+
             return null;
         }
     }
