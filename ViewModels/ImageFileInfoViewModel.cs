@@ -23,6 +23,8 @@ namespace ImageBrowser.ViewModels
         }
         private ObservableCollection<GroupInfoList> groupedImagesInfos = new ObservableCollection<GroupInfoList>();
         public ObservableCollection<GroupInfoList> GroupedImagesInfos { get => groupedImagesInfos; set => groupedImagesInfos = value; }
+      
+        
         public void GenerateByDateGroup(ObservableCollection<ImageFileInfo> lisOfImages)
         {
             var query = from item in lisOfImages
@@ -32,7 +34,7 @@ namespace ImageBrowser.ViewModels
             foreach(var item in query)
             {
                 GroupInfoList infoList = new GroupInfoList();
-                infoList.Key = item.GroupName + " (" + item.Items.Count() + ")";
+                infoList.Key = item.GroupName.Month + "/" + item.GroupName.Year + " (" + item.Items.Count() + ")";
                 foreach (var something in item.Items)
                 {
                     infoList.Add(something);

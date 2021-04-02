@@ -6,6 +6,7 @@ using Windows.ApplicationModel;
 using Windows.Storage;
 using Windows.Storage.Search;
 using Windows.UI.Core;
+using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
@@ -32,6 +33,25 @@ namespace ImageBrowser
             Current = this;
  imageFileInfoViewModel= new ViewModels.ImageFileInfoViewModel();
             DataContext = imageFileInfoViewModel.GroupedImagesInfos;
+            SizeChanged += CoreWindow_SizeChanged;
+        }
+
+        private  void CoreWindow_SizeChanged(object sender, SizeChangedEventArgs args)
+        {
+            var appView = ApplicationView.GetForCurrentView();
+            if (args.NewSize.Width > 1008)
+            {
+                VisualStateManager.GoToState(this, "LargeWindowBreakpoint", true);
+            }
+
+            if (args.NewSize.Width < 1008 && args.NewSize.Width > 641)
+            {
+                VisualStateManager.GoToState(this, "MediumWindowBreakpoint", true);
+            }
+            if (args.NewSize.Width < 641)
+            {
+                VisualStateManager.GoToState(this, "MinWindowBreakpoint", true);
+            }
         }
 
         private void Page_Loaded()
@@ -110,6 +130,7 @@ namespace ImageBrowser
 
                 ContentDialogResult resultNotUsed = await unsupportedFilesDialog.ShowAsync();
             }
+            Page_Loaded();
         }
         public static async Task<ImageFileInfo> LoadImageInfo(StorageFile file)
         {
@@ -155,7 +176,7 @@ namespace ImageBrowser
 
         private void PicturesInGrid_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            var _panel = (ItemsWrapGrid)PicturesInGrid.ItemsPanelRoot;
+           var _panel = (ItemsWrapGrid)PicturesInGrid.ItemsPanelRoot;
             //VisualState _actual = VisualStateGroup.CurrentState;
             int _gridColumnNumber = 2;
             //switch (_actual.Name)
@@ -185,6 +206,13 @@ namespace ImageBrowser
                 VisualStateManager.GoToState(this, "LargeWindowBreakpoint", false);
             else
                 VisualStateManager.GoToState(this, "MinWindowBreakpoint", false);
+        }
+
+        private void GroupedGrid_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            var _panel = (ItemsWrapGrid) GroupedGrid.ItemsPanelRoot;
+            int _gridColumnNumber = 3;
+            _panel.ItemWidth = e.NewSize.Width / _gridColumnNumber;
         }
     }
 

@@ -19,15 +19,20 @@
                            MaximumRowsOrColumns="5"/>
         </ItemsPanelTemplate>
 
-        <CollectionViewSource x:Name="ImagesCollection" Source="{x:Bind imageFileInfoViewModel.GroupedImagesInfos}" IsSourceGrouped="True"/>
-        
+        <CollectionViewSource x:Name="ImagesCollection" Source="{x:Bind imageFileInfoViewModel.GroupedImagesInfos}" 
+                              IsSourceGrouped="True" />
+
+        <CollectionViewSource x:Name="GropedImageCollection" Source="{x:Bind imageFileInfoViewModel.GroupedImagesInfos}"
+                              IsSourceGrouped="True"/>
+
         <Style x:Key="ImageGridView_DefaultItemContainerStyle"
                TargetType="GridViewItem">
             <Setter Property="Background"
                     Value="White" />
             <Setter Property="Margin"
                     Value="{StaticResource LargeItemMargin}" />
-                    </Style>
+                     
+        </Style>
 
         <Style x:Key="ImageGridView_SmallItemContainerStyle"
                TargetType="GridViewItem">
@@ -120,12 +125,12 @@
 
     <VisualStateManager.VisualStateGroups>
         <VisualStateGroup>
-            <VisualState>
+            <VisualState x:Name="LargeWindowBreakpoint">
                 <VisualState.StateTriggers>
                     <AdaptiveTrigger MinWindowWidth="{StaticResource LargeWindowBreakpoint}" />
                 </VisualState.StateTriggers>
             </VisualState>
-            <VisualState>
+            <VisualState x:Name="MediumWindowBreakpoint">
                 <VisualState.StateTriggers>
                     <AdaptiveTrigger MinWindowWidth="{StaticResource MediumWindowBreakpoint}" />
                 </VisualState.StateTriggers>
@@ -138,16 +143,18 @@
 
                 </VisualState.Setters>
             </VisualState>
-            <VisualState>
+            <VisualState x:Name="MinWindowBreakpoint">
                 <VisualState.StateTriggers>
                     <AdaptiveTrigger MinWindowWidth="{StaticResource MinWindowBreakpoint}" />
                 </VisualState.StateTriggers>
                 <VisualState.Setters>
                     <Setter Target="PicturesInGrid.ItemPanel"
                                 Value="{StaticResource ImagesGridCollection_Small}" />
+                    <Setter Target="GroupedGrid.ItemPanel"  Value="{StaticResource ImagesGridCollection_Small}"/>
                     <Setter Target="ImageGridView.ItemContainerStyle"
                                 Value="{StaticResource ImageGridView_SmallItemContainerStyle}" />
-
+                    <Setter Target="GroupedGrid.ItemContainerStyle"
+                                Value="{StaticResource ImageGridView_SmallItemContainerStyle}" />
 
                 </VisualState.Setters>
             </VisualState>
@@ -167,7 +174,7 @@
             <PivotItem Header="Grouped Grid">
                 <StackPanel Orientation="Vertical">
                     <TextBlock Text="none of pictures go here." Margin="0,0,0,10 "/>
-                   
+                    
                 </StackPanel>
             </PivotItem>
             <PivotItem x:Name="GroupedList" Header="Grouped List">
@@ -222,7 +229,7 @@
         </StackPanel>
 
 
-        <GridView x:Name="PicturesInGrid" IsItemClickEnabled="True" 
+        <GridView Visibility="Collapsed" x:Name="PicturesInGrid" IsItemClickEnabled="True" 
                   ItemClick="PicturesInGrid_ItemClick" SelectionMode="Single" 
                   
                   ItemTemplate="{StaticResource ImagesGridCollection_Default}" 
@@ -233,11 +240,73 @@
                   RelativePanel.AlignRightWithPanel="True" RelativePanel.Below="leftControlPanel"
                   SizeChanged="PicturesInGrid_SizeChanged"
                   ItemContainerStyle="{StaticResource ImageGridView_DefaultItemContainerStyle}">
+
             
 
-
         </GridView>
+        <GridView ItemsSource="{Binding Source={StaticResource ImagesCollection}}" SelectionMode="None"
+                             Name="GroupedGrid" ItemsPanel="{StaticResource ImageGridView_ItemsPanelTemplate}"
+                              SizeChanged="GroupedGrid_SizeChanged" 
+                  RelativePanel.Below="PicturesInGrid" RelativePanel.AlignLeftWithPanel="True" 
+                  RelativePanel.AlignRightWithPanel="True">
+            <GridView.GroupStyle>
+                <GroupStyle>
+                    <GroupStyle.HeaderTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Key}"  Style="{StaticResource SubtitleTextBlockStyle}" />
+                        </DataTemplate>
 
+
+                    </GroupStyle.HeaderTemplate>
+                </GroupStyle>
+            </GridView.GroupStyle>
+            <GridView.ItemTemplate >
+                <DataTemplate x:DataType="local:ImageFileInfo">
+                    <Grid Margin="{StaticResource LargeItemMargin}"
+                   Height="{Binding ItemSize, ElementName=page}" >
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="250"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <Image x:Name="ItemImage"  Stretch="Uniform" 
+                      Source="{x:Bind ImageSource, Mode=OneWay}" 
+                      Width="{Binding ItemSize,ElementName=app}" HorizontalAlignment="Center" Grid.Row="0" Margin="0,0,0,0"/>
+                        <StackPanel Orientation="Vertical" Grid.Row="1" >
+                            <TextBlock Text="{x:Bind ImageName, Mode=OneWay}"  Style="{StaticResource SubtitleTextBlockStyle}" />
+
+                            <Grid  VerticalAlignment="Center" >
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <ListView ItemsSource="{x:Bind ImageProperties.Keywords}" SelectionMode="None" 
+                                       VerticalAlignment="Center" Margin="0,0,0,0" >
+
+                                    <ListView.ItemTemplate >
+
+                                        <DataTemplate x:Name="KeyWordds" x:DataType="local:ImageFileInfo" >
+                                            <ListViewItem >
+
+                                                <TextBlock  Text="{Binding}" FontSize="12"  />
+                                            </ListViewItem>
+
+                                        </DataTemplate>
+
+                                    </ListView.ItemTemplate>
+                                </ListView>
+                                <ListView IsItemClickEnabled="False" Grid.Column="1">
+                                    <TextBlock TextWrapping="Wrap" Text="{x:Bind ImageDimensions}"/>
+                                    <TextBlock TextWrapping="WrapWholeWords" Text="{x:Bind ImageProperties.Height}"/>
+                                </ListView>
+                            </Grid>
+
+                        </StackPanel>
+                    </Grid>
+                </DataTemplate>
+            </GridView.ItemTemplate>
+        </GridView>
 
         <Button Grid.Row="1" x:Name="button" Content="Hello, world!" 
                HorizontalAlignment="Center" Margin = "150,60,0,0" VerticalAlignment="Top"
