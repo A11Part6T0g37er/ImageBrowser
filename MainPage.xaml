@@ -171,17 +171,12 @@
             <PivotItem Header="All">
                 <TextBlock Text="all pictures go here." />
             </PivotItem>
-            <PivotItem Header="Grouped Grid">
-                <StackPanel Orientation="Vertical">
-                    <TextBlock Text="none of pictures go here." Margin="0,0,0,10 "/>
-                    
-                </StackPanel>
-            </PivotItem>
-            <PivotItem x:Name="GroupedList" Header="Grouped List">
+
+            <PivotItem x:Name="GroupedList" Header="" x:Uid="groupedList" >
                 <StackPanel Orientation="Vertical" Margin="0,0,100,0" >
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="{x:Bind imageFileInfoViewModel.GroupedImagesInfos.Count, Mode=OneWay}"/>
-                        <TextBlock Text=" groups goes here"/>
+                        <TextBlock x:Uid="groupedListDefinition" Text=""/>
                     </StackPanel>
                     <ListView ItemsSource="{Binding Source={StaticResource ImagesCollection}}" RelativePanel.Below="button" 
                                Height="320" ScrollViewer.HorizontalScrollBarVisibility="Auto" 
@@ -224,8 +219,8 @@
 
         <StackPanel x:Name="TopButtons" Orientation="Horizontal" 
                      >
-            <Button  Content="Refresh"  ToolTipService.ToolTip="Refresh"  />
-            <Button Content="Open" Click="ButtonOpen_Click"/>
+            <Button  Content="" x:Uid="refresh"  ToolTipService.ToolTip=""  />
+            <Button Content="" x:Uid="open" Click="ButtonOpen_Click"/>
         </StackPanel>
 
 
