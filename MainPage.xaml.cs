@@ -24,7 +24,7 @@ namespace ImageBrowser
         public static MainPage Current;
 
 
-        internal ImageBrowser.ViewModels.ImageFileInfoViewModel imageFileInfoViewModel; 
+        internal ImageBrowser.ViewModels.ImageFileInfoViewModel imageFileInfoViewModel = new ViewModels.ImageFileInfoViewModel(); 
         internal ObservableCollection<ImageFileInfo> Images { get; set; } = new ObservableCollection<ImageFileInfo>();
         private ImageFileInfo persistedItem;
 
@@ -32,11 +32,11 @@ namespace ImageBrowser
         {
             InitializeComponent();
             Current = this;
- imageFileInfoViewModel= new ViewModels.ImageFileInfoViewModel();
+ //imageFileInfoViewModel= new ViewModels.ImageFileInfoViewModel();
        
             SizeChanged += CoreWindow_SizeChanged;
             DataContext = imageFileInfoViewModel.ObservableCollection;
-           
+            this.NavigationCacheMode = NavigationCacheMode.Enabled;
             
         }
 
@@ -233,15 +233,12 @@ namespace ImageBrowser
 
         private void ItemImage_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
         {
-            if (Images.Count == 0)
-            {
-                startingGreetingScreen.Visibility = Visibility.Visible;
-
-            }
-            else
+            if (Images.Count != 0)
             {
                 startingGreetingScreen.Visibility = Visibility.Collapsed;
+
             }
+           
         }
     }
 

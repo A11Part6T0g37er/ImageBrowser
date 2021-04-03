@@ -32,6 +32,10 @@ namespace ImageBrowser.ViewModels
                         group item by item.ImageProperties.DateTaken into dateKey
                         orderby dateKey.Key
                         select new { GroupName = dateKey.Key, Items = dateKey };
+            if (GroupedImagesInfos.Count >0)
+            {
+                GroupedImagesInfos.Clear(); 
+            }
             foreach(var item in query)
             {
                 GroupInfoList infoList = new GroupInfoList();
