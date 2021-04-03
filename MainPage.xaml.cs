@@ -33,7 +33,7 @@ namespace ImageBrowser
             InitializeComponent();
             Current = this;
  imageFileInfoViewModel= new ViewModels.ImageFileInfoViewModel();
-       //     DataContext = imageFileInfoViewModel.GroupedImagesInfos;
+       
             SizeChanged += CoreWindow_SizeChanged;
             DataContext = imageFileInfoViewModel.ObservableCollection;
            
@@ -86,6 +86,7 @@ namespace ImageBrowser
 
             if (Images.Count == 0)
             {
+                // initialize blank state
                 startingGreetingScreen.Visibility = Visibility.Visible;
                // await GetItemsAsync();
             }
