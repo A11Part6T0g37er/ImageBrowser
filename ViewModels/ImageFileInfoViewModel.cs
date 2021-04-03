@@ -10,10 +10,10 @@ namespace ImageBrowser.ViewModels
     internal class ImageFileInfoViewModel 
     {
       
-        private ObservableCollection<ImageFileInfo> observableCollection = new ObservableCollection<ImageFileInfo>() { new ImageFileInfo("NotNull", null, null, "jpg") };
+        private ObservableCollection<ImageFileInfo> observableCollection = new ObservableCollection<ImageFileInfo>() /*{ new ImageFileInfo("NotNull", null, null, "jpg") }*/;
        
 
-        public ObservableCollection<ImageFileInfo> ObservableCollection { get => observableCollection; }
+        public ObservableCollection<ImageFileInfo> ObservableCollection { get => observableCollection; set => observableCollection=value; }
         public ImageFileInfoViewModel()
         {
 

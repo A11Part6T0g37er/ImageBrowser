@@ -229,20 +229,7 @@
 
         </StackPanel>
 
-        <GridView Visibility="Collapsed" x:Name="PicturesInGrid"  SelectionMode="Single" 
-                  
-                  ItemTemplate="{StaticResource ImagesGridCollection_Default}" 
-                  ItemsPanel="{StaticResource ImageGridView_ItemsPanelTemplate}"
-                  ItemsSource="{x:Bind Images, Mode=OneWay}"
-                  Margin="18"
-                  RelativePanel.AlignLeftWithPanel="True"
-                  RelativePanel.AlignRightWithPanel="True" RelativePanel.Below="leftControlPanel"
-                  SizeChanged="PicturesInGrid_SizeChanged"
-                  ItemContainerStyle="{StaticResource ImageGridView_DefaultItemContainerStyle}">
-
-            
-
-        </GridView>
+        
         <GridView ItemsSource="{Binding Source={StaticResource ImagesCollection}}" SelectionMode="None"
                              Name="GroupedGrid" ItemsPanel="{StaticResource ImageGridView_ItemsPanelTemplate}"
                               SizeChanged="GroupedGrid_SizeChanged" 

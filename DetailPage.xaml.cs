@@ -15,7 +15,7 @@ namespace ImageBrowser
     {
         BitmapImage ImageSource = null;
         ImageFileInfo item;
-        CultureInfo culture = CultureInfo.CurrentCulture;
+       
         bool canNavigateWithUnsavedChanges = false;
 
 

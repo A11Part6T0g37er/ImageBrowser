@@ -25,7 +25,7 @@ namespace ImageBrowser
 
 
         internal ImageBrowser.ViewModels.ImageFileInfoViewModel imageFileInfoViewModel = new ViewModels.ImageFileInfoViewModel(); 
-        internal ObservableCollection<ImageFileInfo> Images { get; set; } = new ObservableCollection<ImageFileInfo>();
+       // internal ObservableCollection<ImageFileInfo> Images { get; set; } = new ObservableCollection<ImageFileInfo>();
         private ImageFileInfo persistedItem;
 
         public MainPage()
@@ -64,7 +64,8 @@ namespace ImageBrowser
         private void Page_Loaded()
 
         {
-            imageFileInfoViewModel.ChangeObservCollection(Images);
+          
+          if(imageFileInfoViewModel.ObservableCollection.Count > 0)
             imageFileInfoViewModel.Initialize();
 
         }
@@ -74,17 +75,14 @@ namespace ImageBrowser
             App.TryGoBack();
         }
 
-        private void PicturesInGrid_ItemClick(object sender, ItemClickEventArgs e)
-        {
-
-        }
+        
 
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
             SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility =
                 AppViewBackButtonVisibility.Collapsed;
 
-            if (Images.Count == 0)
+            if (imageFileInfoViewModel.ObservableCollection.Count == 0)
             {
                 // initialize blank state
                 startingGreetingScreen.Visibility = Visibility.Visible;
@@ -96,6 +94,11 @@ namespace ImageBrowser
            
             base.OnNavigatedTo(e);
         }
+
+        //TODO: make folders upload into app
+
+        // TODO: under heawy tefactoring it`s gone be eliminating
+        #region deleting
         private async Task GetItemsAsync(string path = "Assets\\")
         {
             QueryOptions options = new QueryOptions();
@@ -105,7 +108,9 @@ namespace ImageBrowser
             options.FileTypeFilter.Add(".gif");
 
             // Get the Pictures library. (Requires 'Pictures Library' capability.)
+
             //Windows.Storage.StorageFolder picturesFolder = Windows.Storage.KnownFolders.PicturesLibrary;
+
             // OR
             // Get the Sample pictures.
             StorageFolder appInstalledFolder = Package.Current.InstalledLocation;
@@ -121,7 +126,8 @@ namespace ImageBrowser
                 // Files on OneDrive or a network location are excluded.
                 if (file.Provider.Id == "computer")
                 {
-                    Images.Add(await LoadImageInfo(file));
+                    // it`s gone be dissapeared
+                    //Images.Add(await LoadImageInfo(file));
                 }
                 else
                 {
@@ -141,7 +147,8 @@ namespace ImageBrowser
                 ContentDialogResult resultNotUsed = await unsupportedFilesDialog.ShowAsync();
             }
             Page_Loaded();
-        }
+        } 
+        #endregion
         public static async Task<ImageFileInfo> LoadImageInfo(StorageFile file)
         {
             var properties = await file.Properties.GetImagePropertiesAsync();
@@ -169,15 +176,15 @@ namespace ImageBrowser
             IReadOnlyCollection<StorageFile> files = await picker.PickMultipleFilesAsync();
             if (files.Count >0)
             {
-                Images.Clear();
+                
                 imageFileInfoViewModel.ObservableCollection.Clear();
                 imageFileInfoViewModel.GroupedImagesInfos.Clear();
                 foreach(var file in files)
                 {
                     ImageFileInfo item = await LoadImageInfo(file);
-                    
-                Images.Add(item);
+
                    
+                    imageFileInfoViewModel.ObservableCollection.Add(item);
                 }
             }
             else
@@ -186,11 +193,23 @@ namespace ImageBrowser
             return null;
         }
 
-        private void PicturesInGrid_SizeChanged(object sender, SizeChangedEventArgs e)
+        
+        // TODO: making resisable layout
+        private void Page_SizeChanged(object sender, WindowSizeChangedEventArgs e)
         {
-           var _panel = (ItemsWrapGrid)PicturesInGrid.ItemsPanelRoot;
+            if (e.Size.Width > 1000)
+                VisualStateManager.GoToState(this, "LargeWindowBreakpoint", false);
+            else
+                VisualStateManager.GoToState(this, "MinWindowBreakpoint", false);
+        }
+        // TODO: updating number of  <XAML> Pictures-in-grid columns
+        private void GroupedGrid_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            var _panel = (ItemsWrapGrid) GroupedGrid.ItemsPanelRoot;
+            int _gridColumnNumber = 3;
+
             //VisualState _actual = VisualStateGroup.CurrentState;
-            int _gridColumnNumber = 2;
+           
             //switch (_actual.Name)
             //{
             //    case "medium":
@@ -212,21 +231,6 @@ namespace ImageBrowser
             _panel.ItemWidth = e.NewSize.Width / _gridColumnNumber;
         }
 
-        private void Page_SizeChanged(object sender, WindowSizeChangedEventArgs e)
-        {
-            if (e.Size.Width > 1000)
-                VisualStateManager.GoToState(this, "LargeWindowBreakpoint", false);
-            else
-                VisualStateManager.GoToState(this, "MinWindowBreakpoint", false);
-        }
-
-        private void GroupedGrid_SizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            var _panel = (ItemsWrapGrid) GroupedGrid.ItemsPanelRoot;
-            int _gridColumnNumber = 3;
-            _panel.ItemWidth = e.NewSize.Width / _gridColumnNumber;
-        }
-
         private void GroupedGrid_ItemClick(object sender, ItemClickEventArgs e)
         {
             persistedItem = e.ClickedItem as ImageFileInfo;
@@ -235,7 +239,7 @@ namespace ImageBrowser
 
         private void ItemImage_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
         {
-            if (Images.Count != 0)
+            if (imageFileInfoViewModel.ObservableCollection.Count != 0)
             {
                 startingGreetingScreen.Visibility = Visibility.Collapsed;
 
