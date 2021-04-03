@@ -29,8 +29,8 @@ namespace ImageBrowser.ViewModels
         public void GenerateByDateGroup(ObservableCollection<ImageFileInfo> lisOfImages)
         {
             var query = from item in lisOfImages
-                        group item by item.ImageProperties.DateTaken into dateKey
-                        orderby dateKey.Key
+                        group item by  new {yy = item.ImageProperties.DateTaken.Year, mm = item.ImageProperties.DateTaken.Month } into dateKey 
+                        orderby dateKey.Key.yy descending
                         select new { GroupName = dateKey.Key, Items = dateKey };
             if (GroupedImagesInfos.Count > 0)
             {
@@ -39,7 +39,7 @@ namespace ImageBrowser.ViewModels
             foreach(var item in query)
             {
                 GroupInfoList infoList = new GroupInfoList();
-                infoList.Key = item.GroupName.Month + "/" + item.GroupName.Year + " (" + item.Items.Count() + ")";
+                infoList.Key = item.GroupName.mm + "/" + item.GroupName.yy + " (" + item.Items.Count() + ")";
                 foreach (var something in item.Items)
                 {
                     infoList.Add(something);
