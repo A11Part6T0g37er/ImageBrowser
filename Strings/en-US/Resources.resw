@@ -117,12 +117,18 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="all" xml:space="preserve">
+  <data name="all.Header" xml:space="preserve">
     <value>All</value>
     <comment>everything</comment>
   </data>
-  <data name="allPictures" xml:space="preserve">
+  <data name="allPictures.Text" xml:space="preserve">
     <value>All pictures go here</value>
+  </data>
+  <data name="AppDescription" xml:space="preserve">
+    <value>Long description of all features this app has.</value>
+  </data>
+  <data name="AppDisplayName" xml:space="preserve">
+    <value>Image Browser App</value>
   </data>
   <data name="groupedGrid" xml:space="preserve">
     <value>Grouped Grid</value>

@@ -26,15 +26,21 @@ namespace ImageBrowser
 
         internal ImageBrowser.ViewModels.ImageFileInfoViewModel imageFileInfoViewModel; 
         internal ObservableCollection<ImageFileInfo> Images { get; set; } = new ObservableCollection<ImageFileInfo>();
+        private ImageFileInfo persistedItem;
 
         public MainPage()
         {
             InitializeComponent();
             Current = this;
  imageFileInfoViewModel= new ViewModels.ImageFileInfoViewModel();
-            DataContext = imageFileInfoViewModel.GroupedImagesInfos;
+       //     DataContext = imageFileInfoViewModel.GroupedImagesInfos;
             SizeChanged += CoreWindow_SizeChanged;
+            DataContext = imageFileInfoViewModel.ObservableCollection;
+           
+            
         }
+
+        
 
         private  void CoreWindow_SizeChanged(object sender, SizeChangedEventArgs args)
         {
@@ -52,6 +58,7 @@ namespace ImageBrowser
             {
                 VisualStateManager.GoToState(this, "MinWindowBreakpoint", true);
             }
+
         }
 
         private void Page_Loaded()
@@ -79,11 +86,13 @@ namespace ImageBrowser
 
             if (Images.Count == 0)
             {
-                await GetItemsAsync();
+                startingGreetingScreen.Visibility = Visibility.Visible;
+               // await GetItemsAsync();
             }
+           
 
             Page_Loaded();
-            //DataContext = imageFileInfoViewModel;
+           
             base.OnNavigatedTo(e);
         }
         private async Task GetItemsAsync(string path = "Assets\\")
@@ -144,10 +153,10 @@ namespace ImageBrowser
 
         private async void ButtonOpen_Click(object sender, RoutedEventArgs e)
         {
-            await PickSinglePicture();
+            await PickMultiplePictures();
         }
 
-        private async Task<ObservableCollection<ImageFileInfo>> PickSinglePicture()
+        private async Task<ObservableCollection<ImageFileInfo>> PickMultiplePictures()
         {
             var picker = new Windows.Storage.Pickers.FileOpenPicker();
             picker.ViewMode = Windows.Storage.Pickers.PickerViewMode.Thumbnail;
@@ -213,6 +222,25 @@ namespace ImageBrowser
             var _panel = (ItemsWrapGrid) GroupedGrid.ItemsPanelRoot;
             int _gridColumnNumber = 3;
             _panel.ItemWidth = e.NewSize.Width / _gridColumnNumber;
+        }
+
+        private void GroupedGrid_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            persistedItem = e.ClickedItem as ImageFileInfo;
+            this.Frame.Navigate(typeof(DetailPage), e.ClickedItem);
+        }
+
+        private void ItemImage_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
+        {
+            if (Images.Count == 0)
+            {
+                startingGreetingScreen.Visibility = Visibility.Visible;
+
+            }
+            else
+            {
+                startingGreetingScreen.Visibility = Visibility.Collapsed;
+            }
         }
     }
 

@@ -117,15 +117,13 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="all" xml:space="preserve">
+  <data name="all.Header" xml:space="preserve">
     <value>Allen</value>
     <comment>everything</comment>
   </data>
-  <data name="allPictures" xml:space="preserve">
+  <data name="allPictures.Text" xml:space="preserve">
     <value>Allen Bilder gehen hier</value>
-  </data>
-  <data name="groupedGrid" xml:space="preserve">
-    <value>Gruppiertes Raster</value>
+    <comment>description</comment>
   </data>
   <data name="groupedList.Header" xml:space="preserve">
     <value>Gruppierte Liste</value>

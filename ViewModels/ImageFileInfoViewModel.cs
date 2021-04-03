@@ -2,11 +2,12 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 
 namespace ImageBrowser.ViewModels
 {
-    internal class ImageFileInfoViewModel
+    internal class ImageFileInfoViewModel 
     {
       
         private ObservableCollection<ImageFileInfo> observableCollection = new ObservableCollection<ImageFileInfo>() { new ImageFileInfo("NotNull", null, null, "jpg") };
@@ -49,5 +50,6 @@ namespace ImageBrowser.ViewModels
 
             GenerateByDateGroup(data);
         }
+        
     }
 }

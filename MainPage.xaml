@@ -9,7 +9,7 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
    >
     <Page.Resources>
-
+      
         <Thickness x:Key="LargeItemMargin">8</Thickness>
         <Thickness x:Key="SmallItemMargin">0</Thickness>
 
@@ -22,7 +22,7 @@
         <CollectionViewSource x:Name="ImagesCollection" Source="{x:Bind imageFileInfoViewModel.GroupedImagesInfos}" 
                               IsSourceGrouped="True" />
 
-        <CollectionViewSource x:Name="GropedImageCollection" Source="{x:Bind imageFileInfoViewModel.GroupedImagesInfos}"
+        <CollectionViewSource x:Name="GropedImageCollection" Source="{x:Bind imageFileInfoViewModel.ObservableCollection}"
                               IsSourceGrouped="True"/>
 
         <Style x:Key="ImageGridView_DefaultItemContainerStyle"
@@ -78,7 +78,7 @@
                       Source="{x:Bind ImageSource, Mode=OneWay}" 
                       Width="{Binding ItemSize,ElementName=app}" HorizontalAlignment="Center" Grid.Row="0" Margin="0,0,0,0"/>
                 <StackPanel Orientation="Vertical" Grid.Row="1" Width="200">
-                    <TextBlock Text="{x:Bind ImageName, Mode=OneWay}"  Style="{StaticResource SubtitleTextBlockStyle}" />
+                    <TextBlock Text="{x:Bind ImagePath, Mode=OneWay}"  Style="{StaticResource SubtitleTextBlockStyle}" />
                     
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Height="50">
 
@@ -168,11 +168,11 @@
     <RelativePanel>
         <Pivot x:Name="leftControlPanel" Title="Image Browser" 
                Margin="25,0,0,0" RelativePanel.Below="TopButtons">
-            <PivotItem Header="All">
-                <TextBlock Text="all pictures go here." />
+            <PivotItem Name="All" x:Uid="all" Header=""  >
+                <TextBlock x:Uid="allPictures" Text=""  />
             </PivotItem>
 
-            <PivotItem x:Name="GroupedList" Header="" x:Uid="groupedList" >
+            <PivotItem x:Name="GroupedList" x:Uid="groupedList" Header=""  >
                 <StackPanel Orientation="Vertical" Margin="0,0,100,0" >
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="{x:Bind imageFileInfoViewModel.GroupedImagesInfos.Count, Mode=OneWay}"/>
@@ -219,13 +219,17 @@
 
         <StackPanel x:Name="TopButtons" Orientation="Horizontal" 
                      >
-            <Button  Content="" x:Uid="refresh"  ToolTipService.ToolTip=""  />
+            <Button  Content="" x:Uid="refresh"  ToolTipService.ToolTip="" />
             <Button Content="" x:Uid="open" Click="ButtonOpen_Click"/>
         </StackPanel>
 
+        <StackPanel x:Name="startingGreetingScreen" Visibility="Collapsed" RelativePanel.Below="leftControlPanel" Margin="20,0,0,0">
+            <TextBlock Text="Nothig here"/>
+            <Image Source="/Assets/Square150x150Logo.scale-200.png" />
 
-        <GridView Visibility="Collapsed" x:Name="PicturesInGrid" IsItemClickEnabled="True" 
-                  ItemClick="PicturesInGrid_ItemClick" SelectionMode="Single" 
+        </StackPanel>
+
+        <GridView Visibility="Collapsed" x:Name="PicturesInGrid"  SelectionMode="Single" 
                   
                   ItemTemplate="{StaticResource ImagesGridCollection_Default}" 
                   ItemsPanel="{StaticResource ImageGridView_ItemsPanelTemplate}"
@@ -242,8 +246,9 @@
         <GridView ItemsSource="{Binding Source={StaticResource ImagesCollection}}" SelectionMode="None"
                              Name="GroupedGrid" ItemsPanel="{StaticResource ImageGridView_ItemsPanelTemplate}"
                               SizeChanged="GroupedGrid_SizeChanged" 
-                  RelativePanel.Below="PicturesInGrid" RelativePanel.AlignLeftWithPanel="True" 
-                  RelativePanel.AlignRightWithPanel="True">
+               IsItemClickEnabled="True" ItemClick="GroupedGrid_ItemClick"
+                  RelativePanel.Below="leftControlPanel" RelativePanel.AlignLeftWithPanel="True" 
+                  RelativePanel.AlignRightWithPanel="True" MinWidth="680"  Margin="15">
             <GridView.GroupStyle>
                 <GroupStyle>
                     <GroupStyle.HeaderTemplate>
@@ -255,57 +260,52 @@
                     </GroupStyle.HeaderTemplate>
                 </GroupStyle>
             </GridView.GroupStyle>
-            <GridView.ItemTemplate >
-                <DataTemplate x:DataType="local:ImageFileInfo">
+            <GridView.ItemTemplate>
+                <DataTemplate x:DataType="local:ImageFileInfo" >
                     <Grid Margin="{StaticResource LargeItemMargin}"
                    Height="{Binding ItemSize, ElementName=page}" >
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="250"/>
+                            <RowDefinition Height="*"/>
                             <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+
                         </Grid.RowDefinitions>
 
-                        <Image x:Name="ItemImage"  Stretch="Uniform" 
+                        <Image DataContextChanged="ItemImage_DataContextChanged" x:Name="ItemImage"  Stretch="Uniform" 
                       Source="{x:Bind ImageSource, Mode=OneWay}" 
-                      Width="{Binding ItemSize,ElementName=app}" HorizontalAlignment="Center" Grid.Row="0" Margin="0,0,0,0"/>
-                        <StackPanel Orientation="Vertical" Grid.Row="1" >
+                      Width="{Binding ItemSize,ElementName=app}" VerticalAlignment="Top" HorizontalAlignment="Center" Grid.Row="0" Margin="0,0,0,0"/>
+                        <StackPanel Orientation="Horizontal" Grid.Row="1"  Margin="0,0,0,15">
                             <TextBlock Text="{x:Bind ImageName, Mode=OneWay}"  Style="{StaticResource SubtitleTextBlockStyle}" />
 
-                            <Grid  VerticalAlignment="Center" >
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition/>
-                                    <ColumnDefinition Width="Auto"/>
-                                </Grid.ColumnDefinitions>
-
-                                <ListView ItemsSource="{x:Bind ImageProperties.Keywords}" SelectionMode="None" 
-                                       VerticalAlignment="Center" Margin="0,0,0,0" >
-
-                                    <ListView.ItemTemplate >
-
-                                        <DataTemplate x:Name="KeyWordds" x:DataType="local:ImageFileInfo" >
-                                            <ListViewItem >
-
-                                                <TextBlock  Text="{Binding}" FontSize="12"  />
-                                            </ListViewItem>
-
-                                        </DataTemplate>
-
-                                    </ListView.ItemTemplate>
-                                </ListView>
-                                <ListView IsItemClickEnabled="False" Grid.Column="1">
-                                    <TextBlock TextWrapping="Wrap" Text="{x:Bind ImageDimensions}"/>
-                                    <TextBlock TextWrapping="WrapWholeWords" Text="{x:Bind ImageProperties.Height}"/>
-                                </ListView>
-                            </Grid>
-
                         </StackPanel>
+
+
+                             
+                                
+                                    <StackPanel Orientation="Horizontal" Grid.Row="2">
+                            <TextBlock TextWrapping="Wrap" Text="{x:Bind ImageDimensions, Mode=OneWay}" Margin="0,3,10,0" />
+
+
+
+                            <ItemsControl ItemsSource="{x:Bind ImageProperties.Keywords, Mode=OneWay}" >
+                                            <TextBlock  Text="{Binding}" FontSize="12"  Margin="0,1,0,1"/>
+                                        </ItemsControl>
+                                    </StackPanel>
+                                
+
+
+                            
+                            
+
+
                     </Grid>
                 </DataTemplate>
             </GridView.ItemTemplate>
         </GridView>
 
-        <Button Grid.Row="1" x:Name="button" Content="Hello, world!" 
-               HorizontalAlignment="Center" Margin = "150,60,0,0" VerticalAlignment="Top"
-                RelativePanel.AlignRightWith="PicturesInGrid"/>
+        <Button  x:Name="button" Content="Hello, world!" 
+               HorizontalAlignment="Center" Margin = "15,0,16,0" VerticalAlignment="Center"
+                RelativePanel.AlignRightWith="GroupedGrid"/>
       
        
 
