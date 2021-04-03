@@ -167,7 +167,7 @@ namespace ImageBrowser
             picker.FileTypeFilter.Add(".jpeg");
             picker.FileTypeFilter.Add(".png");
             IReadOnlyCollection<StorageFile> files = await picker.PickMultipleFilesAsync();
-            if (files != null)
+            if (files.Count >0)
             {
                 Images.Clear();
                 imageFileInfoViewModel.ObservableCollection.Clear();
@@ -180,6 +180,8 @@ namespace ImageBrowser
                    
                 }
             }
+            else
+            { return null; }
             Page_Loaded();
             return null;
         }
@@ -237,6 +239,10 @@ namespace ImageBrowser
             {
                 startingGreetingScreen.Visibility = Visibility.Collapsed;
 
+            }
+            else
+            {
+                startingGreetingScreen.Visibility = Visibility.Visible;
             }
            
         }

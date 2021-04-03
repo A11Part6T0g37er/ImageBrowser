@@ -32,7 +32,7 @@ namespace ImageBrowser.ViewModels
                         group item by item.ImageProperties.DateTaken into dateKey
                         orderby dateKey.Key
                         select new { GroupName = dateKey.Key, Items = dateKey };
-            if (GroupedImagesInfos.Count >0)
+            if (GroupedImagesInfos.Count > 0)
             {
                 GroupedImagesInfos.Clear(); 
             }
