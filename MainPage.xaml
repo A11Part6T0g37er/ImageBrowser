@@ -241,7 +241,7 @@
                               SizeChanged="GroupedGrid_SizeChanged" 
                IsItemClickEnabled="True" ItemClick="GroupedGrid_ItemClick"
                   RelativePanel.Below="leftControlPanel" RelativePanel.AlignLeftWithPanel="True" 
-                  RelativePanel.AlignRightWithPanel="True" MinWidth="680"  Margin="15">
+                  RelativePanel.AlignRightWithPanel="True" MinWidth="180"  Margin="15">
             <GridView.GroupStyle>
                 <GroupStyle>
                     <GroupStyle.HeaderTemplate>
@@ -267,11 +267,21 @@
                         <Image DataContextChanged="ItemImage_DataContextChanged" x:Name="ItemImage"  Stretch="Uniform" 
                       Source="{x:Bind ImageSource, Mode=OneWay}" 
                       Width="{Binding ItemSize,ElementName=app}" VerticalAlignment="Top" HorizontalAlignment="Center" Grid.Row="0" Margin="0,0,0,0"/>
-                        <StackPanel Orientation="Horizontal" Grid.Row="1"  Margin="0,0,0,15">
-                            <TextBlock Text="{x:Bind ImageName, Mode=OneWay}"  Style="{StaticResource SubtitleTextBlockStyle}" />
+                        
+                        <StackPanel Orientation="Vertical" Grid.Row="1"  Margin="0,0,0,15">
+                                <TextBlock Text="{x:Bind ImageName, Mode=OneWay}"  MaxWidth="500"
+                                     TextWrapping="Wrap"  
+                                           Style="{StaticResource SubtitleTextBlockStyle}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
 
                         </StackPanel>
+                            <!--<Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="{x:Bind ImageName, Mode=OneWay}"  MaxWidth="{Binding ElementName=ItemImage,Path=ActualWidth, Mode=OneWay}"
+                                     TextWrapping="Wrap"  Style="{StaticResource SubtitleTextBlockStyle}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
 
+                            </Grid>-->
 
 
 

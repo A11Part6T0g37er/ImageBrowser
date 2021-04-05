@@ -195,6 +195,7 @@ namespace ImageBrowser
                 }
             }
             InitializeGroupingOfViewModel();
+
             return null;
         }
 
@@ -256,11 +257,20 @@ namespace ImageBrowser
            
         }
 
-        private void RefreshArea_RefreshRequested(RefreshContainer sender, RefreshRequestedEventArgs args)
+        private async void RefreshArea_RefreshRequested(RefreshContainer sender, RefreshRequestedEventArgs args)
         {
             using(var RefreshcompletingDeferral = args.GetDeferral())
             {
+                ICollection<StorageFile> files = new Collection<StorageFile>();
 
+                for (int i = 0; i < imageFileInfoViewModel.ObservableCollection.Count; i++)
+                {
+
+                    files.Add(imageFileInfoViewModel.ObservableCollection[i].ImageFile);  
+                }
+                
+                IReadOnlyCollection<StorageFile> filesReadOnly = (IReadOnlyCollection<StorageFile>)files;
+                await  PopulateObservableCollectionOfImages(filesReadOnly);
             }
         }
 
