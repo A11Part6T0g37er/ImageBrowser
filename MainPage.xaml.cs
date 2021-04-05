@@ -278,6 +278,11 @@ namespace ImageBrowser
         {
             RefreshArea.RequestRefresh();
         }
+
+        private void singingOneDrive_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 
 }

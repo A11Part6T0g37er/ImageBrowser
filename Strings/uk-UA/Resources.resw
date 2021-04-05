@@ -133,10 +133,10 @@
   <data name="groupedListDefinition.Text" xml:space="preserve">
     <value> груп відображаеться</value>
   </data>
-  <data name="open.Content" xml:space="preserve">
+  <data name="open.Label" xml:space="preserve">
     <value>Відкрити</value>
   </data>
-  <data name="refresh.Content" xml:space="preserve">
+  <data name="refresh.Label" xml:space="preserve">
     <value>Оновити</value>
   </data>
   <data name="refresh.ToolTipService.ToolTip" xml:space="preserve">

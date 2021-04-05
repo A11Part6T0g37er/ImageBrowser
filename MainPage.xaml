@@ -220,11 +220,10 @@
         </Pivot>
 
 
-        <StackPanel x:Name="TopButtons" Orientation="Horizontal" 
-                     >
-            <Button x:Name="Refresh" Content="" x:Uid="refresh"  ToolTipService.ToolTip="" Click="Refresh_Click"/>
-            <Button Content="" x:Uid="open" Click="ButtonOpen_Click"/>
-        </StackPanel>
+        <CommandBar x:Name="TopButtons" DefaultLabelPosition="Right" IsOpen="True">
+            <AppBarButton Icon="Refresh" x:Name="Refresh" Label="" x:Uid="refresh"  ToolTipService.ToolTip="" Click="Refresh_Click"/>
+            <AppBarButton Icon="OpenFile" Label="" x:Uid="open" Click="ButtonOpen_Click"/>
+        </CommandBar>
 
         <StackPanel x:Name="startingGreetingScreen" Visibility="Collapsed" RelativePanel.Below="leftControlPanel" Margin="20,0,0,0">
             <TextBlock Text="Nothig here"/>
@@ -333,9 +332,13 @@
         </GridView>
            
         </RefreshContainer>
-        
-      
-       
+        <StackPanel Orientation="Horizontal" RelativePanel.RightOf="TopButtons" RelativePanel.AlignTopWith="TopButtons" HorizontalAlignment="Center" RelativePanel.AlignRightWithPanel="True">
+
+            <CommandBar DefaultLabelPosition="Right" IsOpen="True">
+                <AppBarButton  Icon="Download" x:Name="singingOneDrive" Label="Sing In"  ToolTipService.ToolTip="OneDrive" Click="singingOneDrive_Click"/>
+            </CommandBar>
+        </StackPanel>
+s
 
 
     </RelativePanel>

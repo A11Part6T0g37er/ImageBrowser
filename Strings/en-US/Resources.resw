@@ -139,10 +139,10 @@
   <data name="groupedListDefinition.Text" xml:space="preserve">
     <value> groups goes here</value>
   </data>
-  <data name="open.Content" xml:space="preserve">
+  <data name="open.Label" xml:space="preserve">
     <value>Open</value>
   </data>
-  <data name="refresh.Content" xml:space="preserve">
+  <data name="refresh.Label" xml:space="preserve">
     <value>Refresh</value>
   </data>
   <data name="refresh.ToolTipService.ToolTip" xml:space="preserve">
