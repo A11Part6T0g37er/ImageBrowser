@@ -1,24 +1,21 @@
-﻿using Microsoft.OneDrive.Sdk;
+﻿using ImageBrowser.Common;
+using Microsoft.Graph;
+using Microsoft.Identity.Client;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
+using System.Linq;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
-using Windows.ApplicationModel;
 using Windows.Storage;
 using Windows.Storage.Search;
 using Windows.UI.Core;
+using Windows.UI.Popups;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
-using ImageBrowser.Models.Serialization;
-using Microsoft.Identity.Client;
-using Microsoft.Graph;
-using System.Linq;
-using Windows.UI.Popups;
-using System.Net.Http.Headers;
-using System.Diagnostics;
-using ImageBrowser.Common;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -44,25 +41,25 @@ namespace ImageBrowser
         #endregion
 
         public static MainPage Current;
-        internal ImageBrowser.ViewModels.ImageFileInfoViewModel imageFileInfoViewModel = new ViewModels.ImageFileInfoViewModel(); 
-       // internal ObservableCollection<ImageFileInfo> Images { get; set; } = new ObservableCollection<ImageFileInfo>();
+        internal ImageBrowser.ViewModels.ImageFileInfoViewModel imageFileInfoViewModel = new ViewModels.ImageFileInfoViewModel();
+        // internal ObservableCollection<ImageFileInfo> Images { get; set; } = new ObservableCollection<ImageFileInfo>();
         private ImageFileInfo persistedItem;
 
         public MainPage()
         {
             InitializeComponent();
             Current = this;
- //imageFileInfoViewModel= new ViewModels.ImageFileInfoViewModel();
-       
+            //imageFileInfoViewModel= new ViewModels.ImageFileInfoViewModel();
+
             SizeChanged += CoreWindow_SizeChanged;
             DataContext = imageFileInfoViewModel.ObservableCollection;
-            this.NavigationCacheMode = NavigationCacheMode.Enabled;
-            
+            NavigationCacheMode = NavigationCacheMode.Enabled;
+
         }
 
-        
 
-        private  void CoreWindow_SizeChanged(object sender, SizeChangedEventArgs args)
+
+        private void CoreWindow_SizeChanged(object sender, SizeChangedEventArgs args)
         {
             var appView = ApplicationView.GetForCurrentView();
             if (args.NewSize.Width > 1008)
@@ -84,9 +81,9 @@ namespace ImageBrowser
         private void InitializeGroupingOfViewModel()
 
         {
-          
-          if(imageFileInfoViewModel.ObservableCollection.Count > 0)
-            imageFileInfoViewModel.Initialize();
+
+            if (imageFileInfoViewModel.ObservableCollection.Count > 0)
+                imageFileInfoViewModel.Initialize();
 
         }
 
@@ -95,7 +92,7 @@ namespace ImageBrowser
             App.TryGoBack();
         }
 
-        
+
 
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
@@ -106,12 +103,12 @@ namespace ImageBrowser
             {
                 // initialize blank state
                 startingGreetingScreen.Visibility = Visibility.Visible;
-               // await GetItemsAsync();
+                // await GetItemsAsync();
             }
-           
+
 
             InitializeGroupingOfViewModel();
-           
+
             base.OnNavigatedTo(e);
         }
 
@@ -167,7 +164,7 @@ namespace ImageBrowser
                 ContentDialogResult resultNotUsed = await unsupportedFilesDialog.ShowAsync();
             }
             InitializeGroupingOfViewModel();
-        } 
+        }
         #endregion
         public static async Task<ImageFileInfo> LoadImageInfo(StorageFile file)
         {
@@ -231,11 +228,11 @@ namespace ImageBrowser
         // TODO: updating number of  <XAML> Pictures-in-grid columns
         private void GroupedGrid_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            var _panel = (ItemsWrapGrid) GroupedGrid.ItemsPanelRoot;
+            var _panel = (ItemsWrapGrid)GroupedGrid.ItemsPanelRoot;
             int _gridColumnNumber = 3;
 
             //VisualState _actual = VisualStateGroup.CurrentState;
-           
+
             //switch (_actual.Name)
             //{
             //    case "medium":
@@ -260,7 +257,7 @@ namespace ImageBrowser
         private void GroupedGrid_ItemClick(object sender, ItemClickEventArgs e)
         {
             persistedItem = e.ClickedItem as ImageFileInfo;
-            this.Frame.Navigate(typeof(DetailPage), e.ClickedItem);
+            Frame.Navigate(typeof(DetailPage), e.ClickedItem);
         }
 
         private void ItemImage_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
@@ -274,23 +271,23 @@ namespace ImageBrowser
             {
                 startingGreetingScreen.Visibility = Visibility.Visible;
             }
-           
+
         }
 
         private async void RefreshArea_RefreshRequested(RefreshContainer sender, RefreshRequestedEventArgs args)
         {
-            using(var RefreshcompletingDeferral = args.GetDeferral())
+            using (var RefreshcompletingDeferral = args.GetDeferral())
             {
                 ICollection<StorageFile> files = new Collection<StorageFile>();
 
                 for (int i = 0; i < imageFileInfoViewModel.ObservableCollection.Count; i++)
                 {
 
-                    files.Add(imageFileInfoViewModel.ObservableCollection[i].ImageFile);  
+                    files.Add(imageFileInfoViewModel.ObservableCollection[i].ImageFile);
                 }
-                
+
                 IReadOnlyCollection<StorageFile> filesReadOnly = (IReadOnlyCollection<StorageFile>)files;
-                await  PopulateObservableCollectionOfImages(filesReadOnly);
+                await PopulateObservableCollectionOfImages(filesReadOnly);
             }
         }
 
@@ -313,8 +310,8 @@ namespace ImageBrowser
                 await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
                 {
                     ResultText.Text = "Display Name: " + graphUser.UserPrincipalName + "\nid: " + graphUser.Id;
-                    
-                    this.SignOutButton.Visibility = Visibility.Visible;
+
+                    SignOutButton.Visibility = Visibility.Visible;
                 });
             }
             catch (MsalException msalEx)
@@ -336,12 +333,12 @@ namespace ImageBrowser
             await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
                    () =>
                    {
-                      new MessageDialog(message);
-                       
+                       new MessageDialog(message);
+
                    });
         }
 
-        private async static Task<GraphServiceClient> SignInAndInitializeGraphServiceClient(string[] scopes)
+        private static async Task<GraphServiceClient> SignInAndInitializeGraphServiceClient(string[] scopes)
         {
             GraphServiceClient graphClient = new GraphServiceClient(MSGraphURL,
                 new DelegateAuthenticationProvider(async (requestMessage) =>
@@ -406,8 +403,8 @@ namespace ImageBrowser
                 await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
                 {
                     ResultText.Text = "User has signed-out";
-                    this.signingOneDrive.Visibility = Visibility.Visible;
-                    this.SignOutButton.Visibility = Visibility.Collapsed;
+                    signingOneDrive.Visibility = Visibility.Visible;
+                    SignOutButton.Visibility = Visibility.Collapsed;
                 });
             }
             catch (MsalException ex)
