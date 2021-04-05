@@ -61,7 +61,7 @@ namespace ImageBrowser
 
         }
 
-        private void Page_Loaded()
+        private void InitializeGroupingOfViewModel()
 
         {
           
@@ -90,7 +90,7 @@ namespace ImageBrowser
             }
            
 
-            Page_Loaded();
+            InitializeGroupingOfViewModel();
            
             base.OnNavigatedTo(e);
         }
@@ -146,7 +146,7 @@ namespace ImageBrowser
 
                 ContentDialogResult resultNotUsed = await unsupportedFilesDialog.ShowAsync();
             }
-            Page_Loaded();
+            InitializeGroupingOfViewModel();
         } 
         #endregion
         public static async Task<ImageFileInfo> LoadImageInfo(StorageFile file)
@@ -174,26 +174,31 @@ namespace ImageBrowser
             picker.FileTypeFilter.Add(".jpeg");
             picker.FileTypeFilter.Add(".png");
             IReadOnlyCollection<StorageFile> files = await picker.PickMultipleFilesAsync();
-            if (files.Count >0)
+            return await PopulateObservableCollectionOfImages(files);
+        }
+
+        private async Task<ObservableCollection<ImageFileInfo>> PopulateObservableCollectionOfImages(IReadOnlyCollection<StorageFile> files)
+        {
+            if (files.Count <= 0)
+            { return null; }
+            else
             {
-                
+
                 imageFileInfoViewModel.ObservableCollection.Clear();
                 imageFileInfoViewModel.GroupedImagesInfos.Clear();
-                foreach(var file in files)
+                foreach (var file in files)
                 {
                     ImageFileInfo item = await LoadImageInfo(file);
 
-                   
+
                     imageFileInfoViewModel.ObservableCollection.Add(item);
                 }
             }
-            else
-            { return null; }
-            Page_Loaded();
+            InitializeGroupingOfViewModel();
             return null;
         }
 
-        
+
         // TODO: making resisable layout
         private void Page_SizeChanged(object sender, WindowSizeChangedEventArgs e)
         {
@@ -249,6 +254,19 @@ namespace ImageBrowser
                 startingGreetingScreen.Visibility = Visibility.Visible;
             }
            
+        }
+
+        private void RefreshArea_RefreshRequested(RefreshContainer sender, RefreshRequestedEventArgs args)
+        {
+            using(var RefreshcompletingDeferral = args.GetDeferral())
+            {
+
+            }
+        }
+
+        private void Refresh_Click(object sender, RoutedEventArgs e)
+        {
+            RefreshArea.RequestRefresh();
         }
     }
 

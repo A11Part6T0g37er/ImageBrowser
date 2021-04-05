@@ -31,7 +31,7 @@ namespace ImageBrowser
             ImageSource = await item.GetImageSourceAsync();
 
             targetImage.Source = ImageSource;
-
+            
             if (this.Frame.CanGoBack)
             {
                 SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Visible;
