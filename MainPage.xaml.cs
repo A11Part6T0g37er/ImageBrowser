@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.OneDrive.Sdk;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
@@ -10,6 +11,14 @@ using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
+using ImageBrowser.Models.Serialization;
+using Microsoft.Identity.Client;
+using Microsoft.Graph;
+using System.Linq;
+using Windows.UI.Popups;
+using System.Net.Http.Headers;
+using System.Diagnostics;
+using ImageBrowser.Common;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -21,9 +30,20 @@ namespace ImageBrowser
     /// </summary>
     public sealed partial class MainPage : Page
     {
+        #region MSGraphAPI
+
+        // The MSAL Public client app
+        public static IPublicClientApplication PublicClientApp;
+        private const string ClientId = "c6e3c937-e10d-4e7c-94d7-bbaaafc514aa";
+        private string[] scopes = new string[] { "user.read" };
+        private const string Tenant = "consumers";
+        private const string Authority = "https://login.microsoftonline.com/" + Tenant;
+        private static string MSGraphURL = "https://graph.microsoft.com/v1.0/";
+        private static AuthenticationResult authResult;
+
+        #endregion
+
         public static MainPage Current;
-
-
         internal ImageBrowser.ViewModels.ImageFileInfoViewModel imageFileInfoViewModel = new ViewModels.ImageFileInfoViewModel(); 
        // internal ObservableCollection<ImageFileInfo> Images { get; set; } = new ObservableCollection<ImageFileInfo>();
         private ImageFileInfo persistedItem;
@@ -113,7 +133,7 @@ namespace ImageBrowser
 
             // OR
             // Get the Sample pictures.
-            StorageFolder appInstalledFolder = Package.Current.InstalledLocation;
+            StorageFolder appInstalledFolder = Windows.ApplicationModel.Package.Current.InstalledLocation;
             StorageFolder picturesFolder = await appInstalledFolder.GetFolderAsync(path);
 
             var result = picturesFolder.CreateFileQueryWithOptions(options);
@@ -279,9 +299,121 @@ namespace ImageBrowser
             RefreshArea.RequestRefresh();
         }
 
-        private void singingOneDrive_Click(object sender, RoutedEventArgs e)
+        private async void SigningOneDrive_ClickAsync(object sender, RoutedEventArgs e)
         {
+            try
+            {
+                // Sign-in user using MSAL and obtain an access token for MS Graph
+                GraphServiceClient graphClient = await SignInAndInitializeGraphServiceClient(scopes);
 
+                // Call the /me endpoint of Graph
+                User graphUser = await graphClient.Me.Request().GetAsync();
+
+                // Go back to the UI thread to make changes to the UI
+                await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+                {
+                    ResultText.Text = "Display Name: " + graphUser.UserPrincipalName + "\nid: " + graphUser.Id;
+                    
+                    this.SignOutButton.Visibility = Visibility.Visible;
+                });
+            }
+            catch (MsalException msalEx)
+            {
+                await DisplayMessageAsync($"Error Acquiring Token:{System.Environment.NewLine}{msalEx}");
+            }
+            catch (Exception ex)
+            {
+                await DisplayMessageAsync($"Error Acquiring Token Silently:{System.Environment.NewLine}{ex}");
+                return;
+            }
+        }
+
+        /// <summary>
+        /// Displays a message in the ResultText. Can be called from any thread.
+        /// </summary>
+        private async Task DisplayMessageAsync(string message)
+        {
+            await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
+                   () =>
+                   {
+                      new MessageDialog(message);
+                       
+                   });
+        }
+
+        private async static Task<GraphServiceClient> SignInAndInitializeGraphServiceClient(string[] scopes)
+        {
+            GraphServiceClient graphClient = new GraphServiceClient(MSGraphURL,
+                new DelegateAuthenticationProvider(async (requestMessage) =>
+                {
+                    requestMessage.Headers.Authorization = new AuthenticationHeaderValue("bearer", await SignInUserAndGetTokenUsingMSAL(scopes));
+                }));
+
+            return await Task.FromResult(graphClient);
+        }
+
+        /// <summary>
+        /// Signs in the user and obtains an Access token for MS Graph
+        /// </summary>
+        /// <param name="scopes"></param>
+        /// <returns> Access Token</returns>
+        private static async Task<string> SignInUserAndGetTokenUsingMSAL(string[] scopes)
+        {
+            // Initialize the MSAL library by building a public client application
+            PublicClientApp = PublicClientApplicationBuilder.Create(ClientId)
+                .WithAuthority(Authority)
+                .WithUseCorporateNetwork(false)
+                .WithRedirectUri(DefaultRedirectUri.Value)
+                 .WithLogging((level, message, containsPii) =>
+                 {
+                     Debug.WriteLine($"MSAL: {level} {message} ");
+                 }, LogLevel.Warning, enablePiiLogging: false, enableDefaultPlatformLogging: true)
+                .Build();
+
+            // It's good practice to not do work on the UI thread, so use ConfigureAwait(false) whenever possible.
+            IEnumerable<IAccount> accounts = await PublicClientApp.GetAccountsAsync().ConfigureAwait(false);
+            IAccount firstAccount = accounts.FirstOrDefault();
+
+            try
+            {
+                authResult = await PublicClientApp.AcquireTokenSilent(scopes, firstAccount)
+                                                  .ExecuteAsync();
+            }
+            catch (MsalUiRequiredException ex)
+            {
+                // A MsalUiRequiredException happened on AcquireTokenSilentAsync. This indicates you need to call AcquireTokenAsync to acquire a token
+                Debug.WriteLine($"MsalUiRequiredException: {ex.Message}");
+
+                authResult = await PublicClientApp.AcquireTokenInteractive(scopes)
+                                                  .ExecuteAsync()
+                                                  .ConfigureAwait(false);
+
+            }
+            return authResult.AccessToken;
+        }
+
+        /// <summary>
+        /// Sign out the current user
+        /// </summary>
+        private async void SignOutButton_ClickAsync(object sender, RoutedEventArgs e)
+        {
+            IEnumerable<IAccount> accounts = await PublicClientApp.GetAccountsAsync().ConfigureAwait(false);
+            IAccount firstAccount = accounts.FirstOrDefault();
+
+            try
+            {
+                await PublicClientApp.RemoveAsync(firstAccount).ConfigureAwait(false);
+                await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+                {
+                    ResultText.Text = "User has signed-out";
+                    this.signingOneDrive.Visibility = Visibility.Visible;
+                    this.SignOutButton.Visibility = Visibility.Collapsed;
+                });
+            }
+            catch (MsalException ex)
+            {
+                ResultText.Text = $"Error signing-out user: {ex.Message}";
+            }
         }
     }
 
