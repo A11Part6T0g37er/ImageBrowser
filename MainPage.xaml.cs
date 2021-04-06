@@ -305,7 +305,7 @@ namespace ImageBrowser
 
                 // Call the /me endpoint of Graph
                 User graphUser = await graphClient.Me.Request().GetAsync();
-
+              
                 // Go back to the UI thread to make changes to the UI
                 await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
                 {
@@ -337,7 +337,10 @@ namespace ImageBrowser
 
                    });
         }
-
+        /// <summary>
+        /// Sign in user using MSAL and obtain a token for Microsoft Graph
+        /// </summary>
+        /// <returns>GraphServiceClient</returns>
         private static async Task<GraphServiceClient> SignInAndInitializeGraphServiceClient(string[] scopes)
         {
             GraphServiceClient graphClient = new GraphServiceClient(MSGraphURL,
@@ -411,6 +414,41 @@ namespace ImageBrowser
             {
                 ResultText.Text = $"Error signing-out user: {ex.Message}";
             }
+        }
+
+        private async void OpenOneDrive_Click(object sender, RoutedEventArgs e)
+        {
+            IEnumerable<IAccount> accounts = await PublicClientApp.GetAccountsAsync().ConfigureAwait(false);
+            IAccount firstAccount = accounts.FirstOrDefault();
+
+
+            try
+            {
+                authResult = await PublicClientApp.AcquireTokenSilent(scopes, firstAccount)
+                                                  .ExecuteAsync();
+            }
+            catch (MsalUiRequiredException ex)
+            {
+                // A MsalUiRequiredException happened on AcquireTokenSilentAsync. This indicates you need to call AcquireTokenAsync to acquire a token
+                Debug.WriteLine($"MsalUiRequiredException: {ex.Message}");
+
+                 List<string> scopeOneDrive = new List<string>() { "onedrive.readwrite" };
+                authResult = await PublicClientApp.AcquireTokenInteractive(scopeOneDrive)
+                                                  .ExecuteAsync()
+                                                  .ConfigureAwait(false);
+
+            }
+             
+            IAuthenticationProvider authProvider = authResult;
+            GraphServiceClient graphClient = new GraphServiceClient(authProvider);
+            
+            
+
+            var children = await graphClient.Me.Drive.Root.Children
+                .Request()
+                .GetAsync();
+            OneDriveInfo.Text = children.Count.ToString();
+
         }
     }
 
