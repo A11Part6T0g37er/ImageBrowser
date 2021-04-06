@@ -55,6 +55,7 @@ namespace ImageBrowser
             DataContext = imageFileInfoViewModel.ObservableCollection;
             NavigationCacheMode = NavigationCacheMode.Enabled;
 
+
         }
 
 
@@ -305,7 +306,7 @@ namespace ImageBrowser
 
                 // Call the /me endpoint of Graph
                 User graphUser = await graphClient.Me.Request().GetAsync();
-              
+                               
                 // Go back to the UI thread to make changes to the UI
                 await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
                 {
@@ -418,38 +419,76 @@ namespace ImageBrowser
 
         private async void OpenOneDrive_Click(object sender, RoutedEventArgs e)
         {
-            IEnumerable<IAccount> accounts = await PublicClientApp.GetAccountsAsync().ConfigureAwait(false);
-            IAccount firstAccount = accounts.FirstOrDefault();
-
-
-            try
-            {
-                authResult = await PublicClientApp.AcquireTokenSilent(scopes, firstAccount)
-                                                  .ExecuteAsync();
-            }
-            catch (MsalUiRequiredException ex)
-            {
-                // A MsalUiRequiredException happened on AcquireTokenSilentAsync. This indicates you need to call AcquireTokenAsync to acquire a token
-                Debug.WriteLine($"MsalUiRequiredException: {ex.Message}");
-
-                 List<string> scopeOneDrive = new List<string>() { "onedrive.readwrite" };
-                authResult = await PublicClientApp.AcquireTokenInteractive(scopeOneDrive)
-                                                  .ExecuteAsync()
-                                                  .ConfigureAwait(false);
-
-            }
-             
-            IAuthenticationProvider authProvider = authResult;
-            GraphServiceClient graphClient = new GraphServiceClient(authProvider);
             
-            
+            string[] scopeOneDrive = { "Files.Read"};
+            GraphServiceClient graphService =   new GraphServiceClient(new DelegateAuthenticationProvider(async (requestMessage) => {
 
-            var children = await graphClient.Me.Drive.Root.Children
+                IEnumerable<IAccount> accounts = await PublicClientApp.GetAccountsAsync().ConfigureAwait(false);
+                IAccount firstAccount = accounts.FirstOrDefault();
+
+
+                // Retrieve an access token for Microsoft Graph (gets a fresh token if needed).
+                var authResult = await PublicClientApp.AcquireTokenSilent(scopeOneDrive, firstAccount)
+                                                   .ExecuteAsync();
+
+                // Add the access token in the Authorization header of the API request.
+                requestMessage.Headers.Authorization =
+                    new AuthenticationHeaderValue("Bearer", authResult.AccessToken);
+            })
+    );
+
+          //  api://c6e3c937-e10d-4e7c-94d7-bbaaafc514aa/Files.Read
+
+            // THAT!S IT
+            var children = await graphService.Me.Drive.Root.Children
                 .Request()
                 .GetAsync();
             OneDriveInfo.Text = children.Count.ToString();
 
-        }
-    }
 
+            // The Azure AD tenant ID or a verified domain (e.g. contoso.onmicrosoft.com) 
+            var tenantId = "{tenant-id-or-domain-name}";
+
+            // The client ID of the app registered in Azure AD
+            var clientId = "{client-id}";
+
+            // *Never* include client secrets in source code!
+            var clientSecret = await GetClientSecretFromKeyVault(); // Or some other secure place.
+
+            // The app registration should be configured to require access to permissions
+            // sufficient for the Microsoft Graph API calls the app will be making, and
+            // those permissions should be granted by a tenant administrator.
+            var scopes = new string[] { "https://graph.microsoft.com/.default" };
+
+            // Configure the MSAL client as a confidential client
+            var confidentialClient = ConfidentialClientApplicationBuilder
+                .Create(clientId)
+                .WithAuthority($"https://login.microsoftonline.com/$tenantId/v2.0")
+                .WithClientSecret(clientSecret)
+                .Build();
+
+            // Build the Microsoft Graph client. As the authentication provider, set an async lambda
+            // which uses the MSAL client to obtain an app-only access token to Microsoft Graph,
+            // and inserts this access token in the Authorization header of each API request. 
+            GraphServiceClient graphServiceClient =
+                new GraphServiceClient(new DelegateAuthenticationProvider(async (requestMessage) => {
+
+        // Retrieve an access token for Microsoft Graph (gets a fresh token if needed).
+        var authResult = await confidentialClient
+            .AcquireTokenForClient(scopes)
+            .ExecuteAsync();
+
+        // Add the access token in the Authorization header of the API request.
+        requestMessage.Headers.Authorization =
+            new AuthenticationHeaderValue("Bearer", authResult.AccessToken);
+                })
+                );
+
+            // Make a Microsoft Graph API query
+            var users = await graphServiceClient.Users.Request().GetAsync();
+
+        }
+
+       
+    }
 }
