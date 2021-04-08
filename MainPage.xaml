@@ -237,14 +237,15 @@
             <AppBarButton Icon="OpenFile" Label="" x:Uid="open" Click="ButtonOpen_Click"/>
         </CommandBar>
 
-        <StackPanel x:Name="startingGreetingScreen" Visibility="Collapsed" 
-                    Orientation="Vertical"
-                    RelativePanel.Below="leftControlPanel" Margin="20,0,0,0" MaxHeight="900" MaxWidth="1900">
+        <Grid x:Name="startingGreetingScreen" Visibility="Collapsed" 
+                  RelativePanel.AlignVerticalCenterWithPanel="True" RelativePanel.AlignHorizontalCenterWithPanel="True"
+              HorizontalAlignment="Center"
+                    RelativePanel.Below="leftControlPanel" Margin="20,0,0,0" >
             
-                    <TextBlock Text="Nothig here"/>
-                    <Image Source="/Assets/Square150x150Logo.scale-200.png" />
+                    <TextBlock Text="Nothig here" />
+                    <Image Source="/Assets/Square150x150Logo.scale-200.png" Margin="0,25,0,0" HorizontalAlignment="Right"/>
               
-        </StackPanel>
+        </Grid>
 
         <RefreshContainer x:Name="RefreshArea" RelativePanel.Below="leftControlPanel" RelativePanel.AlignLeftWithPanel="True" 
                   RelativePanel.AlignRightWithPanel="True" RefreshRequested="RefreshArea_RefreshRequested">
@@ -347,7 +348,7 @@
         </GridView>
            
         </RefreshContainer>
-        <StackPanel Orientation="Horizontal" RelativePanel.RightOf="TopButtons" RelativePanel.AlignTopWith="TopButtons" HorizontalAlignment="Center" RelativePanel.AlignRightWithPanel="True">
+        <StackPanel x:Name="OneDrivePanel" Orientation="Horizontal" RelativePanel.RightOf="TopButtons" RelativePanel.AlignTopWith="TopButtons" HorizontalAlignment="Center" RelativePanel.AlignRightWithPanel="True">
 
             <CommandBar DefaultLabelPosition="Right" IsOpen="True">
                 <AppBarButton  Icon="Download" x:Name="signingOneDrive" Label="" x:Uid="signIn" 
