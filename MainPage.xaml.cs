@@ -15,6 +15,7 @@ using Windows.UI.Popups;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI.Xaml.Navigation;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
@@ -420,73 +421,75 @@ namespace ImageBrowser
         private async void OpenOneDrive_Click(object sender, RoutedEventArgs e)
         {
             
-            string[] scopeOneDrive = { "Files.Read"};
-            GraphServiceClient graphService =   new GraphServiceClient(new DelegateAuthenticationProvider(async (requestMessage) => {
-
-                IEnumerable<IAccount> accounts = await PublicClientApp.GetAccountsAsync().ConfigureAwait(false);
-                IAccount firstAccount = accounts.FirstOrDefault();
-
-
-                // Retrieve an access token for Microsoft Graph (gets a fresh token if needed).
-                var authResult = await PublicClientApp.AcquireTokenSilent(scopeOneDrive, firstAccount)
-                                                   .ExecuteAsync();
-
-                // Add the access token in the Authorization header of the API request.
-                requestMessage.Headers.Authorization =
-                    new AuthenticationHeaderValue("Bearer", authResult.AccessToken);
-            })
-    );
+            
 
           //  api://c6e3c937-e10d-4e7c-94d7-bbaaafc514aa/Files.Read
 
             // THAT!S IT
-            var children = await graphService.Me.Drive.Root.Children
-                .Request()
-                .GetAsync();
-            OneDriveInfo.Text = children.Count.ToString();
+            
 
 
             // The Azure AD tenant ID or a verified domain (e.g. contoso.onmicrosoft.com) 
-            var tenantId = "{tenant-id-or-domain-name}";
+            var tenantId = "f8cdef31-a31e-4b4a-93e4-5f571e91255a";
 
             // The client ID of the app registered in Azure AD
-            var clientId = "{client-id}";
+            var clientId = "ace816d2-5052-42ab-8be0-ca966637ac28";
 
             // *Never* include client secrets in source code!
-            var clientSecret = await GetClientSecretFromKeyVault(); // Or some other secure place.
+            var clientSecret = "f50f4d49-9094-40e8-99ee-55dbc319e3cd"; // Or some other secure place.
 
             // The app registration should be configured to require access to permissions
             // sufficient for the Microsoft Graph API calls the app will be making, and
             // those permissions should be granted by a tenant administrator.
             var scopes = new string[] { "https://graph.microsoft.com/.default" };
 
-            // Configure the MSAL client as a confidential client
-            var confidentialClient = ConfidentialClientApplicationBuilder
-                .Create(clientId)
-                .WithAuthority($"https://login.microsoftonline.com/$tenantId/v2.0")
-                .WithClientSecret(clientSecret)
-                .Build();
 
-            // Build the Microsoft Graph client. As the authentication provider, set an async lambda
-            // which uses the MSAL client to obtain an app-only access token to Microsoft Graph,
-            // and inserts this access token in the Authorization header of each API request. 
-            GraphServiceClient graphServiceClient =
-                new GraphServiceClient(new DelegateAuthenticationProvider(async (requestMessage) => {
+            IPublicClientApplication applic = PublicClientApplicationBuilder.Create(clientId)
+    .Build();
 
-        // Retrieve an access token for Microsoft Graph (gets a fresh token if needed).
-        var authResult = await confidentialClient
-            .AcquireTokenForClient(scopes)
-            .ExecuteAsync();
+            IEnumerable<IAccount> accounts = await PublicClientApp.GetAccountsAsync().ConfigureAwait(false);
+            IAccount firstAccount = accounts.FirstOrDefault();
+            AuthenticationResult AuthResult;
+            try
+            {
+                AuthResult = await PublicClientApp.AcquireTokenSilent(scopes, firstAccount)
+                                                  .ExecuteAsync();
+            }
+            catch (MsalUiRequiredException ex)
+            {
+                // A MsalUiRequiredException happened on AcquireTokenSilentAsync. This indicates you need to call AcquireTokenAsync to acquire a token
+                Debug.WriteLine($"MsalUiRequiredException: {ex.Message}");
 
-        // Add the access token in the Authorization header of the API request.
-        requestMessage.Headers.Authorization =
-            new AuthenticationHeaderValue("Bearer", authResult.AccessToken);
-                })
-                );
+                AuthResult = await PublicClientApp.AcquireTokenInteractive(scopes)
+                                                  .ExecuteAsync()
+                                                  .ConfigureAwait(false);
 
-            // Make a Microsoft Graph API query
-            var users = await graphServiceClient.Users.Request().GetAsync();
+            }
+            string simplyToked = "EwCAA8l6BAAU6k7+XVQzkGyMv7VHB/h4cHbJYRAAAarxMw92pG+A5J8T+QGWK6t2+U+I+Z5cGdW1lwi8FH6BCnpYq3uXWcdEXQLFJ3ABXtHfd9vSsikHh1ASMGUCNvEUFIQ4lgYXPeI6rX5uckSLRTVuzBJZfWNymdZA7NFzCAsJr5ej4UgyfkvO63YEc0M9DSpde1OwiCOxVqIVe1ZaKnx4AX5tdYcRlFynkP5PtpCBkJ4z9k398/H69/8LZbXqAmAuHsrxgWZ49uYg0Ewoxi0XfYX2CzrhHNQcTuI6qtZlCPqbvyhIpRZ1THj1Ts20t9QXenfi0y0eICMBD2UAbSgm7r73VnpeDGUCPuIMZGvVzi/JLEdYhXvFCLD0YAsDZgAACI6j6sj9/XIkUAIsE/SMH3PvhE/BBD0koixzvaLRAXFXv6Uept9a7gvq9q6Wce1gyXopAbYDoMS2V8vqtl7lGZP52WS0ew4I5x5iACo/agM3fW3I2IFP6aDOWNdiTtk112SloDroAVYT2hEWZKsPy6i6zmsOErpyceC21l3jW7dpFbujauj41YW2tXvT8t9hXTYDNeS5YbjLYmNkxeVwCgMXqhGdHsubJgjOp5xr7Jsd77Z9GqFo52Yk7Yx731YKyObErDPKVpPw5KW6d/PhoYnyr6g3Ec48dbfEDieFB/J7Ma4IXC4FAqrhIAHqcjjT0OGCAqP7uAkHCIS2myZCfszebocdkYkfuC5pURsOZiPzOJpFMXUq3wfuylu/uS5ke/V7OnE+QzrR3UQcm6ubHB+nzMHekpI+NSQOF97RL3qJSkpxdudWEEq6G2tMkBHQWrMowF4rxkd93B4DQvIGuN07XHERjQ5tl2/CXURoMLlcH1ii3lF4WFVXXuOTSq6HFPb99I7k2T4yCs9JX5QuaAQu8K4k+np2r+UManIL3Wbl7eydmjpV6Vbtzw/QKNRTodmZvWWFqFeS33re2xJNU+YxFTdZhI1I/4cEuFaF6LmdxMNW8wVK+FqcEhseUu9E9q63ZW2zbPMh0gJUuzQnImpqoJ2Wxxgxo+ObmAnIyHi0xSMFjT8NRBS4P2Z0hjWQn3rYuSriLSPMFIKwZmtbQeQkJ3MTSZbQ+JsQaG8qObjAN53F1d13LCmhJsl2iPy/LwFq2jmO31+I34IOVULRUcVNo9Kd82KE8RBfggI=";
+            GraphServiceClient grSC = new GraphServiceClient(MSGraphURL,
+                new DelegateAuthenticationProvider(async (requestMessage) =>
+                {
+                    requestMessage.Headers.Authorization = new AuthenticationHeaderValue("bearer",  simplyToked);
+                }));
+            var childreno = await grSC.Me.Drive.Root.Children
+                .Request()
+                .GetAsync();
+            OneDriveInfo.Text = childreno.Count.ToString();
 
+
+            var queryOptions = new List<QueryOption>()
+{
+    new QueryOption("select", "*")
+};
+
+            var search = await grSC.Me.Drive.Root
+                .Search("jpg")
+                .Request(queryOptions)
+                .GetAsync();
+            AttempOneDriveImage.Source = new BitmapImage(new Uri(search.CurrentPage.FirstOrDefault().WebUrl));
+            ;
+            AttempOneDriveImage.Source = new BitmapImage(new Uri(search.CurrentPage.FirstOrDefault().AdditionalData.FirstOrDefault().Value.ToString()));
+            //https://public.am.files.1drv.com/y4mCweVMjzt055av-iIbDu5BUBrW3iR5N8ontOtVj4b2xNb5qwu7lLKfjI84OdfnTf6cL-tCrEzaJs9yUu9YjmlUhRMSb1TxI86J5nUVAuqnYUG5GpEPNiL9N_m1A7_z76mr6Iq5JDf3tcpWhzUmZb48ju_rZrubjBjeKWdk61wM3CEj4ob8QCPwZhM7gDgULooZcVcAAqkisBy4HhoBHfwvxSDBpVsbClAWMh90SS43PrMtRcIl7UE00XnbiV2kPq3Qi7azcVdxDYRkA263NovlAlXgLZKr_gSgDLet5MpuD8
         }
 
        

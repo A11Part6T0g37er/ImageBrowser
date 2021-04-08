@@ -223,6 +223,12 @@
                     </ListView>
                 </StackPanel>
             </PivotItem>
+            <PivotItem Name="OneDrive" Header="OneDrive">
+                <StackPanel>
+                    <TextBlock x:Name="OneDriveMETA" Text=""/>
+                    <Image x:Name="AttempOneDriveImage" Stretch="UniformToFill" Width="350" Height="350" />
+                </StackPanel>
+            </PivotItem>
         </Pivot>
 
 
@@ -231,10 +237,13 @@
             <AppBarButton Icon="OpenFile" Label="" x:Uid="open" Click="ButtonOpen_Click"/>
         </CommandBar>
 
-        <StackPanel x:Name="startingGreetingScreen" Visibility="Collapsed" RelativePanel.Below="leftControlPanel" Margin="20,0,0,0">
-            <TextBlock Text="Nothig here"/>
-            <Image Source="/Assets/Square150x150Logo.scale-200.png" />
-
+        <StackPanel x:Name="startingGreetingScreen" Visibility="Collapsed" 
+                    Orientation="Vertical"
+                    RelativePanel.Below="leftControlPanel" Margin="20,0,0,0" MaxHeight="900" MaxWidth="1900">
+            
+                    <TextBlock Text="Nothig here"/>
+                    <Image Source="/Assets/Square150x150Logo.scale-200.png" />
+              
         </StackPanel>
 
         <RefreshContainer x:Name="RefreshArea" RelativePanel.Below="leftControlPanel" RelativePanel.AlignLeftWithPanel="True" 
