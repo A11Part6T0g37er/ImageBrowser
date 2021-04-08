@@ -33,7 +33,7 @@ namespace ImageBrowser
         // The MSAL Public client app
         public static IPublicClientApplication PublicClientApp;
         private const string ClientId = "c6e3c937-e10d-4e7c-94d7-bbaaafc514aa";
-        private string[] scopes = new string[] { "user.read" };
+        private string[] scopes = new string[] { "user.read Files.Read" };
         private const string Tenant = "consumers";
         private const string Authority = "https://login.microsoftonline.com/" + Tenant;
         private static string MSGraphURL = "https://graph.microsoft.com/v1.0/";
@@ -472,7 +472,7 @@ namespace ImageBrowser
             GraphServiceClient grSC = new GraphServiceClient(MSGraphURL,
                 new DelegateAuthenticationProvider(async (requestMessage) =>
                 {
-                    requestMessage.Headers.Authorization = new AuthenticationHeaderValue("bearer",  simplyToked);
+                    requestMessage.Headers.Authorization = new AuthenticationHeaderValue("bearer", authResult.AccessToken);
                 }));
             var childreno = await grSC.Me.Drive.Root.Children
                 .Request()
@@ -494,10 +494,42 @@ namespace ImageBrowser
 
             ;
 
-        
+
             //https://public.am.files.1drv.com/y4mCweVMjzt055av-iIbDu5BUBrW3iR5N8ontOtVj4b2xNb5qwu7lLKfjI84OdfnTf6cL-tCrEzaJs9yUu9YjmlUhRMSb1TxI86J5nUVAuqnYUG5GpEPNiL9N_m1A7_z76mr6Iq5JDf3tcpWhzUmZb48ju_rZrubjBjeKWdk61wM3CEj4ob8QCPwZhM7gDgULooZcVcAAqkisBy4HhoBHfwvxSDBpVsbClAWMh90SS43PrMtRcIl7UE00XnbiV2kPq3Qi7azcVdxDYRkA263NovlAlXgLZKr_gSgDLet5MpuD8
+
+
+
+            
+
+        }
+        /// <summary>
+        /// Perform an HTTP GET request to a URL using an HTTP Authorization header
+        /// </summary>
+        /// <param name="url">The URL</param>
+        /// <param name="token">The token</param>
+        /// <returns>String containing the results of the GET operation</returns>
+        public async Task<string> GetHttpContentWithToken(string url, string token)
+        {
+            var httpClient = new System.Net.Http.HttpClient();
+            System.Net.Http.HttpResponseMessage response;
+            try
+            {
+                var request = new System.Net.Http.HttpRequestMessage(System.Net.Http.HttpMethod.Get, url);
+                //Add the token in Authorization header
+                request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+                response = await httpClient.SendAsync(request);
+                var content = await response.Content.ReadAsStringAsync();
+                return content;
+            }
+            catch (Exception ex)
+            {
+                return ex.ToString();
+            }
         }
 
-       
+        private async void HTTPGETOneDrive_Click(object sender, RoutedEventArgs e)
+        {
+            OneDriveMETA.Text = await GetHttpContentWithToken(MSGraphURL, authResult.AccessToken);
+        }
     }
 }

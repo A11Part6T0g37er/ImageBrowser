@@ -225,7 +225,13 @@
             </PivotItem>
             <PivotItem Name="OneDrive" Header="OneDrive">
                 <StackPanel>
-                    <TextBlock x:Name="OneDriveMETA" Text=""/>
+                    <Button x:Name="HTTPGETOneDrive" Content="HTTP GET" Click="HTTPGETOneDrive_Click"/>
+                    <ScrollViewer>
+                        <StackPanel>
+                            <TextBlock x:Name="OneDriveMETA" Text="" MaxWidth="800" TextTrimming="WordEllipsis" TextWrapping="Wrap"/>
+                            
+                        </StackPanel>
+                    </ScrollViewer>
                     <Image x:Name="AttempOneDriveImage" Stretch="UniformToFill" Width="350" Height="350" />
                 </StackPanel>
             </PivotItem>
@@ -242,7 +248,7 @@
               HorizontalAlignment="Center"
                     RelativePanel.Below="leftControlPanel" Margin="20,0,0,0" >
             
-                    <TextBlock Text="Nothig here" />
+                    <TextBlock TextWrapping="Wrap" Text="Nothig here" />
                     <Image Source="/Assets/Square150x150Logo.scale-200.png" Margin="0,25,0,0" HorizontalAlignment="Right"/>
               
         </Grid>
