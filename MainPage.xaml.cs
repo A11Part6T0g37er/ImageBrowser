@@ -49,7 +49,7 @@ namespace ImageBrowser
         // internal ObservableCollection<ImageFileInfo> Images { get; set; } = new ObservableCollection<ImageFileInfo>();
         private ImageFileInfo persistedItem;
 
-        internal ObservableCollection<string> UrlPaths { get; set; } = new ObservableCollection<string>();
+        internal ObservableCollection<BitmapImage> UrlPaths { get; set; } = new ObservableCollection<BitmapImage>();
         public MainPage()
         {
             InitializeComponent();
@@ -456,10 +456,10 @@ namespace ImageBrowser
 
             foreach (var file in files)
             {
-                UrlPaths.Add(file);
+                UrlPaths.Add(new BitmapImage(new Uri(file)));
 
             }
-
+            
             ;
             
             
