@@ -315,7 +315,8 @@
            
         </RefreshContainer>
         <StackPanel x:Name="OneDrivePanel" Orientation="Horizontal" RelativePanel.RightOf="TopButtons" 
-                    RelativePanel.AlignTopWith="TopButtons" HorizontalAlignment="Center" RelativePanel.AlignRightWithPanel="True">
+                    RelativePanel.AlignTopWith="TopButtons" HorizontalAlignment="Center" 
+                    RelativePanel.AlignRightWithPanel="True" Margin="50,0,0,0">
 
             <CommandBar DefaultLabelPosition="Right" IsOpen="True">
                 <AppBarButton  Icon="Download" x:Name="signingOneDrive" Label="" x:Uid="signIn" 
@@ -329,6 +330,12 @@
                         <TextBlock x:Name="ResultText"/>
                     </StackPanel>
                 </CommandBar.Content>
+                <CommandBar.SecondaryCommands>
+                    <AppBarButton Icon="Setting" Label="Settings"/>
+                    <AppBarButton Tag="Dark" x:Name="Dark" Label="Dark" Click="ThemeButton_Click"/>
+                    <AppBarButton Tag="Light" x:Name="Light" Label="Light" Click="ThemeButton_Click"/>
+                    <AppBarButton Tag="Default" x:Name="Default" Label="Default" Click="ThemeButton_Click"/>
+                </CommandBar.SecondaryCommands>
             </CommandBar>
         </StackPanel>
 
