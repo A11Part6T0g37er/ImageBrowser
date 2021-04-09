@@ -130,6 +130,9 @@
   <data name="AppDisplayName" xml:space="preserve">
     <value>Image Browser App</value>
   </data>
+  <data name="CountFiles.Text" xml:space="preserve">
+    <value>Total count of files from oneDrive are </value>
+  </data>
   <data name="groupedGrid" xml:space="preserve">
     <value>Grouped Grid</value>
   </data>
@@ -138,6 +141,9 @@
   </data>
   <data name="groupedListDefinition.Text" xml:space="preserve">
     <value> groups goes here</value>
+  </data>
+  <data name="oneDriveOpen.Content" xml:space="preserve">
+    <value>Get all from OneDrive</value>
   </data>
   <data name="open.Label" xml:space="preserve">
     <value>Open</value>

@@ -448,9 +448,7 @@ namespace ImageBrowser
                 .Search("jpg")
                 .Request()
                 .GetAsync();
-            OneDriveInfo.Text = childreno.Count.ToString();
-
-
+           
             var queryOptions = new List<QueryOption>()
             {
                 new QueryOption("select", "*")
@@ -478,11 +476,6 @@ namespace ImageBrowser
                 downloadedFiles.Add(storageFile);
             }
             await PopulateObservableCollectionOfImages(downloadedFiles);
-
-            ;
-
-
-
 
         }
 

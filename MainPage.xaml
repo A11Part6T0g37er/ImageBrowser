@@ -178,6 +178,7 @@
                         <TextBlock Text="{x:Bind imageFileInfoViewModel.GroupedImagesInfos.Count, Mode=OneWay}"/>
                         <TextBlock x:Uid="groupedListDefinition" Text=""/>
                     </StackPanel>
+                        <TextBlock x:Name="OneDriveInfo"/>
                 </StackPanel>
             </PivotItem>
 
@@ -284,25 +285,10 @@
                                            Style="{StaticResource SubtitleTextBlockStyle}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
 
                         </StackPanel>
-                            <!--<Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition/>
-                                    </Grid.ColumnDefinitions>
-                                    <TextBlock Text="{x:Bind ImageName, Mode=OneWay}"  MaxWidth="{Binding ElementName=ItemImage,Path=ActualWidth, Mode=OneWay}"
-                                     TextWrapping="Wrap"  Style="{StaticResource SubtitleTextBlockStyle}" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-
-                            </Grid>-->
-
-
-
                             
                                 <StackPanel Orientation="Horizontal" Grid.Row="2" >
                             <TextBlock TextWrapping="Wrap" Text="{x:Bind ImageDimensions, Mode=OneWay}" Margin="0,3,10,0" />
-
-
-
-
-                                
+                          
                                     <ItemsControl ItemsSource="{x:Bind ImageProperties.Keywords, Mode=OneWay}" >
                                     <ItemsControl.ItemsPanel>
                                         <ItemsPanelTemplate>
@@ -320,42 +306,30 @@
 
                                 </ItemsControl>
 
-
-
-                              
-
-                               
-
-
-
                             </StackPanel>
-                                
-                                
-
-
-                            
-                            
-
-
+  
                     </Grid>
                 </DataTemplate>
             </GridView.ItemTemplate>
         </GridView>
            
         </RefreshContainer>
-        <StackPanel x:Name="OneDrivePanel" Orientation="Horizontal" RelativePanel.RightOf="TopButtons" RelativePanel.AlignTopWith="TopButtons" HorizontalAlignment="Center" RelativePanel.AlignRightWithPanel="True">
+        <StackPanel x:Name="OneDrivePanel" Orientation="Horizontal" RelativePanel.RightOf="TopButtons" 
+                    RelativePanel.AlignTopWith="TopButtons" HorizontalAlignment="Center" RelativePanel.AlignRightWithPanel="True">
 
             <CommandBar DefaultLabelPosition="Right" IsOpen="True">
                 <AppBarButton  Icon="Download" x:Name="signingOneDrive" Label="" x:Uid="signIn" 
                                ToolTipService.ToolTip="OneDrive" Click="SigningOneDrive_ClickAsync"/>
                 <AppBarButton Icon="Account" x:Name="SignOutButton" Label="" x:Uid="signOut" 
                               Click="SignOutButton_ClickAsync"  Visibility="Collapsed" FontFamily="Segoe Ui"/>
+            <AppBarButton x:Name="OpenOneDrive" Content="" x:Uid="oneDriveOpen" Visibility="Collapsed" Click="OpenOneDrive_Click"/>
                 <CommandBar.Content >
-                    <TextBlock x:Name="ResultText"/>
+                    <StackPanel>
+                       
+                        <TextBlock x:Name="ResultText"/>
+                    </StackPanel>
                 </CommandBar.Content>
             </CommandBar>
-            <TextBlock x:Name="OneDriveInfo"/>
-            <Button x:Name="OpenOneDrive" Content="OneDrive open" Visibility="Collapsed" Click="OpenOneDrive_Click"/>
         </StackPanel>
 
     </RelativePanel>
