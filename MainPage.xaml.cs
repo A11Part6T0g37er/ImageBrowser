@@ -5,7 +5,9 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Windows.Storage;
@@ -47,6 +49,7 @@ namespace ImageBrowser
         // internal ObservableCollection<ImageFileInfo> Images { get; set; } = new ObservableCollection<ImageFileInfo>();
         private ImageFileInfo persistedItem;
 
+        internal ObservableCollection<string> UrlPaths { get; set; } = new ObservableCollection<string>();
         public MainPage()
         {
             InitializeComponent();
@@ -447,10 +450,19 @@ namespace ImageBrowser
             // AttempOneDriveImage.Source = new BitmapImage(new Uri(search.CurrentPage.FirstOrDefault().WebUrl));
             List<string> files = search.CurrentPage.Select(x=>x.AdditionalData.Values.FirstOrDefault().ToString() ).ToList();
             AttempOneDriveImage.Source = new BitmapImage(new Uri(search.CurrentPage.FirstOrDefault().AdditionalData.FirstOrDefault().Value.ToString()));
-             //await PopulateObservableCollectionOfImages((IReadOnlyCollection<StorageFile>)files);
-            ;
-      
 
+            //await PopulateObservableCollectionOfImages((IReadOnlyCollection<StorageFile>)files);
+
+
+            foreach (var file in files)
+            {
+                UrlPaths.Add(file);
+
+            }
+
+            ;
+            
+            
             // https://public.am.files.1drv.com/y4mCweVMjzt055av-iIbDu5BUBrW3iR5N8ontOtVj4b2xNb5qwu7lLKfjI84OdfnTf6cL-tCrEzaJs9yUu9YjmlUhRMSb1TxI86J5nUVAuqnYUG5GpEPNiL9N_m1A7_z76mr6Iq5JDf3tcpWhzUmZb48ju_rZrubjBjeKWdk61wM3CEj4ob8QCPwZhM7gDgULooZcVcAAqkisBy4HhoBHfwvxSDBpVsbClAWMh90SS43PrMtRcIl7UE00XnbiV2kPq3Qi7azcVdxDYRkA263NovlAlXgLZKr_gSgDLet5MpuD8
 
 
