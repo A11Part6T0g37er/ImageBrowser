@@ -17,7 +17,6 @@ using Windows.UI.Popups;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI.Xaml.Navigation;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
@@ -317,6 +316,7 @@ namespace ImageBrowser
                     ResultText.Text = "Display Name: " + graphUser.UserPrincipalName + "\nid: " + graphUser.Id;
 
                     SignOutButton.Visibility = Visibility.Visible;
+                    OpenOneDrive.Visibility = Visibility.Visible;
                 });
             }
             catch (MsalException msalEx)
@@ -409,16 +409,30 @@ namespace ImageBrowser
             try
             {
                 await PublicClientApp.RemoveAsync(firstAccount).ConfigureAwait(false);
-                await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+                await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
                 {
                     ResultText.Text = "User has signed-out";
                     signingOneDrive.Visibility = Visibility.Visible;
-                    SignOutButton.Visibility = Visibility.Collapsed;
+                    OpenOneDrive.Visibility = SignOutButton.Visibility = Visibility.Collapsed;
+                    OneDriveInfo.Text = "";
+                    FlushObservableCollectionOfImages();
                 });
             }
             catch (MsalException ex)
             {
                 ResultText.Text = $"Error signing-out user: {ex.Message}";
+            }
+        }
+
+        private void FlushObservableCollectionOfImages()
+        {
+            if (imageFileInfoViewModel.ObservableCollection.Count <= 0)
+            { }
+            else
+            {
+
+                imageFileInfoViewModel.ObservableCollection.Clear();
+                imageFileInfoViewModel.GroupedImagesInfos.Clear();
             }
         }
 
@@ -438,19 +452,17 @@ namespace ImageBrowser
 
 
             var queryOptions = new List<QueryOption>()
-{
-    new QueryOption("select", "*")
-};
+            {
+                new QueryOption("select", "*")
+            };
 
             var search = await grSC.Me.Drive.Root.ItemWithPath("/Pictures")
                 .Search("jpg")
                 .Request(queryOptions)
                 .GetAsync();
-            // AttempOneDriveImage.Source = new BitmapImage(new Uri(search.CurrentPage.FirstOrDefault().WebUrl));
-            List<string> files = search.CurrentPage.Select(x => x.AdditionalData.Values.FirstOrDefault().ToString()).ToList();
-            //     AttempOneDriveImage.Source = new BitmapImage(new Uri(search.CurrentPage.FirstOrDefault().AdditionalData.FirstOrDefault().Value.ToString()));
 
-            //await PopulateObservableCollectionOfImages((IReadOnlyCollection<StorageFile>)files);
+            List<string> files = search.CurrentPage.Select(x => x.AdditionalData.Values.FirstOrDefault().ToString()).ToList();
+
 
             StorageFile storageFile;
             String newPath = String.Empty;
@@ -470,7 +482,7 @@ namespace ImageBrowser
             ;
 
 
-            // https://public.am.files.1drv.com/y4mCweVMjzt055av-iIbDu5BUBrW3iR5N8ontOtVj4b2xNb5qwu7lLKfjI84OdfnTf6cL-tCrEzaJs9yUu9YjmlUhRMSb1TxI86J5nUVAuqnYUG5GpEPNiL9N_m1A7_z76mr6Iq5JDf3tcpWhzUmZb48ju_rZrubjBjeKWdk61wM3CEj4ob8QCPwZhM7gDgULooZcVcAAqkisBy4HhoBHfwvxSDBpVsbClAWMh90SS43PrMtRcIl7UE00XnbiV2kPq3Qi7azcVdxDYRkA263NovlAlXgLZKr_gSgDLet5MpuD8
+
 
         }
 
