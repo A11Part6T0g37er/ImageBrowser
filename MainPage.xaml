@@ -355,7 +355,7 @@
                 </CommandBar.Content>
             </CommandBar>
             <TextBlock x:Name="OneDriveInfo"/>
-            <Button x:Name="OpenOneDrive" Content="OneDrive open" Click="OpenOneDrive_Click"/>
+            <Button x:Name="OpenOneDrive" Content="OneDrive open" Visibility="Collapsed" Click="OpenOneDrive_Click"/>
         </StackPanel>
 
     </RelativePanel>
