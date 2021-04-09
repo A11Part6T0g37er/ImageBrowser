@@ -49,7 +49,6 @@ namespace ImageBrowser
         // internal ObservableCollection<ImageFileInfo> Images { get; set; } = new ObservableCollection<ImageFileInfo>();
         private ImageFileInfo persistedItem;
 
-        internal ObservableCollection<BitmapImage> UrlPaths { get; set; } = new ObservableCollection<BitmapImage>();
         public MainPage()
         {
             InitializeComponent();
@@ -149,7 +148,7 @@ namespace ImageBrowser
                 // Files on OneDrive or a network location are excluded.
                 if (file.Provider.Id == "computer")
                 {
-                    // it`s gone be dissapeared
+                    // it`s gone to be dissapeared
                     //Images.Add(await LoadImageInfo(file));
                 }
                 else
@@ -311,7 +310,7 @@ namespace ImageBrowser
 
                 // Call the /me endpoint of Graph
                 User graphUser = await graphClient.Me.Request().GetAsync();
-                               
+
                 // Go back to the UI thread to make changes to the UI
                 await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
                 {
@@ -425,7 +424,7 @@ namespace ImageBrowser
 
         private async void OpenOneDrive_Click(object sender, RoutedEventArgs e)
         {
-           
+
             GraphServiceClient grSC = new GraphServiceClient(MSGraphURL,
                 new DelegateAuthenticationProvider(async (requestMessage) =>
                 {
@@ -448,56 +447,58 @@ namespace ImageBrowser
                 .Request(queryOptions)
                 .GetAsync();
             // AttempOneDriveImage.Source = new BitmapImage(new Uri(search.CurrentPage.FirstOrDefault().WebUrl));
-            List<string> files = search.CurrentPage.Select(x=>x.AdditionalData.Values.FirstOrDefault().ToString() ).ToList();
-       //     AttempOneDriveImage.Source = new BitmapImage(new Uri(search.CurrentPage.FirstOrDefault().AdditionalData.FirstOrDefault().Value.ToString()));
+            List<string> files = search.CurrentPage.Select(x => x.AdditionalData.Values.FirstOrDefault().ToString()).ToList();
+            //     AttempOneDriveImage.Source = new BitmapImage(new Uri(search.CurrentPage.FirstOrDefault().AdditionalData.FirstOrDefault().Value.ToString()));
 
             //await PopulateObservableCollectionOfImages((IReadOnlyCollection<StorageFile>)files);
 
-
+            StorageFile storageFile;
+            String newPath = String.Empty;
+            List<StorageFile> downloadedFiles = new List<StorageFile>();
             foreach (var file in files)
             {
-                UrlPaths.Add(new BitmapImage(new Uri(file)));
 
+                var uniqueFileName = $@"{Guid.NewGuid()}.jpg";
+
+                newPath = await DownloadImage(file,
+                   uniqueFileName);
+                storageFile = await StorageFile.GetFileFromApplicationUriAsync(new Uri(newPath));
+                downloadedFiles.Add(storageFile);
             }
-            
+            await PopulateObservableCollectionOfImages(downloadedFiles);
+
             ;
-            
-            
+
+
             // https://public.am.files.1drv.com/y4mCweVMjzt055av-iIbDu5BUBrW3iR5N8ontOtVj4b2xNb5qwu7lLKfjI84OdfnTf6cL-tCrEzaJs9yUu9YjmlUhRMSb1TxI86J5nUVAuqnYUG5GpEPNiL9N_m1A7_z76mr6Iq5JDf3tcpWhzUmZb48ju_rZrubjBjeKWdk61wM3CEj4ob8QCPwZhM7gDgULooZcVcAAqkisBy4HhoBHfwvxSDBpVsbClAWMh90SS43PrMtRcIl7UE00XnbiV2kPq3Qi7azcVdxDYRkA263NovlAlXgLZKr_gSgDLet5MpuD8
 
-
-
-
-
         }
+
         /// <summary>
-        /// Perform an HTTP GET request to a URL using an HTTP Authorization header
+        /// Get images from Web
         /// </summary>
-        /// <param name="url">The URL</param>
-        /// <param name="token">The token</param>
-        /// <returns>String containing the results of the GET operation</returns>
-        public async Task<string> GetHttpContentWithToken(string url, string token)
+        /// <param name="url">Web link</param>
+        /// <param name="fileName">Unique filename</param>
+        /// <returns>Returns Uri path for FileStorage</returns>
+        private async Task<String> DownloadImage(string url, String fileName)
         {
-            var httpClient = new System.Net.Http.HttpClient();
-            System.Net.Http.HttpResponseMessage response;
-            try
+            const String imagesSubdirectory = "DownloadedImages";
+            var rootFolder = await ApplicationData.Current.LocalFolder.CreateFolderAsync(imagesSubdirectory, CreationCollisionOption.OpenIfExists);
+
+            var storageFile = await rootFolder.CreateFileAsync(fileName, CreationCollisionOption.ReplaceExisting);
+
+            using (HttpClient client = new HttpClient())
             {
-                var request = new System.Net.Http.HttpRequestMessage(System.Net.Http.HttpMethod.Get, url);
-                //Add the token in Authorization header
-                request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
-                response = await httpClient.SendAsync(request);
-                var content = await response.Content.ReadAsStringAsync();
-                return content;
+                byte[] buffer = await client.GetByteArrayAsync(url);
+                using (Stream stream = await storageFile.OpenStreamForWriteAsync())
+                    stream.Write(buffer, 0, buffer.Length);
             }
-            catch (Exception ex)
-            {
-                return ex.ToString();
-            }
+
+            // Use this path to load image
+            String newPath = String.Format("ms-appdata:///local/{0}/{1}", imagesSubdirectory, fileName);
+
+            return newPath;
         }
 
-        private async void HTTPGETOneDrive_Click(object sender, RoutedEventArgs e)
-        {
-            OneDriveMETA.Text = await GetHttpContentWithToken(MSGraphURL, authResult.AccessToken);
-        }
     }
 }

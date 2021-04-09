@@ -223,39 +223,7 @@
                     </ListView>
                 </StackPanel>
             </PivotItem>
-            <PivotItem Name="OneDrive" Header="OneDrive">
-                <StackPanel>
-                    <Button x:Name="HTTPGETOneDrive" Content="HTTP GET" Click="HTTPGETOneDrive_Click"/>
-                    <ScrollViewer>
-                        <StackPanel>
-                            <TextBlock x:Name="OneDriveMETA" Text="" MaxWidth="800" TextTrimming="WordEllipsis" TextWrapping="Wrap"/>
-                            
-                        </StackPanel>
-                    </ScrollViewer>
-
-
-                    <ListView x:Name="OneDriveItems" ItemsSource="{x:Bind UrlPaths}" MinWidth="180" Margin="25" ItemsPanel="{StaticResource ImageGridView_ItemsPanelTemplate}"
-                              RelativePanel.AlignLeftWithPanel="True" 
-                  RelativePanel.AlignRightWithPanel="True">
-                        <ListView.ItemTemplate>
-                                <DataTemplate  x:DataType="Image">
-                            <Grid Margin="{StaticResource LargeItemMargin}"
-                   Height="{Binding ItemSize, ElementName=page}" >
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="*"/>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="Auto"/>
-
-                                    </Grid.RowDefinitions>
-                                    <Image DataContextChanged="ItemImage_DataContextChanged" x:Name="ItemImage"  Stretch="Uniform" 
-                      Source="{Binding }" 
-                      Width="{Binding ItemSize,ElementName=app}" VerticalAlignment="Top" HorizontalAlignment="Center" Grid.Row="0" Margin="0,0,0,60"/>
-                                    </Grid>
-                                </DataTemplate>
-                        </ListView.ItemTemplate>
-                    </ListView>
-                </StackPanel>
-            </PivotItem>
+            
         </Pivot>
 
 
