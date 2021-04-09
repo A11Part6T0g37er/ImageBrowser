@@ -232,17 +232,28 @@
                             
                         </StackPanel>
                     </ScrollViewer>
-                    <Image x:Name="AttempOneDriveImage" Stretch="UniformToFill" Width="350" Height="350" />
 
-                    <GridView x:Name="OneDriveItems" ItemsSource="{x:Bind UrlPaths}">
-                        <GridView.ItemTemplate>
-                            <DataTemplate  x:DataType="Image">
-                                <Image DataContextChanged="ItemImage_DataContextChanged" x:Name="ItemImage"  Stretch="Uniform" 
+
+                    <ListView x:Name="OneDriveItems" ItemsSource="{x:Bind UrlPaths}" MinWidth="180" Margin="25" ItemsPanel="{StaticResource ImageGridView_ItemsPanelTemplate}"
+                              RelativePanel.AlignLeftWithPanel="True" 
+                  RelativePanel.AlignRightWithPanel="True">
+                        <ListView.ItemTemplate>
+                                <DataTemplate  x:DataType="Image">
+                            <Grid Margin="{StaticResource LargeItemMargin}"
+                   Height="{Binding ItemSize, ElementName=page}" >
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+
+                                    </Grid.RowDefinitions>
+                                    <Image DataContextChanged="ItemImage_DataContextChanged" x:Name="ItemImage"  Stretch="Uniform" 
                       Source="{Binding }" 
-                      Width="{Binding ItemSize,ElementName=app}" VerticalAlignment="Top" HorizontalAlignment="Center" Grid.Row="0" Margin="0,0,0,0"/>
-                            </DataTemplate>
-                        </GridView.ItemTemplate>
-                    </GridView>
+                      Width="{Binding ItemSize,ElementName=app}" VerticalAlignment="Top" HorizontalAlignment="Center" Grid.Row="0" Margin="0,0,0,60"/>
+                                    </Grid>
+                                </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
                 </StackPanel>
             </PivotItem>
         </Pivot>

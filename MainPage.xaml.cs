@@ -449,7 +449,7 @@ namespace ImageBrowser
                 .GetAsync();
             // AttempOneDriveImage.Source = new BitmapImage(new Uri(search.CurrentPage.FirstOrDefault().WebUrl));
             List<string> files = search.CurrentPage.Select(x=>x.AdditionalData.Values.FirstOrDefault().ToString() ).ToList();
-            AttempOneDriveImage.Source = new BitmapImage(new Uri(search.CurrentPage.FirstOrDefault().AdditionalData.FirstOrDefault().Value.ToString()));
+       //     AttempOneDriveImage.Source = new BitmapImage(new Uri(search.CurrentPage.FirstOrDefault().AdditionalData.FirstOrDefault().Value.ToString()));
 
             //await PopulateObservableCollectionOfImages((IReadOnlyCollection<StorageFile>)files);
 
