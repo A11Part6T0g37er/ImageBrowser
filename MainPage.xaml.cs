@@ -448,7 +448,18 @@ namespace ImageBrowser
                 .Search("jpg")
                 .Request()
                 .GetAsync();
-           
+            if (Windows.UI.Core.CoreWindow.GetForCurrentThread() != null)
+            {
+                var resourceLoader = Windows.ApplicationModel.Resources.ResourceLoader.GetForCurrentView();
+
+                string v = resourceLoader.GetString("CountFiles/Text").ToString();
+
+                string v1 = childreno.Count.ToString();
+                string v2 = v + v1;
+                OneDriveInfo.Text = v2;
+            }
+
+
             var queryOptions = new List<QueryOption>()
             {
                 new QueryOption("select", "*")
