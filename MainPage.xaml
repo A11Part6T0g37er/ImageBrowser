@@ -235,9 +235,13 @@
                     <Image x:Name="AttempOneDriveImage" Stretch="UniformToFill" Width="350" Height="350" />
 
                     <GridView x:Name="OneDriveItems" ItemsSource="{x:Bind UrlPaths}">
-                        <Image DataContextChanged="ItemImage_DataContextChanged" x:Name="ItemImage"  Stretch="Uniform" 
-                      Source="{Binding}" 
+                        <GridView.ItemTemplate>
+                            <DataTemplate  x:DataType="Image">
+                                <Image DataContextChanged="ItemImage_DataContextChanged" x:Name="ItemImage"  Stretch="Uniform" 
+                      Source="{Binding }" 
                       Width="{Binding ItemSize,ElementName=app}" VerticalAlignment="Top" HorizontalAlignment="Center" Grid.Row="0" Margin="0,0,0,0"/>
+                            </DataTemplate>
+                        </GridView.ItemTemplate>
                     </GridView>
                 </StackPanel>
             </PivotItem>
