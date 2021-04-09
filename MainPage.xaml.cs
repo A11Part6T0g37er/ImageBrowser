@@ -422,53 +422,7 @@ namespace ImageBrowser
 
         private async void OpenOneDrive_Click(object sender, RoutedEventArgs e)
         {
-            
-            
-
-          //  api://c6e3c937-e10d-4e7c-94d7-bbaaafc514aa/Files.Read
-
-            // THAT!S IT
-            
-
-
-            // The Azure AD tenant ID or a verified domain (e.g. contoso.onmicrosoft.com) 
-            var tenantId = "f8cdef31-a31e-4b4a-93e4-5f571e91255a";
-
-            // The client ID of the app registered in Azure AD
-            var clientId = "ace816d2-5052-42ab-8be0-ca966637ac28";
-
-            // *Never* include client secrets in source code!
-            var clientSecret = "f50f4d49-9094-40e8-99ee-55dbc319e3cd"; // Or some other secure place.
-
-            // The app registration should be configured to require access to permissions
-            // sufficient for the Microsoft Graph API calls the app will be making, and
-            // those permissions should be granted by a tenant administrator.
-            var scopes = new string[] { "https://graph.microsoft.com/.default" };
-
-
-            IPublicClientApplication applic = PublicClientApplicationBuilder.Create(clientId)
-    .Build();
-
-            IEnumerable<IAccount> accounts = await PublicClientApp.GetAccountsAsync().ConfigureAwait(false);
-            IAccount firstAccount = accounts.FirstOrDefault();
-            AuthenticationResult AuthResult;
-            try
-            {
-                AuthResult = await PublicClientApp.AcquireTokenSilent(scopes, firstAccount)
-                                                  .ExecuteAsync();
-            }
-            catch (MsalUiRequiredException ex)
-            {
-                // A MsalUiRequiredException happened on AcquireTokenSilentAsync. This indicates you need to call AcquireTokenAsync to acquire a token
-                Debug.WriteLine($"MsalUiRequiredException: {ex.Message}");
-
-                AuthResult = await PublicClientApp.AcquireTokenInteractive(scopes)
-                                                  .ExecuteAsync()
-                                                  .ConfigureAwait(false);
-
-            }
-            string simplyToked = "EwCAA8l6BAAU6k7+XVQzkGyMv7VHB/h4cHbJYRAAAVgBy9gYOkspno4+kgpfOSJBf8jRuIAT295/Z0QKvaVR0z1LDEIjT4POQMA0iDiOAnRb2+s01Vz3dPd6hEgIrl83xX00r2ajS4HVNk5GgmS3YtdHDUSnDCH+nrA/5QnSfku+J6eGf6la9gms9FNZFZyb0vmCMuGQLUjnjJsLyrOK/NY5bjvxqMcMh8dRKCWoksWcMbXW3lcFgBiu9XRxNPfPFZF4jfZHQswx+FRJRsK6MAIxr6lTxyh1u9EZirVFwF1wJ/BvPovuWhqI/KYDEszGS5yEhhsIibpn9Z4LiaDcf7CfgzNLCD6Tgxo1GNjMk6UHxK3W8Ff3ykyoninO9owDZgAACCq+895aW5ZnUALnn1aWQHjY7LDMw+xsqn/FuiGYqwMtRu5dnlM6EdABCLSbkHOSwijAjo8O+3QJ/9CXNm51as0gdA5NaKlJkkHLy69kSpxgXsn9emqJZ9aFJdc/219/xvRZPQBoLLgn8LVE9Yb9mldVYiVbyt0wvLkW3kh9PgxGF/Hael2naZIrdWZdtgd9lXbvBThiqaInDM2DnMHAX0ORyi1Cpw1hnnHSNFEDbFcBbYwZB8oZ3wrt5jGGW/H6ah04C26oWnESNWuKCNG0BvjrsKgLARh0Oq1M4S7uzU1q7eGHjRy711fL6YndzHAnCBXY9f2mkNbn0bYeeuhIWrLdIcLqKUBYiMr8GT3DVep94v5ZdS1Vk86gnbNu9Z02pxvBEOE28Be49lkP61yM9UVvI9Reweiwwek3M6puKXvzY8m2DcKZiStXf6d++aBdTkA3A76QwmPC598r6MgiD9qbUDSDrTa0A2OETY1tJoY8m1ojM5mqxGxDmzkPgZ0azXiyKMJPLWhq0x9kH+jens/H5gR39V7A6zylAO4DHuW7k/lzYuH43P/CujHd0ICuU3m3BfK/Mf5PMMcBMQCGZeMWiOJ/Fepe5k7Yb0ZCVdHd/yRmqzjcPH1BDwqi0eBqkfER7fLLKapdJxkKsd1FgauZ/+UTe7OKxQpZ/azic+p0nTG90TlZCV4CwAdJRGgFQCIzkp5+U2NyEcNET1729OqFN4BdZmoSUZz85asCQwCfR+xcFsuzaeTMrox3yAAMivg78tY5YBNgi7mvRIO94k0T7U3En5V9CjfpggI=";
-         
+           
             GraphServiceClient grSC = new GraphServiceClient(MSGraphURL,
                 new DelegateAuthenticationProvider(async (requestMessage) =>
                 {
@@ -490,16 +444,14 @@ namespace ImageBrowser
                 .Search("jpg")
                 .Request(queryOptions)
                 .GetAsync();
-           // AttempOneDriveImage.Source = new BitmapImage(new Uri(search.CurrentPage.FirstOrDefault().WebUrl));
+            // AttempOneDriveImage.Source = new BitmapImage(new Uri(search.CurrentPage.FirstOrDefault().WebUrl));
+            List<string> files = search.CurrentPage.Select(x=>x.AdditionalData.Values.FirstOrDefault().ToString() ).ToList();
             AttempOneDriveImage.Source = new BitmapImage(new Uri(search.CurrentPage.FirstOrDefault().AdditionalData.FirstOrDefault().Value.ToString()));
-
+             //await PopulateObservableCollectionOfImages((IReadOnlyCollection<StorageFile>)files);
             ;
-            var children = await grSC.Me.Drive.Items[0].Children
-    .Request()
-    .Expand("thumbnails")
-    .GetAsync();
+      
 
-            //https://public.am.files.1drv.com/y4mCweVMjzt055av-iIbDu5BUBrW3iR5N8ontOtVj4b2xNb5qwu7lLKfjI84OdfnTf6cL-tCrEzaJs9yUu9YjmlUhRMSb1TxI86J5nUVAuqnYUG5GpEPNiL9N_m1A7_z76mr6Iq5JDf3tcpWhzUmZb48ju_rZrubjBjeKWdk61wM3CEj4ob8QCPwZhM7gDgULooZcVcAAqkisBy4HhoBHfwvxSDBpVsbClAWMh90SS43PrMtRcIl7UE00XnbiV2kPq3Qi7azcVdxDYRkA263NovlAlXgLZKr_gSgDLet5MpuD8
+            // https://public.am.files.1drv.com/y4mCweVMjzt055av-iIbDu5BUBrW3iR5N8ontOtVj4b2xNb5qwu7lLKfjI84OdfnTf6cL-tCrEzaJs9yUu9YjmlUhRMSb1TxI86J5nUVAuqnYUG5GpEPNiL9N_m1A7_z76mr6Iq5JDf3tcpWhzUmZb48ju_rZrubjBjeKWdk61wM3CEj4ob8QCPwZhM7gDgULooZcVcAAqkisBy4HhoBHfwvxSDBpVsbClAWMh90SS43PrMtRcIl7UE00XnbiV2kPq3Qi7azcVdxDYRkA263NovlAlXgLZKr_gSgDLet5MpuD8
 
 
 
