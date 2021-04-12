@@ -133,6 +133,12 @@
   <data name="CountFiles.Text" xml:space="preserve">
     <value>Total count of files from oneDrive are </value>
   </data>
+  <data name="dark.Label" xml:space="preserve">
+    <value>Dark</value>
+  </data>
+  <data name="default.Label" xml:space="preserve">
+    <value>Default</value>
+  </data>
   <data name="groupedGrid" xml:space="preserve">
     <value>Grouped Grid</value>
   </data>
@@ -141,6 +147,9 @@
   </data>
   <data name="groupedListDefinition.Text" xml:space="preserve">
     <value> groups goes here</value>
+  </data>
+  <data name="light.Label" xml:space="preserve">
+    <value>Light</value>
   </data>
   <data name="oneDriveOpen.Content" xml:space="preserve">
     <value>Get all from OneDrive</value>
