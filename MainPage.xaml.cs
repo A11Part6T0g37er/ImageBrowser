@@ -1,4 +1,5 @@
 ﻿using ImageBrowser.Common;
+using ImageBrowser.ViewModels;
 using Microsoft.Graph;
 using Microsoft.Identity.Client;
 using System;
@@ -12,6 +13,7 @@ using System.Net.Http.Headers;
 using System.Reflection;
 using System.Threading.Tasks;
 using Windows.Storage;
+using Windows.Storage.Pickers;
 using Windows.Storage.Search;
 using Windows.UI.Core;
 using Windows.UI.Popups;
@@ -49,6 +51,7 @@ namespace ImageBrowser
         // internal ObservableCollection<ImageFileInfo> Images { get; set; } = new ObservableCollection<ImageFileInfo>();
         private ImageFileInfo persistedItem;
         string defaultWinTheme = string.Empty;
+        public FoldersViewModel FoldersToDisplay { get; set; } 
 
         public MainPage()
         {
@@ -455,7 +458,7 @@ namespace ImageBrowser
                 {
                     requestMessage.Headers.Authorization = new AuthenticationHeaderValue("bearer", authResult.AccessToken);
                 }));
-            
+
 
 
             var queryOptions = new List<QueryOption>()
@@ -478,22 +481,22 @@ namespace ImageBrowser
                 string v2 = v + v1;
                 OneDriveInfo.Text = v2;
             }
-           
-            List<DriveItem> oneDriveItems = search.CurrentPage.Select(x=>x).ToList();
+
+            List<DriveItem> oneDriveItems = search.CurrentPage.Select(x => x).ToList();
             StorageFile storageFile;
             String newPath = String.Empty;
             List<StorageFile> downloadedFiles = new List<StorageFile>();
 
-            foreach(var item in oneDriveItems)
+            foreach (var item in oneDriveItems)
             {
-               var itemUrl =  item.AdditionalData.Values.FirstOrDefault().ToString();
+                var itemUrl = item.AdditionalData.Values.FirstOrDefault().ToString();
                 var itemName = item.Name;
                 newPath = await DownloadImage(itemUrl,
                   itemName);
                 storageFile = await StorageFile.GetFileFromApplicationUriAsync(new Uri(newPath));
                 downloadedFiles.Add(storageFile);
             }
-          
+
             await PopulateObservableCollectionOfImages(downloadedFiles);
 
         }
@@ -550,6 +553,19 @@ namespace ImageBrowser
                 throw new InvalidOperationException("Generic parameter 'TEnum' must be an enum.");
             }
             return (TEnum)Enum.Parse(typeof(TEnum), text);
+        }
+
+        private async void OpenFolders_Click(object sender, RoutedEventArgs e)
+        {
+            FolderPicker folderPicker = new FolderPicker();
+            folderPicker.SuggestedStartLocation = PickerLocationId.Downloads;
+            folderPicker.ViewMode = PickerViewMode.Thumbnail;
+            folderPicker.FileTypeFilter.Add("*");
+            StorageFolder folder = await folderPicker.PickSingleFolderAsync();
+            if (folder != null)
+            {
+                FoldersToDisplay = new FoldersViewModel(folder);
+            }
         }
     }
 }

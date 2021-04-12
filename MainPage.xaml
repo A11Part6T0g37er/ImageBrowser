@@ -7,6 +7,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+   
    >
     <Page.Resources>
       
@@ -24,7 +25,7 @@
 
         <CollectionViewSource x:Name="GropedImageCollection" Source="{x:Bind imageFileInfoViewModel.ObservableCollection}"
                               IsSourceGrouped="True"/>
-
+        <CollectionViewSource x:Name="FoldersToView" Source="{x:Bind FoldersToDisplay}" IsSourceGrouped="False"/>
         <Style x:Key="ImageGridView_DefaultItemContainerStyle"
                TargetType="GridViewItem">
             <Setter Property="Background"
@@ -41,7 +42,11 @@
             <Setter Property="Margin"
                     Value="{StaticResource SmallItemMargin}" />
         </Style>
+
+
         
+            
+       
 
         <DataTemplate x:Key="ImagesGridCollection_Small" x:DataType="local:ImageFileInfo">
             <Grid Margin="{StaticResource SmallItemMargin}" 
@@ -183,13 +188,13 @@
             </PivotItem>
 
             <PivotItem x:Name="GroupedList" x:Uid="groupedList" Header=""  >
-                <StackPanel Orientation="Vertical" Margin="0,0,100,0" >
+                <Grid  Margin="0,0,100,0" >
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="{x:Bind imageFileInfoViewModel.GroupedImagesInfos.Count, Mode=OneWay}"/>
                         <TextBlock x:Uid="groupedListDefinition" Text=""/>
                     </StackPanel>
                     <ListView ItemsSource="{Binding Source={StaticResource ImagesCollection}}" RelativePanel.Below="button" 
-                               Height="320" ScrollViewer.HorizontalScrollBarVisibility="Auto" 
+                               ScrollViewer.HorizontalScrollBarVisibility="Auto" 
                               Background="WhiteSmoke">
                         <ListView.ItemContainerStyle>
                             <Style TargetType="ListViewItem" BasedOn="{StaticResource ListViewItemExpanded}">
@@ -222,9 +227,23 @@
                             </GroupStyle>
                         </ListView.GroupStyle>
                     </ListView>
-                </StackPanel>
+                </Grid>
             </PivotItem>
-            
+            <PivotItem Header="Folders">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Text="Folders opened" Margin="20" Grid.Row="0"/>
+                    <Button x:Name="openFolders" Click="OpenFolders_Click" Content="Open folder" Grid.Row="1"/>
+                    <StackPanel Margin="20,30,0,0" Grid.Row="2">
+                        
+                    </StackPanel>
+
+                </Grid>
+            </PivotItem>
         </Pivot>
 
 
@@ -331,7 +350,7 @@
                     </StackPanel>
                 </CommandBar.Content>
                 <CommandBar.SecondaryCommands>
-                    <AppBarButton Icon="Setting" Label="" x:Uid="settings"/>
+                    <AppBarButton Icon="Setting" Label="" x:Uid="settings" />
                     <AppBarButton Tag="Dark" x:Name="Dark" Label="" x:Uid="dark" Click="ThemeButton_Click"/>
                     <AppBarButton Tag="Light" x:Name="Light" Label="" x:Uid="light" Click="ThemeButton_Click"/>
                     <AppBarButton Tag="Default" x:Name="Default" Label="" x:Uid="default" Click="ThemeButton_Click"/>
