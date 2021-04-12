@@ -455,20 +455,7 @@ namespace ImageBrowser
                 {
                     requestMessage.Headers.Authorization = new AuthenticationHeaderValue("bearer", authResult.AccessToken);
                 }));
-            var childreno = await grSC.Me.Drive.Root
-                .Search("jpg")
-                .Request()
-                .GetAsync();
-            if (Windows.UI.Core.CoreWindow.GetForCurrentThread() != null)
-            {
-                var resourceLoader = Windows.ApplicationModel.Resources.ResourceLoader.GetForCurrentView();
-
-                string v = resourceLoader.GetString("CountFiles/Text").ToString();
-
-                string v1 = childreno.Count.ToString();
-                string v2 = v + v1;
-                OneDriveInfo.Text = v2;
-            }
+            
 
 
             var queryOptions = new List<QueryOption>()
@@ -481,22 +468,32 @@ namespace ImageBrowser
                 .Request(queryOptions)
                 .GetAsync();
 
-            List<string> files = search.CurrentPage.Select(x => x.AdditionalData.Values.FirstOrDefault().ToString()).ToList();
+            if (Windows.UI.Core.CoreWindow.GetForCurrentThread() != null)
+            {
+                var resourceLoader = Windows.ApplicationModel.Resources.ResourceLoader.GetForCurrentView();
 
+                string v = resourceLoader.GetString("CountFiles/Text").ToString();
 
+                string v1 = search.Count.ToString();
+                string v2 = v + v1;
+                OneDriveInfo.Text = v2;
+            }
+           
+            List<DriveItem> oneDriveItems = search.CurrentPage.Select(x=>x).ToList();
             StorageFile storageFile;
             String newPath = String.Empty;
             List<StorageFile> downloadedFiles = new List<StorageFile>();
-            foreach (var file in files)
+
+            foreach(var item in oneDriveItems)
             {
-
-                var uniqueFileName = $@"{Guid.NewGuid()}.jpg";
-
-                newPath = await DownloadImage(file,
-                   uniqueFileName);
+               var itemUrl =  item.AdditionalData.Values.FirstOrDefault().ToString();
+                var itemName = item.Name;
+                newPath = await DownloadImage(itemUrl,
+                  itemName);
                 storageFile = await StorageFile.GetFileFromApplicationUriAsync(new Uri(newPath));
                 downloadedFiles.Add(storageFile);
             }
+          
             await PopulateObservableCollectionOfImages(downloadedFiles);
 
         }
