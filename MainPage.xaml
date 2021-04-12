@@ -331,7 +331,7 @@
                     </StackPanel>
                 </CommandBar.Content>
                 <CommandBar.SecondaryCommands>
-                    <AppBarButton Icon="Setting" Label="Settings"/>
+                    <AppBarButton Icon="Setting" Label="" x:Uid="settings"/>
                     <AppBarButton Tag="Dark" x:Name="Dark" Label="" x:Uid="dark" Click="ThemeButton_Click"/>
                     <AppBarButton Tag="Light" x:Name="Light" Label="" x:Uid="light" Click="ThemeButton_Click"/>
                     <AppBarButton Tag="Default" x:Name="Default" Label="" x:Uid="default" Click="ThemeButton_Click"/>

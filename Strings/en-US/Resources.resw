@@ -163,6 +163,9 @@
   <data name="refresh.ToolTipService.ToolTip" xml:space="preserve">
     <value>Refresh rendered items</value>
   </data>
+  <data name="settings.Label" xml:space="preserve">
+    <value>Settings</value>
+  </data>
   <data name="signIn.Label" xml:space="preserve">
     <value>Sign In</value>
     <comment>Sign in OneDrive</comment>
