@@ -40,7 +40,7 @@ namespace ImageBrowser
         private string[] scopes = new string[] { "user.read Files.Read" };
         private const string Tenant = "consumers";
         private const string Authority = "https://login.microsoftonline.com/" + Tenant;
-        private static string MSGraphURL = "https://graph.microsoft.com/v1.0/";
+        private static readonly string MSGraphURL = "https://graph.microsoft.com/v1.0/";
         private static AuthenticationResult authResult;
 
 
@@ -48,10 +48,10 @@ namespace ImageBrowser
 
         public static MainPage Current;
         internal ImageBrowser.ViewModels.ImageFileInfoViewModel imageFileInfoViewModel = new ViewModels.ImageFileInfoViewModel();
-       
+
         private ImageFileInfo persistedItem;
         string defaultWinTheme = string.Empty;
-        public FoldersViewModel FoldersToDisplay { get; set; } 
+        public FoldersViewModel FoldersToDisplay { get; set; }
 
         public MainPage()
         {
@@ -112,7 +112,7 @@ namespace ImageBrowser
 
 
 
-        protected override async void OnNavigatedTo(NavigationEventArgs e)
+        protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility =
                 AppViewBackButtonVisibility.Collapsed;
@@ -132,58 +132,6 @@ namespace ImageBrowser
 
         //TODO: make folders upload into app
 
-        // TODO: under heawy tefactoring it`s gone be eliminating
-        #region deleting
-        private async Task GetItemsAsync(string path = "Assets\\")
-        {
-            QueryOptions options = new QueryOptions();
-            options.FolderDepth = FolderDepth.Deep;
-            options.FileTypeFilter.Add(".jpg");
-            options.FileTypeFilter.Add(".png");
-            options.FileTypeFilter.Add(".gif");
-
-            // Get the Pictures library. (Requires 'Pictures Library' capability.)
-
-            //Windows.Storage.StorageFolder picturesFolder = Windows.Storage.KnownFolders.PicturesLibrary;
-
-            // OR
-            // Get the Sample pictures.
-            StorageFolder appInstalledFolder = Windows.ApplicationModel.Package.Current.InstalledLocation;
-            StorageFolder picturesFolder = await appInstalledFolder.GetFolderAsync(path);
-
-            var result = picturesFolder.CreateFileQueryWithOptions(options);
-
-            IReadOnlyList<StorageFile> imageFiles = await result.GetFilesAsync();
-            bool unsupportedFilesFound = false;
-            foreach (StorageFile file in imageFiles)
-            {
-                // Only files on the local computer are supported. 
-                // Files on OneDrive or a network location are excluded.
-                if (file.Provider.Id == "computer")
-                {
-                    // it`s gone to be dissapeared
-                    //Images.Add(await LoadImageInfo(file));
-                }
-                else
-                {
-                    unsupportedFilesFound = true;
-                }
-            }
-
-            if (unsupportedFilesFound == true)
-            {
-                ContentDialog unsupportedFilesDialog = new ContentDialog
-                {
-                    Title = "Unsupported images found",
-                    Content = "This sample app only supports images stored locally on the computer. We found files in your library that are stored in OneDrive or another network location. We didn't load those images.",
-                    CloseButtonText = "Ok"
-                };
-
-                ContentDialogResult resultNotUsed = await unsupportedFilesDialog.ShowAsync();
-            }
-            InitializeGroupingOfViewModel();
-        }
-        #endregion
         public static async Task<ImageFileInfo> LoadImageInfo(StorageFile file)
         {
             var properties = await file.Properties.GetImagePropertiesAsync();
@@ -456,7 +404,7 @@ namespace ImageBrowser
             GraphServiceClient grSC = new GraphServiceClient(MSGraphURL,
                 new DelegateAuthenticationProvider(async (requestMessage) =>
                 {
-                    requestMessage.Headers.Authorization = new AuthenticationHeaderValue("bearer", authResult.AccessToken);
+                  await Task.Run(()=> requestMessage.Headers.Authorization = new AuthenticationHeaderValue("bearer", authResult.AccessToken));
                 }));
 
 
