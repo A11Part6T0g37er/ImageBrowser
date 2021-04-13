@@ -11,8 +11,8 @@
             <x:Double x:Key="LargeWindowBreakpoint">1008</x:Double>
 
 
-            
-           
-        
+
+
+        </ResourceDictionary>
     </Application.Resources>
 </Application>
