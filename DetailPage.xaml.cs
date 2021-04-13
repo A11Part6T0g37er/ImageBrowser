@@ -15,8 +15,7 @@ namespace ImageBrowser
     {
         BitmapImage ImageSource = null;
         ImageFileInfo item;
-       
-        bool canNavigateWithUnsavedChanges = false;
+
 
 
         public DetailPage()
@@ -27,7 +26,7 @@ namespace ImageBrowser
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
             item = e.Parameter as ImageFileInfo;
-            canNavigateWithUnsavedChanges = false;
+           
             ImageSource = await item.GetImageSourceAsync();
 
             targetImage.Source = ImageSource;

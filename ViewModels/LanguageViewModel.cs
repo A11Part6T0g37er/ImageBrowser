@@ -5,12 +5,12 @@ namespace ImageBrowser.ViewModels
 {
     class LanguageViewModel
     {
-        private ObservableCollection<Language> _languages;
+        private ObservableCollection<Language> languages;
 
         public ObservableCollection<Language> Languages
         {
-            get => _languages;
-            set { _languages = value; }
+            get => languages;
+            set { languages = value; }
         }
 
         public LanguageViewModel()

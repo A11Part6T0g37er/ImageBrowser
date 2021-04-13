@@ -20,15 +20,15 @@ namespace ImageBrowser
         public string ImagePath { get { return ImageFile.Path.ToString();  } }
         public string ImageFileType { get; private set; }
 
-        private BitmapImage _imageSource = null;
+        private BitmapImage imageSource = null;
         public BitmapImage ImageSource {
-            get => _imageSource;
-            set => SetProperty(ref _imageSource, value);
+            get => imageSource;
+            set => SetProperty(ref imageSource, value);
         }
 
 
         public string ImageDimensions => $"{ImageProperties.Width} x {ImageProperties.Height}";
-
+        private string imageTitle;
         public string ImageTitle
         {
             get => String.IsNullOrEmpty(ImageProperties.Title) ? ImageName : ImageProperties.Title;
@@ -37,8 +37,9 @@ namespace ImageBrowser
                 if (ImageProperties.Title != value)
                 {
                     ImageProperties.Title = value;
-                    var ignoreResult = ImageProperties.SavePropertiesAsync();
-                    OnPropertyChanged();
+                  
+                    SetProperty(ref imageTitle, value);
+                
                 }
             }
 
@@ -65,10 +66,10 @@ namespace ImageBrowser
             using (IRandomAccessStream fileStream = await ImageFile.OpenReadAsync())
             {
                 // Create a bitmap to be the image source.
-                this._imageSource = new BitmapImage();
-                _imageSource.SetSource(fileStream);
+                this.imageSource = new BitmapImage();
+                imageSource.SetSource(fileStream);
 
-                return _imageSource;
+                return imageSource;
             }
         }
         protected void OnPropertyChanged([CallerMemberName] string propertyName = null) =>

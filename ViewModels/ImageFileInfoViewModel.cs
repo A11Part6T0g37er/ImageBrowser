@@ -10,10 +10,10 @@ namespace ImageBrowser.ViewModels
     internal class ImageFileInfoViewModel 
     {
       
-        private ObservableCollection<ImageFileInfo> observableCollection = new ObservableCollection<ImageFileInfo>() /*{ new ImageFileInfo("NotNull", null, null, "jpg") }*/;
+        private ObservableCollection<ImageFileInfo> observableCollection = new ObservableCollection<ImageFileInfo>();
        
 
-        public ObservableCollection<ImageFileInfo> ObservableCollection { get => observableCollection; set => observableCollection=value; }
+        public ObservableCollection<ImageFileInfo> ObservableCollection { get => observableCollection; }
         public ImageFileInfoViewModel()
         {
 
@@ -22,8 +22,8 @@ namespace ImageBrowser.ViewModels
         {
             observableCollection = images;
         }
-        private ObservableCollection<GroupInfoList> groupedImagesInfos = new ObservableCollection<GroupInfoList>();
-        public ObservableCollection<GroupInfoList> GroupedImagesInfos { get => groupedImagesInfos; set => groupedImagesInfos = value; }
+        private ObservableCollection<GroupInfoList<object>> groupedImagesInfos = new ObservableCollection<GroupInfoList<object>>();
+        public ObservableCollection<GroupInfoList<object>> GroupedImagesInfos { get => groupedImagesInfos;  }
       
         
         public void GenerateByDateGroup(ObservableCollection<ImageFileInfo> lisOfImages)
@@ -38,7 +38,7 @@ namespace ImageBrowser.ViewModels
             }
             foreach(var item in query)
             {
-                GroupInfoList infoList = new GroupInfoList();
+                GroupInfoList<object> infoList = new GroupInfoList<object>();
                 infoList.Key = item.GroupName.mm + "/" + item.GroupName.yy + " (" + item.Items.Count() + ")";
                 foreach (var something in item.Items)
                 {

@@ -48,7 +48,7 @@ namespace ImageBrowser
 
         public static MainPage Current;
         internal ImageBrowser.ViewModels.ImageFileInfoViewModel imageFileInfoViewModel = new ViewModels.ImageFileInfoViewModel();
-        // internal ObservableCollection<ImageFileInfo> Images { get; set; } = new ObservableCollection<ImageFileInfo>();
+       
         private ImageFileInfo persistedItem;
         string defaultWinTheme = string.Empty;
         public FoldersViewModel FoldersToDisplay { get; set; } 
@@ -246,30 +246,30 @@ namespace ImageBrowser
         // TODO: updating number of  <XAML> Pictures-in-grid columns
         private void GroupedGrid_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            var _panel = (ItemsWrapGrid)GroupedGrid.ItemsPanelRoot;
-            int _gridColumnNumber = 3;
+            var panel = (ItemsWrapGrid)GroupedGrid.ItemsPanelRoot;
+            int gridColumnNumber = 3;
 
-            //VisualState _actual = VisualStateGroup.CurrentState;
+            //VisualState actual = VisualStateGroup.CurrentState;
 
             //switch (_actual.Name)
             //{
             //    case "medium":
             //        {
-            //            _gridColumnNumber = 2;
+            //            gridColumnNumber = 2;
             //            break;
             //        }
             //    case "large":
             //        {
-            //            _gridColumnNumber = 3;
+            //            gridColumnNumber = 3;
             //            break;
             //        }
             //    default:
             //        {
-            //            _gridColumnNumber = 1;
+            //            gridColumnNumber = 1;
             //            break;
             //        }
             //}
-            _panel.ItemWidth = e.NewSize.Width / _gridColumnNumber;
+            panel.ItemWidth = e.NewSize.Width / gridColumnNumber;
         }
 
         private void GroupedGrid_ItemClick(object sender, ItemClickEventArgs e)
