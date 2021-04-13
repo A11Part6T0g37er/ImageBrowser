@@ -20,7 +20,6 @@ namespace ImageBrowser.ViewModels
                 {
                     new Language { DisplayName = "English", LanguageCode = "en-US" },
                     new Language { DisplayName = "Deutschland", LanguageCode = "de-DE" }
-
                 };
         }
     }

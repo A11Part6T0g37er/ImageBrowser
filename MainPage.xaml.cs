@@ -1,4 +1,5 @@
 ﻿using ImageBrowser.Common;
+using ImageBrowser.Helpers;
 using ImageBrowser.ViewModels;
 using Microsoft.Graph;
 using Microsoft.Identity.Client;
@@ -43,7 +44,6 @@ namespace ImageBrowser
         private static readonly string MSGraphURL = "https://graph.microsoft.com/v1.0/";
         private static AuthenticationResult authResult;
 
-
         #endregion
 
         public static MainPage Current;
@@ -75,8 +75,7 @@ namespace ImageBrowser
             }
         }
 
-
-
+        // TODO: making resisable layout
         private void CoreWindow_SizeChanged(object sender, SizeChangedEventArgs args)
         {
             var appView = ApplicationView.GetForCurrentView();
@@ -93,24 +92,7 @@ namespace ImageBrowser
             {
                 VisualStateManager.GoToState(this, "MinWindowBreakpoint", true);
             }
-
         }
-
-        private void InitializeGroupingOfViewModel()
-
-        {
-
-            if (imageFileInfoViewModel.ObservableCollection.Count > 0)
-                imageFileInfoViewModel.Initialize();
-
-        }
-
-        private void BackButton_Click(object sender, RoutedEventArgs e)
-        {
-            App.TryGoBack();
-        }
-
-
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
@@ -124,8 +106,7 @@ namespace ImageBrowser
                 // await GetItemsAsync();
             }
 
-
-            InitializeGroupingOfViewModel();
+            imageFileInfoViewModel.InitializeGroupingOfViewModel();
 
             base.OnNavigatedTo(e);
         }
@@ -173,24 +154,14 @@ namespace ImageBrowser
                 {
                     ImageFileInfo item = await LoadImageInfo(file);
 
-
                     imageFileInfoViewModel.ObservableCollection.Add(item);
                 }
             }
-            InitializeGroupingOfViewModel();
+            imageFileInfoViewModel.InitializeGroupingOfViewModel();
 
             return null;
         }
 
-
-        // TODO: making resisable layout
-        private void Page_SizeChanged(object sender, WindowSizeChangedEventArgs e)
-        {
-            if (e.Size.Width > 1000)
-                VisualStateManager.GoToState(this, "LargeWindowBreakpoint", false);
-            else
-                VisualStateManager.GoToState(this, "MinWindowBreakpoint", false);
-        }
         // TODO: updating number of  <XAML> Pictures-in-grid columns
         private void GroupedGrid_SizeChanged(object sender, SizeChangedEventArgs e)
         {
@@ -231,13 +202,11 @@ namespace ImageBrowser
             if (imageFileInfoViewModel.ObservableCollection.Count != 0)
             {
                 startingGreetingScreen.Visibility = Visibility.Collapsed;
-
             }
             else
             {
                 startingGreetingScreen.Visibility = Visibility.Visible;
             }
-
         }
 
         private async void RefreshArea_RefreshRequested(RefreshContainer sender, RefreshRequestedEventArgs args)
@@ -301,7 +270,6 @@ namespace ImageBrowser
                    () =>
                    {
                        new MessageDialog(message);
-
                    });
         }
         /// <summary>
@@ -331,11 +299,12 @@ namespace ImageBrowser
                 .WithAuthority(Authority)
                 .WithUseCorporateNetwork(false)
                 .WithRedirectUri(DefaultRedirectUri.Value)
-                 .WithLogging((level, message, containsPii) =>
-                 {
-                     Debug.WriteLine($"MSAL: {level} {message} ");
-                 }, LogLevel.Warning, enablePiiLogging: false, enableDefaultPlatformLogging: true)
-                .Build();
+                 .WithLogging(
+                     (level, message, containsPii) =>
+                     {
+                         Debug.WriteLine($"MSAL: {level} {message} ");
+                     }, LogLevel.Warning, enablePiiLogging: false, enableDefaultPlatformLogging: true)
+                    .Build();
 
             // It's good practice to not do work on the UI thread, so use ConfigureAwait(false) whenever possible.
             IEnumerable<IAccount> accounts = await PublicClientApp.GetAccountsAsync().ConfigureAwait(false);
@@ -354,14 +323,13 @@ namespace ImageBrowser
                 authResult = await PublicClientApp.AcquireTokenInteractive(scopes)
                                                   .ExecuteAsync()
                                                   .ConfigureAwait(false);
-
             }
 
             return authResult.AccessToken;
         }
 
         /// <summary>
-        /// Sign out the current user
+        /// Sign out the current user.
         /// </summary>
         private async void SignOutButton_ClickAsync(object sender, RoutedEventArgs e)
         {
@@ -404,10 +372,8 @@ namespace ImageBrowser
             GraphServiceClient grSC = new GraphServiceClient(MSGraphURL,
                 new DelegateAuthenticationProvider(async (requestMessage) =>
                 {
-                  await Task.Run(()=> requestMessage.Headers.Authorization = new AuthenticationHeaderValue("bearer", authResult.AccessToken));
+                    await Task.Run(() => requestMessage.Headers.Authorization = new AuthenticationHeaderValue("bearer", authResult.AccessToken));
                 }));
-
-
 
             var queryOptions = new List<QueryOption>()
             {
@@ -439,68 +405,34 @@ namespace ImageBrowser
             {
                 var itemUrl = item.AdditionalData.Values.FirstOrDefault().ToString();
                 var itemName = item.Name;
-                newPath = await DownloadImage(itemUrl,
+                newPath = await ImageDownloadHelper.DownloadImage(itemUrl,
                   itemName);
                 storageFile = await StorageFile.GetFileFromApplicationUriAsync(new Uri(newPath));
                 downloadedFiles.Add(storageFile);
             }
 
             await PopulateObservableCollectionOfImages(downloadedFiles);
-
-        }
-
-        /// <summary>
-        /// Get images from Web
-        /// </summary>
-        /// <param name="url">Web link</param>
-        /// <param name="fileName">Unique filename</param>
-        /// <returns>Returns Uri path for FileStorage</returns>
-        private async Task<String> DownloadImage(string url, String fileName)
-        {
-            const String imagesSubdirectory = "DownloadedImages";
-            var rootFolder = await ApplicationData.Current.LocalFolder.CreateFolderAsync(imagesSubdirectory, CreationCollisionOption.OpenIfExists);
-
-            var storageFile = await rootFolder.CreateFileAsync(fileName, CreationCollisionOption.ReplaceExisting);
-
-            using (HttpClient client = new HttpClient())
-            {
-                byte[] buffer = await client.GetByteArrayAsync(url);
-                using (Stream stream = await storageFile.OpenStreamForWriteAsync())
-                    stream.Write(buffer, 0, buffer.Length);
-            }
-
-            // Use this path to load image
-            String newPath = String.Format("ms-appdata:///local/{0}/{1}", imagesSubdirectory, fileName);
-
-            return newPath;
         }
 
         private void ThemeButton_Click(object sender, RoutedEventArgs e)
         {
             var selectedTheme = ((Button)sender)?.Tag?.ToString();
+            DefineClickedTheme(sender, selectedTheme);
+        }
+
+        private void DefineClickedTheme(object sender, string selectedTheme)
+        {
             if (selectedTheme != null)
             {
                 if (selectedTheme == "Default")
                 {
-                    ((sender as Button).XamlRoot.Content as Frame).RequestedTheme = GetEnum<ElementTheme>(defaultWinTheme);
-
+                    ((sender as Button).XamlRoot.Content as Frame).RequestedTheme = EnumHelper.GetEnum<ElementTheme>(defaultWinTheme);
                 }
                 else
                 {
-                    ((sender as Button).XamlRoot.Content as Frame).RequestedTheme = GetEnum<ElementTheme>(selectedTheme);
+                    ((sender as Button).XamlRoot.Content as Frame).RequestedTheme = EnumHelper.GetEnum<ElementTheme>(selectedTheme);
                 }
             }
-
-        }
-
-
-        private TEnum GetEnum<TEnum>(string text) where TEnum : struct
-        {
-            if (!typeof(TEnum).GetTypeInfo().IsEnum)
-            {
-                throw new InvalidOperationException("Generic parameter 'TEnum' must be an enum.");
-            }
-            return (TEnum)Enum.Parse(typeof(TEnum), text);
         }
 
         private async void OpenFolders_Click(object sender, RoutedEventArgs e)

@@ -17,6 +17,5 @@ namespace ImageBrowser.ViewModels
             FoldersToDisplay = new ObservableCollection<StorageFolder>();
             FoldersToDisplay.Add(storageFolder);
         }
-
     }
 }

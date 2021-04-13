@@ -11,5 +11,4 @@ namespace ImageBrowser.Models
     {
     public T Key { get; set; }
     }
-
 }

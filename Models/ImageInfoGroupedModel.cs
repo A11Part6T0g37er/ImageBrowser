@@ -8,6 +8,5 @@ namespace ImageBrowser.Models
 {
     class ImageInfoGroupedModel : ModelGroupBase<ImageFileInfo>
     {
-
     }
 }

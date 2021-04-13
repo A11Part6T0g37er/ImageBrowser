@@ -16,8 +16,6 @@ namespace ImageBrowser
         BitmapImage ImageSource = null;
         ImageFileInfo item;
 
-
-
         public DetailPage()
         {
             InitializeComponent();

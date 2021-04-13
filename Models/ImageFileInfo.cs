@@ -26,7 +26,6 @@ namespace ImageBrowser
             set => SetProperty(ref imageSource, value);
         }
 
-
         public string ImageDimensions => $"{ImageProperties.Width} x {ImageProperties.Height}";
         private string imageTitle;
         public string ImageTitle
@@ -39,11 +38,8 @@ namespace ImageBrowser
                     ImageProperties.Title = value;
                   
                     SetProperty(ref imageTitle, value);
-                
                 }
             }
-
-           
         }
 
         public ImageFileInfo()
@@ -54,12 +50,10 @@ namespace ImageBrowser
         {
             ImageName = imageName;
             ImageProperties = imageProperties;
-            
-           
+
             ImageFileType = type;
             ImageFile = storageFile;
         }
-
 
         public async Task<BitmapImage> GetImageSourceAsync()
         {
