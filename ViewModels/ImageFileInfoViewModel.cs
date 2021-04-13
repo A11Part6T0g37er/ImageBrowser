@@ -1,9 +1,12 @@
 ﻿using ImageBrowser.Models;
+using ImageBrowser.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Threading.Tasks;
+using Windows.Storage;
 
 namespace ImageBrowser.ViewModels
 {
@@ -58,6 +61,28 @@ namespace ImageBrowser.ViewModels
 
             if (this.ObservableCollection.Count > 0)
                 this.Initialize();
+        }
+
+
+        public async Task<ObservableCollection<ImageFileInfo>> PopulateObservableCollectionOfImages(IReadOnlyCollection<StorageFile> files)
+        {
+            if (files.Count <= 0)
+            { return null; }
+            else
+            {
+
+                this.ObservableCollection.Clear();
+                this.GroupedImagesInfos.Clear();
+                foreach (var file in files)
+                {
+                    ImageFileInfo item = await ImageFileHelper.LoadImageInfo(file);
+
+                    this.ObservableCollection.Add(item);
+                }
+            }
+            this.InitializeGroupingOfViewModel();
+
+            return null;
         }
     }
 }

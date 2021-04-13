@@ -113,16 +113,6 @@ namespace ImageBrowser
 
         //TODO: make folders upload into app
 
-        public static async Task<ImageFileInfo> LoadImageInfo(StorageFile file)
-        {
-            var properties = await file.Properties.GetImagePropertiesAsync();
-            ImageFileInfo info = new ImageFileInfo(
-                file.DisplayName, file, properties,
-                 file.DisplayType);
-            await info.GetImageSourceAsync();
-            return info;
-        }
-
         private async void ButtonOpen_Click(object sender, RoutedEventArgs e)
         {
             await PickMultiplePictures();
@@ -152,7 +142,7 @@ namespace ImageBrowser
                 imageFileInfoViewModel.GroupedImagesInfos.Clear();
                 foreach (var file in files)
                 {
-                    ImageFileInfo item = await LoadImageInfo(file);
+                    ImageFileInfo item = await ImageFileHelper.LoadImageInfo(file);
 
                     imageFileInfoViewModel.ObservableCollection.Add(item);
                 }

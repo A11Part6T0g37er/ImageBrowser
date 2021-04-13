@@ -126,6 +126,8 @@
     </Compile>
     <Compile Include="Helpers\EnumHelper.cs" />
     <Compile Include="Helpers\ImageDownloadHelper.cs" />
+    <Compile Include="Helpers\ImageFileHelper.cs" />
+    <Compile Include="Helpers\MSGraphQueriesHelper.cs" />
     <Compile Include="LocalizationModels\Language.cs" />
     <Compile Include="Models\GroupInfoList.cs" />
     <Compile Include="Models\ImageFileInfo.cs" />
