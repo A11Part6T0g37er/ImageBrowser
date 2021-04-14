@@ -12,14 +12,14 @@ using Windows.UI.Xaml;
 
 namespace ImageBrowser.Helpers
 {
-    public  class MSGraphQueriesHelper
+    public class MSGraphQueriesHelper
     {
         #region MSGraphAPI
 
         // The MSAL Public client app
         public static IPublicClientApplication PublicClientApp;
         private const string ClientId = "c6e3c937-e10d-4e7c-94d7-bbaaafc514aa";
-        private static string[] scopes = new string[] { "user.read Files.Read" };
+        private  static readonly string[] scopes = new string[] { "user.read Files.Read" };
         private const string Tenant = "consumers";
         private const string Authority = "https://login.microsoftonline.com/" + Tenant;
         private static readonly string MSGraphURL = "https://graph.microsoft.com/v1.0/";
@@ -28,7 +28,7 @@ namespace ImageBrowser.Helpers
         #endregion
         private static IDriveItemSearchCollectionPage search;
 
-         
+
 
         /// <summary>
         /// Establish connection to OneDrive, get authentication, obtains links of files with query option, downloads files in temporary place.
@@ -36,7 +36,7 @@ namespace ImageBrowser.Helpers
         /// <returns>Returnsl List of files.</returns>
         public static async Task<List<StorageFile>> DownloadAllFilesFromOneDrive()
         {
-            GraphServiceClient grSC = await SignInAndInitializeGraphServiceClient(scopes);
+            GraphServiceClient grSC = await SignInAndInitializeGraphServiceClient();
 
             search = await GetFilesByQuery(grSC);
 
@@ -64,12 +64,21 @@ namespace ImageBrowser.Helpers
             return GetFilesCount(search);
         }
 
-        
+        public static async Task<IEnumerable<IAccount>> GetMSGraphAccouts()
+        {
+           return await PublicClientApp.GetAccountsAsync().ConfigureAwait(false);
+        }
+
+        public static async Task SingOutMSGraphAccount(IAccount firstAccount)
+        {
+            await PublicClientApp.RemoveAsync(firstAccount).ConfigureAwait(false);
+        }
+
         /// <summary>
         /// Sign in user using MSAL and obtain a token for Microsoft Graph
         /// </summary>
         /// <returns>GraphServiceClient</returns>
-        private static async Task<GraphServiceClient> SignInAndInitializeGraphServiceClient(string[] scopes)
+        public static async Task<GraphServiceClient> SignInAndInitializeGraphServiceClient()
         {
             GraphServiceClient graphClient = new GraphServiceClient(MSGraphURL,
                 new DelegateAuthenticationProvider(async (requestMessage) =>
@@ -141,7 +150,7 @@ namespace ImageBrowser.Helpers
         }
 
 
-       
+
 
 
     }

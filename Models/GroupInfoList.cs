@@ -9,6 +9,6 @@ namespace ImageBrowser.Models
 {
     public class GroupInfoList<T> : List<T>
     {
-    public T Key { get; set; }
+        public T Key { get; set; }
     }
 }

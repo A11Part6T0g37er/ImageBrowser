@@ -9,7 +9,7 @@ using Windows.Storage;
 
 namespace ImageBrowser.Helpers
 {
-   public static class ImageDownloadHelper
+    public static class ImageDownloadHelper
     {
         /// <summary>
         /// Get images from Web

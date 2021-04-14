@@ -7,7 +7,7 @@ using Windows.Storage;
 
 namespace ImageBrowser.Helpers
 {
-  public static  class ImageFileHelper
+    public static class ImageFileHelper
     {
         public static async Task<ImageFileInfo> LoadImageInfo(StorageFile file)
         {

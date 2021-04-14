@@ -33,18 +33,6 @@ namespace ImageBrowser
     /// </summary>
     public sealed partial class MainPage : Page
     {
-        #region MSGraphAPI
-
-        // The MSAL Public client app
-        public static IPublicClientApplication PublicClientApp;
-        private const string ClientId = "c6e3c937-e10d-4e7c-94d7-bbaaafc514aa";
-        private string[] scopes = new string[] { "user.read Files.Read" };
-        private const string Tenant = "consumers";
-        private const string Authority = "https://login.microsoftonline.com/" + Tenant;
-        private static readonly string MSGraphURL = "https://graph.microsoft.com/v1.0/";
-        private static AuthenticationResult authResult;
-
-        #endregion
 
         public static MainPage Current;
         internal ImageBrowser.ViewModels.ImageFileInfoViewModel imageFileInfoViewModel = new ViewModels.ImageFileInfoViewModel();
@@ -57,8 +45,6 @@ namespace ImageBrowser
         {
             InitializeComponent();
             Current = this;
-            //imageFileInfoViewModel= new ViewModels.ImageFileInfoViewModel();
-
             SizeChanged += CoreWindow_SizeChanged;
             DataContext = imageFileInfoViewModel.ObservableCollection;
             NavigationCacheMode = NavigationCacheMode.Enabled;
@@ -206,8 +192,7 @@ namespace ImageBrowser
             try
             {
                 // Sign-in user using MSAL and obtain an access token for MS Graph
-                GraphServiceClient graphClient = await SignInAndInitializeGraphServiceClient(scopes);
-
+                GraphServiceClient graphClient = await MSGraphQueriesHelper.SignInAndInitializeGraphServiceClient();
                 // Call the /me endpoint of Graph
                 User graphUser = await graphClient.Me.Request().GetAsync();
 
@@ -244,79 +229,23 @@ namespace ImageBrowser
         }
 
         /// <summary>
-        /// Sign in user using MSAL and obtain a token for Microsoft Graph
-        /// </summary>
-        /// <returns>GraphServiceClient</returns>
-        private static async Task<GraphServiceClient> SignInAndInitializeGraphServiceClient(string[] scopes)
-        {
-            GraphServiceClient graphClient = new GraphServiceClient(MSGraphURL,
-                new DelegateAuthenticationProvider(async (requestMessage) =>
-                {
-                    requestMessage.Headers.Authorization = new AuthenticationHeaderValue("bearer", await SignInUserAndGetTokenUsingMSAL(scopes));
-                }));
-
-            return await Task.FromResult(graphClient);
-        }
-
-        /// <summary>
-        /// Signs in the user and obtains an Access token for MS Graph
-        /// </summary>
-        /// <param name="scopes"></param>
-        /// <returns> Access Token</returns>
-        private static async Task<string> SignInUserAndGetTokenUsingMSAL(string[] scopes)
-        {
-            // Initialize the MSAL library by building a public client application
-            PublicClientApp = PublicClientApplicationBuilder.Create(ClientId)
-                .WithAuthority(Authority)
-                .WithUseCorporateNetwork(false)
-                .WithRedirectUri(DefaultRedirectUri.Value)
-                 .WithLogging(
-                     (level, message, containsPii) =>
-                     {
-                         Debug.WriteLine($"MSAL: {level} {message} ");
-                     }, LogLevel.Warning, enablePiiLogging: false, enableDefaultPlatformLogging: true)
-                    .Build();
-
-            // It's good practice to not do work on the UI thread, so use ConfigureAwait(false) whenever possible.
-            IEnumerable<IAccount> accounts = await PublicClientApp.GetAccountsAsync().ConfigureAwait(false);
-            IAccount firstAccount = accounts.FirstOrDefault();
-
-            try
-            {
-                authResult = await PublicClientApp.AcquireTokenSilent(scopes, firstAccount)
-                                                  .ExecuteAsync();
-            }
-            catch (MsalUiRequiredException ex)
-            {
-                // A MsalUiRequiredException happened on AcquireTokenSilentAsync. This indicates you need to call AcquireTokenAsync to acquire a token
-                Debug.WriteLine($"MsalUiRequiredException: {ex.Message}");
-
-                authResult = await PublicClientApp.AcquireTokenInteractive(scopes)
-                                                  .ExecuteAsync()
-                                                  .ConfigureAwait(false);
-            }
-
-            return authResult.AccessToken;
-        }
-
-        /// <summary>
         /// Sign out the current user.
         /// </summary>
         private async void SignOutButton_ClickAsync(object sender, RoutedEventArgs e)
         {
-            IEnumerable<IAccount> accounts = await PublicClientApp.GetAccountsAsync().ConfigureAwait(false);
+            IEnumerable<IAccount> accounts = await MSGraphQueriesHelper.GetMSGraphAccouts();
             IAccount firstAccount = accounts.FirstOrDefault();
 
             try
             {
-                await PublicClientApp.RemoveAsync(firstAccount).ConfigureAwait(false);
+                await MSGraphQueriesHelper.SingOutMSGraphAccount(firstAccount).ConfigureAwait(false);
                 await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
                 {
                     ResultText.Text = "User has signed-out";
                     signingOneDrive.Visibility = Visibility.Visible;
                     OpenOneDrive.Visibility = SignOutButton.Visibility = Visibility.Collapsed;
                     OneDriveInfo.Text = "";
-                   imageFileInfoViewModel.FlushObservableCollectionOfImages();
+                    imageFileInfoViewModel.FlushObservableCollectionOfImages();
                 });
             }
             catch (MsalException ex)
@@ -324,7 +253,6 @@ namespace ImageBrowser
                 ResultText.Text = $"Error signing-out user: {ex.Message}";
             }
         }
-
 
         private async void OpenOneDrive_Click(object sender, RoutedEventArgs e)
         {
@@ -335,7 +263,6 @@ namespace ImageBrowser
             {
                 var resourceLoader = Windows.ApplicationModel.Resources.ResourceLoader.GetForCurrentView();
 
-                
                 OneDriveInfo.Text = resourceLoader.GetString("CountFiles/Text").ToString() + MSGraphQueriesHelper.CountFiles();
             }
 
@@ -348,6 +275,11 @@ namespace ImageBrowser
             DefineClickedTheme(sender, selectedTheme);
         }
 
+        /// <summary>
+        /// Imlemented switching between <see cref="ElementTheme"/> .
+        /// </summary>
+        /// <param name="sender">Button</param>
+        /// <param name="selectedTheme">Button`s <see cref="string"/> tag property.</param>
         private void DefineClickedTheme(object sender, string selectedTheme)
         {
             if (selectedTheme != null)

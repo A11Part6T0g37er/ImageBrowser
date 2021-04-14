@@ -13,30 +13,37 @@ namespace ImageBrowser
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public string ImageName { get; } = "DEBUG";
+        public string ImageName { get; }
 
         public ImageProperties ImageProperties { get; }
+
         public StorageFile ImageFile { get; }
-        public string ImagePath { get { return ImageFile.Path.ToString();  } }
+
+        public string ImagePath { get { return ImageFile.Path.ToString(); } }
+
         public string ImageFileType { get; private set; }
 
         private BitmapImage imageSource = null;
-        public BitmapImage ImageSource {
+
+        public BitmapImage ImageSource
+        {
             get => imageSource;
             set => SetProperty(ref imageSource, value);
         }
 
         public string ImageDimensions => $"{ImageProperties.Width} x {ImageProperties.Height}";
+
         private string imageTitle;
+
         public string ImageTitle
         {
-            get => String.IsNullOrEmpty(ImageProperties.Title) ? ImageName : ImageProperties.Title;
+            get => String.IsNullOrEmpty(imageTitle) ? ImageName : ImageProperties.Title;
             set
             {
                 if (ImageProperties.Title != value)
                 {
                     ImageProperties.Title = value;
-                  
+
                     SetProperty(ref imageTitle, value);
                 }
             }
@@ -46,7 +53,7 @@ namespace ImageBrowser
         {
         }
 
-        public ImageFileInfo(string imageName,StorageFile storageFile, ImageProperties imageProperties, string type)
+        public ImageFileInfo(string imageName, StorageFile storageFile, ImageProperties imageProperties, string type)
         {
             ImageName = imageName;
             ImageProperties = imageProperties;

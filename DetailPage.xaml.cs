@@ -24,11 +24,11 @@ namespace ImageBrowser
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
             item = e.Parameter as ImageFileInfo;
-           
+
             ImageSource = await item.GetImageSourceAsync();
 
             targetImage.Source = ImageSource;
-            
+
             if (this.Frame.CanGoBack)
             {
                 SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Visible;

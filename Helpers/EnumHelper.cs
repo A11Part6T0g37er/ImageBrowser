@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ImageBrowser.Helpers
 {
-   static class EnumHelper
+    static class EnumHelper
     {
 
         public static TEnum GetEnum<TEnum>(string text) where TEnum : struct

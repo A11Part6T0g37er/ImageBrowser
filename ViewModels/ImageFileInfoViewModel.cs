@@ -10,9 +10,9 @@ using Windows.Storage;
 
 namespace ImageBrowser.ViewModels
 {
-    internal class ImageFileInfoViewModel 
+    internal class ImageFileInfoViewModel
     {
-      
+
         private ObservableCollection<ImageFileInfo> observableCollection = new ObservableCollection<ImageFileInfo>();
 
         public ObservableCollection<ImageFileInfo> ObservableCollection { get => observableCollection; }
@@ -26,20 +26,20 @@ namespace ImageBrowser.ViewModels
         }
 
         private ObservableCollection<GroupInfoList<object>> groupedImagesInfos = new ObservableCollection<GroupInfoList<object>>();
-        public ObservableCollection<GroupInfoList<object>> GroupedImagesInfos { get => groupedImagesInfos;  }
+        public ObservableCollection<GroupInfoList<object>> GroupedImagesInfos { get => groupedImagesInfos; }
 
         public void GenerateByDateGroup(ObservableCollection<ImageFileInfo> lisOfImages)
         {
             var query = from item in lisOfImages
-                        group item by  new {yy = item.ImageProperties.DateTaken.Year, mm = item.ImageProperties.DateTaken.Month } into dateKey 
+                        group item by new { yy = item.ImageProperties.DateTaken.Year, mm = item.ImageProperties.DateTaken.Month } into dateKey
                         orderby dateKey.Key.yy descending
                         select new { GroupName = dateKey.Key, Items = dateKey };
             if (GroupedImagesInfos.Count > 0)
             {
-                GroupedImagesInfos.Clear(); 
+                GroupedImagesInfos.Clear();
             }
 
-            foreach(var item in query)
+            foreach (var item in query)
             {
                 GroupInfoList<object> infoList = new GroupInfoList<object>();
                 infoList.Key = item.GroupName.mm + "/" + item.GroupName.yy + " (" + item.Items.Count() + ")";
@@ -89,7 +89,7 @@ namespace ImageBrowser.ViewModels
             return null;
         }
 
-        public  void FlushObservableCollectionOfImages()
+        public void FlushObservableCollectionOfImages()
         {
             if (this.ObservableCollection.Count <= 0)
             { }
