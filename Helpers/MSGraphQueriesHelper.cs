@@ -8,10 +8,11 @@ using System.Linq;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Windows.Storage;
+using Windows.UI.Xaml;
 
 namespace ImageBrowser.Helpers
 {
-    public static class MSGraphQueriesHelper
+    public  class MSGraphQueriesHelper
     {
         #region MSGraphAPI
 
@@ -138,5 +139,10 @@ namespace ImageBrowser.Helpers
         {
             return search.Count.ToString();
         }
+
+
+       
+
+
     }
 }
