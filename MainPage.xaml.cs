@@ -88,6 +88,7 @@ namespace ImageBrowser
             {
                 VisualStateManager.GoToState(this, "MediumWindowBreakpoint", true);
             }
+
             if (args.NewSize.Width < 641)
             {
                 VisualStateManager.GoToState(this, "MinWindowBreakpoint", true);
@@ -147,6 +148,7 @@ namespace ImageBrowser
                     imageFileInfoViewModel.ObservableCollection.Add(item);
                 }
             }
+
             imageFileInfoViewModel.InitializeGroupingOfViewModel();
 
             return null;
@@ -262,6 +264,7 @@ namespace ImageBrowser
                        new MessageDialog(message);
                    });
         }
+
         /// <summary>
         /// Sign in user using MSAL and obtain a token for Microsoft Graph
         /// </summary>
@@ -358,22 +361,28 @@ namespace ImageBrowser
 
         private async void OpenOneDrive_Click(object sender, RoutedEventArgs e)
         {
+            // under heavy reconstruction
+            //GraphServiceClient grSC = new GraphServiceClient(MSGraphURL,
+            //    new DelegateAuthenticationProvider(async (requestMessage) =>
+            //    {
+            //        await Task.Run(() => requestMessage.Headers.Authorization = new AuthenticationHeaderValue("bearer", authResult.AccessToken));
+            //    }));
 
-            GraphServiceClient grSC = new GraphServiceClient(MSGraphURL,
-                new DelegateAuthenticationProvider(async (requestMessage) =>
-                {
-                    await Task.Run(() => requestMessage.Headers.Authorization = new AuthenticationHeaderValue("bearer", authResult.AccessToken));
-                }));
+            //var queryOptions = new List<QueryOption>()
+            //{
+            //    new QueryOption("select", "*")
+            //};
 
-            var queryOptions = new List<QueryOption>()
-            {
-                new QueryOption("select", "*")
-            };
+            //var search = await grSC.Me.Drive.Root.ItemWithPath("/Pictures")
+            //    .Search("jpg")
+            //    .Request(queryOptions)
+            //    .GetAsync();
 
-            var search = await grSC.Me.Drive.Root.ItemWithPath("/Pictures")
-                .Search("jpg")
-                .Request(queryOptions)
-                .GetAsync();
+
+            //List<DriveItem> oneDriveItems = search.CurrentPage.Select(x => x).ToList();
+            //StorageFile storageFile;
+            //String newPath = String.Empty;
+            List<StorageFile> downloadedFiles = await MSGraphQueriesHelper.DownloadAllFilesFromOneDrive();
 
             if (Windows.UI.Core.CoreWindow.GetForCurrentThread() != null)
             {
@@ -381,17 +390,11 @@ namespace ImageBrowser
 
                 string v = resourceLoader.GetString("CountFiles/Text").ToString();
 
-                string v1 = search.Count.ToString();
-                string v2 = v + v1;
-                OneDriveInfo.Text = v2;
+                string v1 = MSGraphQueriesHelper.CountFiles();
+                string result = v + v1;
+                OneDriveInfo.Text = result;
             }
-
-            List<DriveItem> oneDriveItems = search.CurrentPage.Select(x => x).ToList();
-            StorageFile storageFile;
-            String newPath = String.Empty;
-            List<StorageFile> downloadedFiles = new List<StorageFile>();
-
-            foreach (var item in oneDriveItems)
+           /* foreach (var item in oneDriveItems)
             {
                 var itemUrl = item.AdditionalData.Values.FirstOrDefault().ToString();
                 var itemName = item.Name;
@@ -399,7 +402,7 @@ namespace ImageBrowser
                   itemName);
                 storageFile = await StorageFile.GetFileFromApplicationUriAsync(new Uri(newPath));
                 downloadedFiles.Add(storageFile);
-            }
+            }*/
 
             await PopulateObservableCollectionOfImages(downloadedFiles);
         }

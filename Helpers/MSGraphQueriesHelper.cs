@@ -1,16 +1,17 @@
-﻿using Microsoft.Graph;
+﻿using ImageBrowser.Common;
+using Microsoft.Graph;
 using Microsoft.Identity.Client;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net.Http.Headers;
-using System.Text;
 using System.Threading.Tasks;
 using Windows.Storage;
 
 namespace ImageBrowser.Helpers
 {
-  public static  class MSGraphQueriesHelper
+    public static class MSGraphQueriesHelper
     {
         #region MSGraphAPI
 
@@ -24,37 +25,19 @@ namespace ImageBrowser.Helpers
         private static AuthenticationResult authResult;
 
         #endregion
+        private static IDriveItemSearchCollectionPage search;
 
+         
 
-        static async public Task<List<StorageFile>>  DownloadAllFilesFromOneDrive()
+        /// <summary>
+        /// Establish connection to OneDrive, get authentication, obtains links of files with query option, downloads files in temporary place.
+        /// </summary>
+        /// <returns>Returnsl List of files.</returns>
+        public static async Task<List<StorageFile>> DownloadAllFilesFromOneDrive()
         {
-            GraphServiceClient grSC = new GraphServiceClient(MSGraphURL,
-               new DelegateAuthenticationProvider(async (requestMessage) =>
-               {
-                   await Task.Run(() => requestMessage.Headers.Authorization = new AuthenticationHeaderValue("bearer", authResult.AccessToken));
-               }));
+            GraphServiceClient grSC = await SignInAndInitializeGraphServiceClient(scopes);
 
-            var queryOptions = new List<QueryOption>()
-            {
-                new QueryOption("select", "*")
-            };
-
-            var search = await grSC.Me.Drive.Root.ItemWithPath("/Pictures")
-                .Search("jpg")
-                .Request(queryOptions)
-                .GetAsync();
-
-            if (Windows.UI.Core.CoreWindow.GetForCurrentThread() != null)
-            {
-                var resourceLoader = Windows.ApplicationModel.Resources.ResourceLoader.GetForCurrentView();
-
-                string v = resourceLoader.GetString("CountFiles/Text").ToString();
-
-                string v1 = search.Count.ToString();
-                string v2 = v + v1;
-             //   OneDriveInfo.Text = v2;
-                // make tulpe here
-            }
+            search = await GetFilesByQuery(grSC);
 
             List<DriveItem> oneDriveItems = search.CurrentPage.Select(x => x).ToList();
             StorageFile storageFile;
@@ -65,12 +48,95 @@ namespace ImageBrowser.Helpers
             {
                 var itemUrl = item.AdditionalData.Values.FirstOrDefault().ToString();
                 var itemName = item.Name;
-                newPath = await ImageDownloadHelper.DownloadImage(itemUrl,
-                  itemName);
+                newPath = await ImageDownloadHelper.DownloadImage(
+                    itemUrl,
+                    itemName);
                 storageFile = await StorageFile.GetFileFromApplicationUriAsync(new Uri(newPath));
                 downloadedFiles.Add(storageFile);
             }
+
             return downloadedFiles;
+        }
+
+        public static string CountFiles()
+        {
+            return GetFilesCount(search);
+        }
+
+        
+        /// <summary>
+        /// Sign in user using MSAL and obtain a token for Microsoft Graph
+        /// </summary>
+        /// <returns>GraphServiceClient</returns>
+        private static async Task<GraphServiceClient> SignInAndInitializeGraphServiceClient(string[] scopes)
+        {
+            GraphServiceClient graphClient = new GraphServiceClient(MSGraphURL,
+                new DelegateAuthenticationProvider(async (requestMessage) =>
+                {
+                    await Task.Run(async () => requestMessage.Headers.Authorization = new AuthenticationHeaderValue("bearer", await SignInUserAndGetTokenUsingMSAL(scopes)));
+                }));
+
+            return await Task.FromResult(graphClient);
+        }
+
+        /// <summary>
+        /// Signs in the user and obtains an Access token for MS Graph
+        /// </summary>
+        /// <param name="scopes"></param>
+        /// <returns> Access Token</returns>
+        public static async Task<string> SignInUserAndGetTokenUsingMSAL(string[] scopes)
+        {
+            // Initialize the MSAL library by building a public client application
+            PublicClientApp = PublicClientApplicationBuilder.Create(ClientId)
+                .WithAuthority(Authority)
+                .WithUseCorporateNetwork(false)
+                .WithRedirectUri(DefaultRedirectUri.Value)
+                 .WithLogging(
+                     (level, message, containsPii) =>
+                     {
+                         Debug.WriteLine($"MSAL: {level} {message} ");
+                     }, LogLevel.Warning, enablePiiLogging: false, enableDefaultPlatformLogging: true)
+                    .Build();
+
+            // It's good practice to not do work on the UI thread, so use ConfigureAwait(false) whenever possible.
+            IEnumerable<IAccount> accounts = await PublicClientApp.GetAccountsAsync().ConfigureAwait(false);
+            IAccount firstAccount = accounts.FirstOrDefault();
+
+            try
+            {
+                authResult = await PublicClientApp.AcquireTokenSilent(scopes, firstAccount)
+                                                  .ExecuteAsync();
+            }
+            catch (MsalUiRequiredException ex)
+            {
+                // A MsalUiRequiredException happened on AcquireTokenSilentAsync. This indicates you need to call AcquireTokenAsync to acquire a token
+                Debug.WriteLine($"MsalUiRequiredException: {ex.Message}");
+
+                authResult = await PublicClientApp.AcquireTokenInteractive(scopes)
+                                                  .ExecuteAsync()
+                                                  .ConfigureAwait(false);
+            }
+
+            return authResult.AccessToken;
+        }
+
+        private static async Task<IDriveItemSearchCollectionPage> GetFilesByQuery(GraphServiceClient grSC)
+        {
+            var queryOptions = new List<QueryOption>()
+            {
+                new QueryOption("select", "*")
+            };
+
+            var search = await grSC.Me.Drive.Root.ItemWithPath("/Pictures")
+                .Search("jpg")
+                .Request(queryOptions)
+                .GetAsync();
+            return search;
+        }
+
+        private static string GetFilesCount(IDriveItemSearchCollectionPage search)
+        {
+            return search.Count.ToString();
         }
     }
 }

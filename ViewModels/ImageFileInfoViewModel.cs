@@ -19,10 +19,12 @@ namespace ImageBrowser.ViewModels
         public ImageFileInfoViewModel()
         {
         }
+
         public void ChangeObservCollection(ObservableCollection<ImageFileInfo> images)
         {
             observableCollection = images;
         }
+
         private ObservableCollection<GroupInfoList<object>> groupedImagesInfos = new ObservableCollection<GroupInfoList<object>>();
         public ObservableCollection<GroupInfoList<object>> GroupedImagesInfos { get => groupedImagesInfos;  }
 
@@ -36,6 +38,7 @@ namespace ImageBrowser.ViewModels
             {
                 GroupedImagesInfos.Clear(); 
             }
+
             foreach(var item in query)
             {
                 GroupInfoList<object> infoList = new GroupInfoList<object>();
@@ -44,6 +47,7 @@ namespace ImageBrowser.ViewModels
                 {
                     infoList.Add(something);
                 }
+
                 GroupedImagesInfos.Add(infoList);
             }
         }
@@ -63,7 +67,6 @@ namespace ImageBrowser.ViewModels
                 this.Initialize();
         }
 
-
         public async Task<ObservableCollection<ImageFileInfo>> PopulateObservableCollectionOfImages(IReadOnlyCollection<StorageFile> files)
         {
             if (files.Count <= 0)
@@ -80,6 +83,7 @@ namespace ImageBrowser.ViewModels
                     this.ObservableCollection.Add(item);
                 }
             }
+
             this.InitializeGroupingOfViewModel();
 
             return null;

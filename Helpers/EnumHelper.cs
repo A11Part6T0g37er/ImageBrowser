@@ -16,6 +16,7 @@ namespace ImageBrowser.Helpers
             {
                 throw new InvalidOperationException("Generic parameter 'TEnum' must be an enum.");
             }
+
             return (TEnum)Enum.Parse(typeof(TEnum), text);
         }
     }

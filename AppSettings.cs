@@ -42,10 +42,12 @@ namespace ImageBrowser
             {
                 return (T)LocalSettings.Values[key];
             }
+
             if (null != defaultValue)
             {
                 return defaultValue;
             }
+
             return default(T);
         }
 

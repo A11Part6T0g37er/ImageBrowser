@@ -55,6 +55,7 @@ namespace ImageBrowser
                 {
                     //TODO: Load state from previously suspended application
                 }
+
                 SystemNavigationManager.GetForCurrentView().BackRequested
            += System_BackRequested;
                 // Place the frame in the current Window
@@ -70,6 +71,7 @@ namespace ImageBrowser
                     // parameter
                     rootFrame.Navigate(typeof(MainPage), e.Arguments);
                 }
+
                 // Ensure the current window is active
                 Window.Current.Activate();
             }
@@ -107,8 +109,10 @@ namespace ImageBrowser
                 rootFrame.GoBack();
                 return true;
             }
+
             return false;
         }
+
         // Handle system back requests.
         private void System_BackRequested(object sender, BackRequestedEventArgs e)
         {
