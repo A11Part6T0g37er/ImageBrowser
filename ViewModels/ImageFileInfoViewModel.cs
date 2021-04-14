@@ -88,5 +88,7 @@ namespace ImageBrowser.ViewModels
 
             return null;
         }
+
+        
     }
 }

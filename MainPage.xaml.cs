@@ -129,30 +129,10 @@ namespace ImageBrowser
             picker.FileTypeFilter.Add(".jpeg");
             picker.FileTypeFilter.Add(".png");
             IReadOnlyCollection<StorageFile> files = await picker.PickMultipleFilesAsync();
-            return await PopulateObservableCollectionOfImages(files);
+            return await imageFileInfoViewModel.PopulateObservableCollectionOfImages(files); 
+            
         }
 
-        private async Task<ObservableCollection<ImageFileInfo>> PopulateObservableCollectionOfImages(IReadOnlyCollection<StorageFile> files)
-        {
-            if (files.Count <= 0)
-            { return null; }
-            else
-            {
-
-                imageFileInfoViewModel.ObservableCollection.Clear();
-                imageFileInfoViewModel.GroupedImagesInfos.Clear();
-                foreach (var file in files)
-                {
-                    ImageFileInfo item = await ImageFileHelper.LoadImageInfo(file);
-
-                    imageFileInfoViewModel.ObservableCollection.Add(item);
-                }
-            }
-
-            imageFileInfoViewModel.InitializeGroupingOfViewModel();
-
-            return null;
-        }
 
         // TODO: updating number of  <XAML> Pictures-in-grid columns
         private void GroupedGrid_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -214,7 +194,7 @@ namespace ImageBrowser
                 }
 
                 IReadOnlyCollection<StorageFile> filesReadOnly = (IReadOnlyCollection<StorageFile>)files;
-                await PopulateObservableCollectionOfImages(filesReadOnly);
+                await imageFileInfoViewModel.PopulateObservableCollectionOfImages(filesReadOnly);
             }
         }
 
@@ -361,27 +341,7 @@ namespace ImageBrowser
 
         private async void OpenOneDrive_Click(object sender, RoutedEventArgs e)
         {
-            // under heavy reconstruction
-            //GraphServiceClient grSC = new GraphServiceClient(MSGraphURL,
-            //    new DelegateAuthenticationProvider(async (requestMessage) =>
-            //    {
-            //        await Task.Run(() => requestMessage.Headers.Authorization = new AuthenticationHeaderValue("bearer", authResult.AccessToken));
-            //    }));
-
-            //var queryOptions = new List<QueryOption>()
-            //{
-            //    new QueryOption("select", "*")
-            //};
-
-            //var search = await grSC.Me.Drive.Root.ItemWithPath("/Pictures")
-            //    .Search("jpg")
-            //    .Request(queryOptions)
-            //    .GetAsync();
-
-
-            //List<DriveItem> oneDriveItems = search.CurrentPage.Select(x => x).ToList();
-            //StorageFile storageFile;
-            //String newPath = String.Empty;
+            
             List<StorageFile> downloadedFiles = await MSGraphQueriesHelper.DownloadAllFilesFromOneDrive();
 
             if (Windows.UI.Core.CoreWindow.GetForCurrentThread() != null)
@@ -394,17 +354,9 @@ namespace ImageBrowser
                 string result = v + v1;
                 OneDriveInfo.Text = result;
             }
-           /* foreach (var item in oneDriveItems)
-            {
-                var itemUrl = item.AdditionalData.Values.FirstOrDefault().ToString();
-                var itemName = item.Name;
-                newPath = await ImageDownloadHelper.DownloadImage(itemUrl,
-                  itemName);
-                storageFile = await StorageFile.GetFileFromApplicationUriAsync(new Uri(newPath));
-                downloadedFiles.Add(storageFile);
-            }*/
+           
 
-            await PopulateObservableCollectionOfImages(downloadedFiles);
+            await  imageFileInfoViewModel.PopulateObservableCollectionOfImages(downloadedFiles);
         }
 
         private void ThemeButton_Click(object sender, RoutedEventArgs e)
