@@ -129,10 +129,8 @@ namespace ImageBrowser
             picker.FileTypeFilter.Add(".jpeg");
             picker.FileTypeFilter.Add(".png");
             IReadOnlyCollection<StorageFile> files = await picker.PickMultipleFilesAsync();
-            return await imageFileInfoViewModel.PopulateObservableCollectionOfImages(files); 
-            
+            return await imageFileInfoViewModel.PopulateObservableCollectionOfImages(files);
         }
-
 
         // TODO: updating number of  <XAML> Pictures-in-grid columns
         private void GroupedGrid_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -341,22 +339,18 @@ namespace ImageBrowser
 
         private async void OpenOneDrive_Click(object sender, RoutedEventArgs e)
         {
-            
+
             List<StorageFile> downloadedFiles = await MSGraphQueriesHelper.DownloadAllFilesFromOneDrive();
 
             if (Windows.UI.Core.CoreWindow.GetForCurrentThread() != null)
             {
                 var resourceLoader = Windows.ApplicationModel.Resources.ResourceLoader.GetForCurrentView();
 
-                string v = resourceLoader.GetString("CountFiles/Text").ToString();
-
-                string v1 = MSGraphQueriesHelper.CountFiles();
-                string result = v + v1;
-                OneDriveInfo.Text = result;
+                
+                OneDriveInfo.Text = resourceLoader.GetString("CountFiles/Text").ToString() + MSGraphQueriesHelper.CountFiles();
             }
-           
 
-            await  imageFileInfoViewModel.PopulateObservableCollectionOfImages(downloadedFiles);
+            await imageFileInfoViewModel.PopulateObservableCollectionOfImages(downloadedFiles);
         }
 
         private void ThemeButton_Click(object sender, RoutedEventArgs e)
