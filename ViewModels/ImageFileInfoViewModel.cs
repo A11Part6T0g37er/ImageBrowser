@@ -89,6 +89,16 @@ namespace ImageBrowser.ViewModels
             return null;
         }
 
-        
+        public  void FlushObservableCollectionOfImages()
+        {
+            if (this.ObservableCollection.Count <= 0)
+            { }
+            else
+            {
+
+                this.ObservableCollection.Clear();
+                this.GroupedImagesInfos.Clear();
+            }
+        }
     }
 }

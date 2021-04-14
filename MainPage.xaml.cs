@@ -316,7 +316,7 @@ namespace ImageBrowser
                     signingOneDrive.Visibility = Visibility.Visible;
                     OpenOneDrive.Visibility = SignOutButton.Visibility = Visibility.Collapsed;
                     OneDriveInfo.Text = "";
-                    FlushObservableCollectionOfImages();
+                   imageFileInfoViewModel.FlushObservableCollectionOfImages();
                 });
             }
             catch (MsalException ex)
@@ -325,17 +325,6 @@ namespace ImageBrowser
             }
         }
 
-        private void FlushObservableCollectionOfImages()
-        {
-            if (imageFileInfoViewModel.ObservableCollection.Count <= 0)
-            { }
-            else
-            {
-
-                imageFileInfoViewModel.ObservableCollection.Clear();
-                imageFileInfoViewModel.GroupedImagesInfos.Clear();
-            }
-        }
 
         private async void OpenOneDrive_Click(object sender, RoutedEventArgs e)
         {
