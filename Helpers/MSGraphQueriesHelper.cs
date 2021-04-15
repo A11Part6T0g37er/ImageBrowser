@@ -9,6 +9,7 @@ using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Windows.Storage;
+using Windows.UI.Popups;
 using Windows.UI.Xaml;
 
 namespace ImageBrowser.Helpers
@@ -60,12 +61,25 @@ namespace ImageBrowser.Helpers
             return downloadedFiles;
         }
 
+      public MSGraphQueriesHelper()
+        {
+            SignOutStatus = new RelayCommand(Hello,IsSignedOut);
+            UserSignedOut = false;
+        }
+
         public ICommand SignOutStatus { get; set; }
 
         public static bool IsSignedOut()
         {
             return UserSignedOut;
         }
+
+        public void Hello()
+        {
+            if (IsSignedOut())
+                new MessageDialog("Bye");
+        }
+
         public static string CountFiles()
         {
             return GetFilesCount(search);

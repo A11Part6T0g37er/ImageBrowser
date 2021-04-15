@@ -46,7 +46,7 @@ namespace ImageBrowser
             InitializeComponent();
             Current = this;
             SizeChanged += CoreWindow_SizeChanged;
-            DataContext = imageFileInfoViewModel.ObservableCollection;
+           
             NavigationCacheMode = NavigationCacheMode.Enabled;
 
             DataContext = new MSGraphQueriesHelper();
@@ -92,7 +92,7 @@ namespace ImageBrowser
             {
                 // initialize blank state
                 startingGreetingScreen.Visibility = Visibility.Visible;
-                // await GetItemsAsync();
+                 
             }
 
             imageFileInfoViewModel.InitializeGroupingOfViewModel();

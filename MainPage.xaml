@@ -4,7 +4,11 @@
 	  xmlns:local="using:ImageBrowser"
 	  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	  
+	  xmlns:helpers="using:ImageBrowser.Helpers"
+	  d:DataContext="{d:DesignInstance Type=helpers:MSGraphQueriesHelper}"
 	  mc:Ignorable="d"
+	  
 	  Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 	<Page.Resources>
 
@@ -453,9 +457,10 @@
 							  Label=""
 							  x:Uid="signOut"
 							  Click="SignOutButton_ClickAsync"
-							  Visibility="Collapsed"
-							 Command="{Binding }"
+							  
+							Visibility="Collapsed"
 							  FontFamily="Segoe Ui" />
+							 
 				<AppBarButton x:Name="OpenOneDrive"
 							  Content=""
 							  x:Uid="oneDriveOpen"
