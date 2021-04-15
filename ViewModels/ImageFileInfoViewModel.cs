@@ -13,9 +13,9 @@ namespace ImageBrowser.ViewModels
     internal class ImageFileInfoViewModel
     {
 
-        private ObservableCollection<ImageFileInfo> observableCollection = new ObservableCollection<ImageFileInfo>();
+        private IList<ImageFileInfo> observableCollection = new List<ImageFileInfo>();
 
-        public ObservableCollection<ImageFileInfo> ObservableCollection { get => observableCollection; }
+        public IList<ImageFileInfo> ObservableCollection { get => observableCollection; }
         public ImageFileInfoViewModel()
         {
         }
@@ -28,7 +28,7 @@ namespace ImageBrowser.ViewModels
         private ObservableCollection<GroupInfoList<object>> groupedImagesInfos = new ObservableCollection<GroupInfoList<object>>();
         public ObservableCollection<GroupInfoList<object>> GroupedImagesInfos { get => groupedImagesInfos; }
 
-        public void GenerateByDateGroup(ObservableCollection<ImageFileInfo> lisOfImages)
+        public void GenerateByDateGroup(IList<ImageFileInfo> lisOfImages)
         {
             var query = from item in lisOfImages
                         group item by new { yy = item.ImageProperties.DateTaken.Year, mm = item.ImageProperties.DateTaken.Month } into dateKey

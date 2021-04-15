@@ -37,7 +37,6 @@ namespace ImageBrowser
         public static MainPage Current;
         internal ImageBrowser.ViewModels.ImageFileInfoViewModel imageFileInfoViewModel = new ViewModels.ImageFileInfoViewModel();
 
-        private ImageFileInfo persistedItem;
         string defaultWinTheme = string.Empty;
         public FoldersViewModel FoldersToDisplay { get; set; }
 
