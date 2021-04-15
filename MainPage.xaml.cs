@@ -88,7 +88,7 @@ namespace ImageBrowser
             SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility =
                 AppViewBackButtonVisibility.Collapsed;
 
-            if (imageFileInfoViewModel.ObservableCollection.Count == 0)
+            if (!imageFileInfoViewModel.HaveAnyItems())
             {
                 // initialize blank state
                 startingGreetingScreen.Visibility = Visibility.Visible;
@@ -157,7 +157,7 @@ namespace ImageBrowser
 
         private void ItemImage_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
         {
-            if (imageFileInfoViewModel.ObservableCollection.Count != 0)
+            if (imageFileInfoViewModel.HaveAnyItems())
             {
                 startingGreetingScreen.Visibility = Visibility.Collapsed;
             }

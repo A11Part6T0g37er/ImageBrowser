@@ -25,9 +25,7 @@
 							  Source="{x:Bind imageFileInfoViewModel.GroupedImagesInfos}"
 							  IsSourceGrouped="True" />
 
-		<CollectionViewSource x:Name="GropedImageCollection"
-							  Source="{x:Bind imageFileInfoViewModel.ObservableCollection}"
-							  IsSourceGrouped="True" />
+		
 		<CollectionViewSource x:Name="FoldersToView"
 							  Source="{x:Bind FoldersToDisplay}"
 							  IsSourceGrouped="False" />

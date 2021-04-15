@@ -100,5 +100,9 @@ namespace ImageBrowser.ViewModels
                 this.GroupedImagesInfos.Clear();
             }
         }
+        public bool HaveAnyItems()
+        {
+            return this.ObservableCollection.Count > 0;
+        }
     }
 }
