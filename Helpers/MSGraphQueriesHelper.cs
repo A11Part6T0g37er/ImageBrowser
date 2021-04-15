@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using Windows.Storage;
 using Windows.UI.Xaml;
 
@@ -17,17 +18,17 @@ namespace ImageBrowser.Helpers
         #region MSGraphAPI
 
         // The MSAL Public client app
-        public static IPublicClientApplication PublicClientApp;
         private const string ClientId = "c6e3c937-e10d-4e7c-94d7-bbaaafc514aa";
-        private  static readonly string[] scopes = new string[] { "user.read Files.Read" };
         private const string Tenant = "consumers";
         private const string Authority = "https://login.microsoftonline.com/" + Tenant;
+        private static readonly string[] Scopes = new string[] { "user.read Files.Read" };
         private static readonly string MSGraphURL = "https://graph.microsoft.com/v1.0/";
+        private static IPublicClientApplication publicClientApp;
         private static AuthenticationResult authResult;
 
         #endregion
         private static IDriveItemSearchCollectionPage search;
-
+        private static bool UserSignedOut = false;
 
 
         /// <summary>
@@ -59,6 +60,12 @@ namespace ImageBrowser.Helpers
             return downloadedFiles;
         }
 
+        public ICommand SignOutStatus { get; set; }
+
+        public static bool IsSignedOut()
+        {
+            return UserSignedOut;
+        }
         public static string CountFiles()
         {
             return GetFilesCount(search);
@@ -66,12 +73,13 @@ namespace ImageBrowser.Helpers
 
         public static async Task<IEnumerable<IAccount>> GetMSGraphAccouts()
         {
-           return await PublicClientApp.GetAccountsAsync().ConfigureAwait(false);
+            return await publicClientApp.GetAccountsAsync().ConfigureAwait(false);
         }
 
         public static async Task SingOutMSGraphAccount(IAccount firstAccount)
         {
-            await PublicClientApp.RemoveAsync(firstAccount).ConfigureAwait(false);
+            await publicClientApp.RemoveAsync(firstAccount).ConfigureAwait(false);
+            UserSignedOut = true;
         }
 
         /// <summary>
@@ -83,9 +91,9 @@ namespace ImageBrowser.Helpers
             GraphServiceClient graphClient = new GraphServiceClient(MSGraphURL,
                 new DelegateAuthenticationProvider(async (requestMessage) =>
                 {
-                    await Task.Run(async () => requestMessage.Headers.Authorization = new AuthenticationHeaderValue("bearer", await SignInUserAndGetTokenUsingMSAL(scopes)));
+                    await Task.Run(async () => requestMessage.Headers.Authorization = new AuthenticationHeaderValue("bearer", await SignInUserAndGetTokenUsingMSAL(Scopes)));
                 }));
-
+            UserSignedOut = false;
             return await Task.FromResult(graphClient);
         }
 
@@ -97,7 +105,7 @@ namespace ImageBrowser.Helpers
         public static async Task<string> SignInUserAndGetTokenUsingMSAL(string[] scopes)
         {
             // Initialize the MSAL library by building a public client application
-            PublicClientApp = PublicClientApplicationBuilder.Create(ClientId)
+            publicClientApp = PublicClientApplicationBuilder.Create(ClientId)
                 .WithAuthority(Authority)
                 .WithUseCorporateNetwork(false)
                 .WithRedirectUri(DefaultRedirectUri.Value)
@@ -109,12 +117,12 @@ namespace ImageBrowser.Helpers
                     .Build();
 
             // It's good practice to not do work on the UI thread, so use ConfigureAwait(false) whenever possible.
-            IEnumerable<IAccount> accounts = await PublicClientApp.GetAccountsAsync().ConfigureAwait(false);
+            IEnumerable<IAccount> accounts = await publicClientApp.GetAccountsAsync().ConfigureAwait(false);
             IAccount firstAccount = accounts.FirstOrDefault();
 
             try
             {
-                authResult = await PublicClientApp.AcquireTokenSilent(scopes, firstAccount)
+                authResult = await publicClientApp.AcquireTokenSilent(scopes, firstAccount)
                                                   .ExecuteAsync();
             }
             catch (MsalUiRequiredException ex)
@@ -122,7 +130,7 @@ namespace ImageBrowser.Helpers
                 // A MsalUiRequiredException happened on AcquireTokenSilentAsync. This indicates you need to call AcquireTokenAsync to acquire a token
                 Debug.WriteLine($"MsalUiRequiredException: {ex.Message}");
 
-                authResult = await PublicClientApp.AcquireTokenInteractive(scopes)
+                authResult = await publicClientApp.AcquireTokenInteractive(scopes)
                                                   .ExecuteAsync()
                                                   .ConfigureAwait(false);
             }

@@ -454,6 +454,7 @@
 							  x:Uid="signOut"
 							  Click="SignOutButton_ClickAsync"
 							  Visibility="Collapsed"
+							 Command="{Binding }"
 							  FontFamily="Segoe Ui" />
 				<AppBarButton x:Name="OpenOneDrive"
 							  Content=""

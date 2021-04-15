@@ -49,6 +49,8 @@ namespace ImageBrowser
             DataContext = imageFileInfoViewModel.ObservableCollection;
             NavigationCacheMode = NavigationCacheMode.Enabled;
 
+            DataContext = new MSGraphQueriesHelper();
+
             var DefaultTheme = new Windows.UI.ViewManagement.UISettings();
             var uiTheme = DefaultTheme.GetColorValue(Windows.UI.ViewManagement.UIColorType.Background).ToString();
             if (uiTheme == "#FF000000")
