@@ -61,10 +61,10 @@ namespace ImageBrowser.Helpers
             return downloadedFiles;
         }
 
-      public MSGraphQueriesHelper()
+        public MSGraphQueriesHelper()
         {
-            SignOutStatus = new RelayCommand(Hello,IsSignedOut);
-            UserSignedOut = false;
+            SignOutStatus = new RelayCommand(Hello, IsSignedOut);
+    //        UserSignedOut = false;
         }
 
         public ICommand SignOutStatus { get; set; }
@@ -74,10 +74,17 @@ namespace ImageBrowser.Helpers
             return UserSignedOut;
         }
 
+        public bool IsUserSignedOut
+        {
+            get
+            {
+                return UserSignedOut;
+            }
+        }
+
         public void Hello()
         {
-            if (IsSignedOut())
-                new MessageDialog("Bye");
+            ;
         }
 
         public static string CountFiles()
@@ -87,13 +94,18 @@ namespace ImageBrowser.Helpers
 
         public static async Task<IEnumerable<IAccount>> GetMSGraphAccouts()
         {
-            return await publicClientApp.GetAccountsAsync().ConfigureAwait(false);
+            if (publicClientApp!=null)
+            {
+                return await publicClientApp.GetAccountsAsync().ConfigureAwait(false);
+
+            }
+            return null;
         }
 
         public static async Task SingOutMSGraphAccount(IAccount firstAccount)
         {
-            await publicClientApp.RemoveAsync(firstAccount).ConfigureAwait(false);
             UserSignedOut = true;
+            await publicClientApp.RemoveAsync(firstAccount).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -102,12 +114,12 @@ namespace ImageBrowser.Helpers
         /// <returns>GraphServiceClient</returns>
         public static async Task<GraphServiceClient> SignInAndInitializeGraphServiceClient()
         {
+            UserSignedOut = false;
             GraphServiceClient graphClient = new GraphServiceClient(MSGraphURL,
                 new DelegateAuthenticationProvider(async (requestMessage) =>
                 {
                     await Task.Run(async () => requestMessage.Headers.Authorization = new AuthenticationHeaderValue("bearer", await SignInUserAndGetTokenUsingMSAL(Scopes)));
                 }));
-            UserSignedOut = false;
             return await Task.FromResult(graphClient);
         }
 

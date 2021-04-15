@@ -36,7 +36,7 @@ namespace ImageBrowser
 
         public static MainPage Current;
         internal ImageBrowser.ViewModels.ImageFileInfoViewModel imageFileInfoViewModel = new ViewModels.ImageFileInfoViewModel();
-
+        ImageFileInfo persistedItem;
         string defaultWinTheme = string.Empty;
         public FoldersViewModel FoldersToDisplay { get; set; }
 
@@ -48,7 +48,7 @@ namespace ImageBrowser
            
             NavigationCacheMode = NavigationCacheMode.Enabled;
 
-            DataContext = new MSGraphQueriesHelper();
+          //  DataContext = new MSGraphQueriesHelper();
 
             var DefaultTheme = new Windows.UI.ViewManagement.UISettings();
             var uiTheme = DefaultTheme.GetColorValue(Windows.UI.ViewManagement.UIColorType.Background).ToString();
@@ -202,7 +202,7 @@ namespace ImageBrowser
                 {
                     ResultText.Text = "Display Name: " + graphUser.UserPrincipalName + "\nid: " + graphUser.Id;
 
-                    SignOutButton.Visibility = Visibility.Visible;
+                    //SignOutButton.Visibility = Visibility.Visible;
                     OpenOneDrive.Visibility = Visibility.Visible;
                 });
             }
@@ -235,6 +235,8 @@ namespace ImageBrowser
         private async void SignOutButton_ClickAsync(object sender, RoutedEventArgs e)
         {
             IEnumerable<IAccount> accounts = await MSGraphQueriesHelper.GetMSGraphAccouts();
+            if (accounts == null)
+                return;
             IAccount firstAccount = accounts.FirstOrDefault();
 
             try
@@ -244,7 +246,7 @@ namespace ImageBrowser
                 {
                     ResultText.Text = "User has signed-out";
                     signingOneDrive.Visibility = Visibility.Visible;
-                    OpenOneDrive.Visibility = SignOutButton.Visibility = Visibility.Collapsed;
+                    OpenOneDrive.Visibility = /*SignOutButton.Visibility =*/ Visibility.Collapsed;
                     OneDriveInfo.Text = "";
                     imageFileInfoViewModel.FlushObservableCollectionOfImages();
                 });

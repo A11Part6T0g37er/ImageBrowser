@@ -4,15 +4,16 @@
 	  xmlns:local="using:ImageBrowser"
 	  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	  
+	  xmlns:converters="using:ImageBrowser.Common.Converters"
 	  xmlns:helpers="using:ImageBrowser.Helpers"
 	  d:DataContext="{d:DesignInstance Type=helpers:MSGraphQueriesHelper}"
 	  mc:Ignorable="d"
 	  
 	  Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 	<Page.Resources>
-
-		<Thickness x:Key="LargeItemMargin">8</Thickness>
+		<converters:BooleanToVisibilityConverter x:Key="bool2Visibility" />
+		<converters:BooleanToVisibilityConverter x:Key="bool2visInverse" OnTrue="Collapsed"  OnFalse="Visible"/>
+			<Thickness x:Key="LargeItemMargin">8</Thickness>
 		<Thickness x:Key="SmallItemMargin">0</Thickness>
 
 		<ItemsPanelTemplate x:Key="ImageGridView_ItemsPanelTemplate">
@@ -456,7 +457,7 @@
 							  x:Uid="signOut"
 							  Click="SignOutButton_ClickAsync"
 							  
-							Visibility="Collapsed"
+							Visibility="{Binding IsUserSignedOut, Converter={StaticResource bool2Visibility}}"
 							  FontFamily="Segoe Ui" />
 							 
 				<AppBarButton x:Name="OpenOneDrive"
