@@ -9,6 +9,7 @@
 	  d:DataContext="{d:DesignInstance Type=helpers:MSGraphQueriesHelper}"
 	  mc:Ignorable="d"
 	 
+	  xmlns:sys="using:System"
 	  xmlns:viewModels="using:ImageBrowser.ViewModels"
 	  Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 	<Page.Resources>
@@ -460,7 +461,7 @@
 							  x:Uid="signOut"
 							  Click="SignOutButton_ClickAsync"
 							 
-							Visibility="{Binding  Path=IsUserSignedOut, Mode=OneWay, Converter={StaticResource bool2Visibility}}"
+							Visibility="{x:Bind helpers:MSGraphQueriesHelper.  , Mode=OneWay, Converter={StaticResource bool2Visibility}}"
 							
 							  FontFamily="Segoe Ui" />
 							 

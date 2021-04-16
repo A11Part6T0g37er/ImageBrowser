@@ -16,7 +16,7 @@ using Windows.UI.Xaml;
 
 namespace ImageBrowser.Helpers
 {
-    public class MSGraphQueriesHelper : INotifyPropertyChanged
+    public static class MSGraphQueriesHelper /*: INotifyPropertyChanged*/
     {
         #region MSGraphAPI
 
@@ -33,7 +33,7 @@ namespace ImageBrowser.Helpers
         private static IDriveItemSearchCollectionPage search;
         private static bool UserSignedOut = false;
 
-        public event PropertyChangedEventHandler PropertyChanged;
+       /* public event PropertyChangedEventHandler PropertyChanged;*/
 
 
         /// <summary>
@@ -65,35 +65,35 @@ namespace ImageBrowser.Helpers
             return downloadedFiles;
         }
 
-        public MSGraphQueriesHelper()
+       /* public MSGraphQueriesHelper()
         {
          //   SignOutStatus = new RelayCommand(Hello, IsSignedOut);
             UserSignedOut = false;
-        }
+        }*/
      
-        public ICommand SignOutStatus { get; set; }
+        //public ICommand SignOutStatus { get; set; }
 
         public static bool IsSignedOut()
         {
             return UserSignedOut;
         }
 
-        public  bool IsUserSignedOut
-        {
-            get
-            {
-                return UserSignedOut;
-            }
-            set
-            {
-               SetProperty(ref UserSignedOut, value);
-            }
-        }
+        //public  bool IsUserSignedOut
+        //{
+        //    get
+        //    {
+        //        return UserSignedOut;
+        //    }
+        //    set
+        //    {
+        //       SetProperty(ref UserSignedOut, value);
+        //    }
+        //}
 
-        public void Hello()
-        {
-            ;
-        }
+        //public void Hello()
+        //{
+        //    ;
+        //}
 
         public static string CountFiles()
         {
@@ -191,7 +191,7 @@ namespace ImageBrowser.Helpers
             return search.Count.ToString();
         }
 
-        protected void OnPropertyChanged([CallerMemberName] string propertyName = null) =>
+  /*      protected void OnPropertyChanged([CallerMemberName] string propertyName = null) =>
            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
         protected bool SetProperty<T>(ref T storage, T value, [CallerMemberName] string propertyName = null)
@@ -206,7 +206,7 @@ namespace ImageBrowser.Helpers
                 OnPropertyChanged(propertyName);
                 return true;
             }
-        }
+        }*/
 
 
 
