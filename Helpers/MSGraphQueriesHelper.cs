@@ -3,9 +3,11 @@ using Microsoft.Graph;
 using Microsoft.Identity.Client;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Net.Http.Headers;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Windows.Storage;
@@ -14,7 +16,7 @@ using Windows.UI.Xaml;
 
 namespace ImageBrowser.Helpers
 {
-    public class MSGraphQueriesHelper
+    public class MSGraphQueriesHelper : INotifyPropertyChanged
     {
         #region MSGraphAPI
 
@@ -30,6 +32,8 @@ namespace ImageBrowser.Helpers
         #endregion
         private static IDriveItemSearchCollectionPage search;
         private static bool UserSignedOut = false;
+
+        public event PropertyChangedEventHandler PropertyChanged;
 
 
         /// <summary>
@@ -63,10 +67,10 @@ namespace ImageBrowser.Helpers
 
         public MSGraphQueriesHelper()
         {
-            SignOutStatus = new RelayCommand(Hello, IsSignedOut);
-    //        UserSignedOut = false;
+         //   SignOutStatus = new RelayCommand(Hello, IsSignedOut);
+            UserSignedOut = false;
         }
-
+     
         public ICommand SignOutStatus { get; set; }
 
         public static bool IsSignedOut()
@@ -74,11 +78,15 @@ namespace ImageBrowser.Helpers
             return UserSignedOut;
         }
 
-        public bool IsUserSignedOut
+        public  bool IsUserSignedOut
         {
             get
             {
                 return UserSignedOut;
+            }
+            set
+            {
+               SetProperty(ref UserSignedOut, value);
             }
         }
 
@@ -104,7 +112,7 @@ namespace ImageBrowser.Helpers
 
         public static async Task SingOutMSGraphAccount(IAccount firstAccount)
         {
-            UserSignedOut = true;
+            UserSignedOut =true;
             await publicClientApp.RemoveAsync(firstAccount).ConfigureAwait(false);
         }
 
@@ -114,7 +122,7 @@ namespace ImageBrowser.Helpers
         /// <returns>GraphServiceClient</returns>
         public static async Task<GraphServiceClient> SignInAndInitializeGraphServiceClient()
         {
-            UserSignedOut = false;
+            UserSignedOut = true;
             GraphServiceClient graphClient = new GraphServiceClient(MSGraphURL,
                 new DelegateAuthenticationProvider(async (requestMessage) =>
                 {
@@ -183,7 +191,22 @@ namespace ImageBrowser.Helpers
             return search.Count.ToString();
         }
 
+        protected void OnPropertyChanged([CallerMemberName] string propertyName = null) =>
+           PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
+        protected bool SetProperty<T>(ref T storage, T value, [CallerMemberName] string propertyName = null)
+        {
+            if (object.Equals(storage, value))
+            {
+                return false;
+            }
+            else
+            {
+                storage = value;
+                OnPropertyChanged(propertyName);
+                return true;
+            }
+        }
 
 
 

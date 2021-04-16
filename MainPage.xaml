@@ -8,12 +8,15 @@
 	  xmlns:helpers="using:ImageBrowser.Helpers"
 	  d:DataContext="{d:DesignInstance Type=helpers:MSGraphQueriesHelper}"
 	  mc:Ignorable="d"
-	  
+	 
+	  xmlns:viewModels="using:ImageBrowser.ViewModels"
 	  Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 	<Page.Resources>
 		<converters:BooleanToVisibilityConverter x:Key="bool2Visibility" />
 		<converters:BooleanToVisibilityConverter x:Key="bool2visInverse" OnTrue="Collapsed"  OnFalse="Visible"/>
-			<Thickness x:Key="LargeItemMargin">8</Thickness>
+
+		<viewModels:ImageFileInfoViewModel x:Key="ImageViewModel" />
+		<Thickness x:Key="LargeItemMargin">8</Thickness>
 		<Thickness x:Key="SmallItemMargin">0</Thickness>
 
 		<ItemsPanelTemplate x:Key="ImageGridView_ItemsPanelTemplate">
@@ -456,8 +459,9 @@
 							  Label=""
 							  x:Uid="signOut"
 							  Click="SignOutButton_ClickAsync"
-							  
-							Visibility="{Binding IsUserSignedOut, Converter={StaticResource bool2Visibility}}"
+							 
+							Visibility="{Binding  Path=IsUserSignedOut, Mode=OneWay, Converter={StaticResource bool2Visibility}}"
+							
 							  FontFamily="Segoe Ui" />
 							 
 				<AppBarButton x:Name="OpenOneDrive"
