@@ -16,7 +16,7 @@ using Windows.UI.Xaml;
 
 namespace ImageBrowser.Helpers
 {
-    public static class MSGraphQueriesHelper /*: INotifyPropertyChanged*/
+    public  class MSGraphQueriesHelper /*: INotifyPropertyChanged*/
     {
         #region MSGraphAPI
 
@@ -31,7 +31,7 @@ namespace ImageBrowser.Helpers
 
         #endregion
         private static IDriveItemSearchCollectionPage search;
-        private static bool UserSignedOut = false;
+        public static bool UserSignedOut = false;
 
        /* public event PropertyChangedEventHandler PropertyChanged;*/
 
@@ -73,7 +73,7 @@ namespace ImageBrowser.Helpers
      
         //public ICommand SignOutStatus { get; set; }
 
-        public static bool IsSignedOut()
+        public  bool IsSignedOut()
         {
             return UserSignedOut;
         }
@@ -112,7 +112,7 @@ namespace ImageBrowser.Helpers
 
         public static async Task SingOutMSGraphAccount(IAccount firstAccount)
         {
-            UserSignedOut =true;
+            UserSignedOut =false;
             await publicClientApp.RemoveAsync(firstAccount).ConfigureAwait(false);
         }
 

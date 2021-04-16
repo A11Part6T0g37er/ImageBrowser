@@ -6,17 +6,19 @@
 	  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	  xmlns:converters="using:ImageBrowser.Common.Converters"
 	  xmlns:helpers="using:ImageBrowser.Helpers"
-	  d:DataContext="{d:DesignInstance Type=helpers:MSGraphQueriesHelper}"
 	  mc:Ignorable="d"
 	 
 	  xmlns:sys="using:System"
 	  xmlns:viewModels="using:ImageBrowser.ViewModels"
 	  Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+	  <!--d:DataContext="{d:DesignInstance Type=helpers:MSGraphQueriesHelper}"-->
 	<Page.Resources>
 		<converters:BooleanToVisibilityConverter x:Key="bool2Visibility" />
 		<converters:BooleanToVisibilityConverter x:Key="bool2visInverse" OnTrue="Collapsed"  OnFalse="Visible"/>
 
+		<viewModels:SigningStatusViewModel x:Key="StatusSinging" />
 		<viewModels:ImageFileInfoViewModel x:Key="ImageViewModel" />
+
 		<Thickness x:Key="LargeItemMargin">8</Thickness>
 		<Thickness x:Key="SmallItemMargin">0</Thickness>
 
@@ -460,10 +462,18 @@
 							  Label=""
 							  x:Uid="signOut"
 							  Click="SignOutButton_ClickAsync"
-							 
-							Visibility="{x:Bind helpers:MSGraphQueriesHelper.  , Mode=OneWay, Converter={StaticResource bool2Visibility}}"
-							
+DataContext="{StaticResource StatusSinging}"
+
+							  Visibility="{Binding IsUserSignedOut, Converter={StaticResource bool2Visibility}}"
+							  
 							  FontFamily="Segoe Ui" />
+				<!--using viewModel-->	
+							<!--d:DataContext="{x:Bind viewModels:SigningStatusViewModel}"
+							Visibility="{Binding IsUserSignedOut}"-->
+				
+				<!--some kind not working-->
+							  <!--Visibility="{x:Bind helpers:MSGraphQueriesHelper.UserSignedOut, Mode=OneWay, Converter={StaticResource bool2Visibility}}"-->
+							  <!--Visibility="{Binding  helpers:MSGraphQueriesHelper.UserSignedOut , Converter={StaticResource bool2Visibility}}"-->
 							 
 				<AppBarButton x:Name="OpenOneDrive"
 							  Content=""
