@@ -16,7 +16,7 @@ using Windows.UI.Xaml;
 
 namespace ImageBrowser.Helpers
 {
-    public  class MSGraphQueriesHelper /*: INotifyPropertyChanged*/
+    public  class MSGraphQueriesHelper : INotifyPropertyChanged
     {
         #region MSGraphAPI
 
@@ -32,8 +32,8 @@ namespace ImageBrowser.Helpers
         #endregion
         private static IDriveItemSearchCollectionPage search;
         public static bool UserSignedOut = false;
-
-       /* public event PropertyChangedEventHandler PropertyChanged;*/
+        public bool UserDefenitlySignedOut { get; set; }
+        public event PropertyChangedEventHandler PropertyChanged;
 
 
         /// <summary>
@@ -112,6 +112,7 @@ namespace ImageBrowser.Helpers
 
         public static async Task SingOutMSGraphAccount(IAccount firstAccount)
         {
+            
             UserSignedOut =false;
             await publicClientApp.RemoveAsync(firstAccount).ConfigureAwait(false);
         }
@@ -191,7 +192,7 @@ namespace ImageBrowser.Helpers
             return search.Count.ToString();
         }
 
-  /*      protected void OnPropertyChanged([CallerMemberName] string propertyName = null) =>
+        protected void OnPropertyChanged([CallerMemberName] string propertyName = null) =>
            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
         protected bool SetProperty<T>(ref T storage, T value, [CallerMemberName] string propertyName = null)
@@ -206,7 +207,7 @@ namespace ImageBrowser.Helpers
                 OnPropertyChanged(propertyName);
                 return true;
             }
-        }*/
+        }
 
 
 

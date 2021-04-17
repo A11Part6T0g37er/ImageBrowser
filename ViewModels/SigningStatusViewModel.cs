@@ -10,10 +10,17 @@ namespace ImageBrowser.ViewModels
 {
     public class SigningStatusViewModel : BindableBase
     {
+
+        private bool _isUserSignedOut = MSGraphQueriesHelper.UserSignedOut;
        public  bool IsUserSignedOut
         {
-            get { return MSGraphQueriesHelper.UserSignedOut; OnPropertyChanged("IsUserSignedOut"); }
-            set { base.SetProperty(ref MSGraphQueriesHelper.UserSignedOut, value); }
+            get { return MSGraphQueriesHelper.UserSignedOut;  }
+            set { base.SetProperty(ref _isUserSignedOut, MSGraphQueriesHelper.UserSignedOut); }
+        }
+
+        public SigningStatusViewModel()
+        {
+            IsUserSignedOut = MSGraphQueriesHelper.UserSignedOut;
         }
     }
 }
