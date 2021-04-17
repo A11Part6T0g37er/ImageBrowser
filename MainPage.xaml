@@ -464,7 +464,7 @@
 							  Click="SignOutButton_ClickAsync"
 DataContext="{StaticResource StatusSinging}"
 
-							  Visibility="{Binding IsUserSignedOut, Converter={StaticResource bool2Visibility},UpdateSourceTrigger=PropertyChanged,Mode=OneWay}"
+							  Visibility="{Binding IsUserSignedOut, Converter={StaticResource bool2Visibility},UpdateSourceTrigger=PropertyChanged,Mode=TwoWay}"
 							  
 							  FontFamily="Segoe Ui" />
 				<!--using viewModel-->	
