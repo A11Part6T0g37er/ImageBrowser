@@ -1,6 +1,7 @@
 ﻿using ImageBrowser.Helpers;
 using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using Windows.UI.Xaml;
 
@@ -15,17 +16,29 @@ namespace ImageBrowser.ViewModels
   typeof(SigningStatusViewModel),
   new PropertyMetadata(false, new PropertyChangedCallback(OnStatusChanged))
 );
-        // TODO silving falling down issue  
+        public event Action ChangeStatusUser = new Action(OnStatusChangedFromHelper);
+
+        private static void OnStatusChangedFromHelper()
+        {
+            Trace.WriteLine("See That?");
+        }
+
+      
+
+        // TODO catch property from helper 
         private static void OnStatusChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             bool oldValue = (bool)e.OldValue;
             bool newValue = MSGraphQueriesHelper.UserSignedOut;
             SigningStatusViewModel signingStatus = d as SigningStatusViewModel;
-            signingStatus?.OnStatusChanged();
+            signingStatus?.OnStatusChanged(oldValue,newValue);
+            ;
         }
 
-        protected virtual void OnStatusChanged()
+        public virtual void OnStatusChanged(bool oldValue, bool newValue)
         {
+            if (oldValue != newValue)
+                IsUserSignedOut = newValue;
             OnPropertyChanged("IsUserSignedOut");
         }
 

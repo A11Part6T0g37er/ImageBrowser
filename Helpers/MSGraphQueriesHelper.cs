@@ -1,4 +1,5 @@
 ﻿using ImageBrowser.Common;
+using ImageBrowser.ViewModels;
 using Microsoft.Graph;
 using Microsoft.Identity.Client;
 using System;
@@ -193,10 +194,10 @@ namespace ImageBrowser.Helpers
             return search.Count.ToString();
         }
 
-       static protected void OnPropertyChanged([CallerMemberName] string propertyName = null) =>
-           PropertyChanged?.Invoke(MSGraphQueriesHelper.UserSignedOut, new PropertyChangedEventArgs(propertyName));
+       protected static void OnPropertyChanged([CallerMemberName] string propertyName = null) =>
+           PropertyChanged?.Invoke(SigningStatusViewModel.StatusProperty, new PropertyChangedEventArgs(propertyName));
 
-       static protected bool SetProperty<T>(ref T storage, T value, [CallerMemberName] string propertyName = null)
+       protected static bool SetProperty<T>(ref T storage, T value, [CallerMemberName] string propertyName = null)
         {
             if (object.Equals(storage, value))
             {
