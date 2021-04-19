@@ -17,7 +17,7 @@ namespace ImageBrowser.ViewModels
 
         protected bool SetProperty<T>(ref T storage, T value, [CallerMemberName] string propertyName = null)
         {
-            if (object.Equals(storage, value))
+            if (EqualityComparer<T>.Default.Equals(storage, value))
             {
                 return false;
             }

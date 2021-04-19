@@ -16,7 +16,7 @@ using Windows.UI.Xaml;
 
 namespace ImageBrowser.Helpers
 {
-    public  class MSGraphQueriesHelper : INotifyPropertyChanged
+    public  class MSGraphQueriesHelper 
     {
         #region MSGraphAPI
 
@@ -31,9 +31,9 @@ namespace ImageBrowser.Helpers
 
         #endregion
         private static IDriveItemSearchCollectionPage search;
-        public static bool UserSignedOut = false;
+        public static bool UserSignedOut;
         public bool UserDefenitlySignedOut { get; set; }
-        public event PropertyChangedEventHandler PropertyChanged;
+        public static event PropertyChangedEventHandler PropertyChanged;
 
 
         /// <summary>
@@ -112,8 +112,8 @@ namespace ImageBrowser.Helpers
 
         public static async Task SingOutMSGraphAccount(IAccount firstAccount)
         {
-            
-            UserSignedOut =false;
+            SetProperty(ref UserSignedOut,false);
+          //  UserSignedOut =false;
             await publicClientApp.RemoveAsync(firstAccount).ConfigureAwait(false);
         }
 
@@ -123,7 +123,8 @@ namespace ImageBrowser.Helpers
         /// <returns>GraphServiceClient</returns>
         public static async Task<GraphServiceClient> SignInAndInitializeGraphServiceClient()
         {
-            UserSignedOut = true;
+            SetProperty(ref UserSignedOut, true);
+           // UserSignedOut = true;
             GraphServiceClient graphClient = new GraphServiceClient(MSGraphURL,
                 new DelegateAuthenticationProvider(async (requestMessage) =>
                 {
@@ -192,10 +193,10 @@ namespace ImageBrowser.Helpers
             return search.Count.ToString();
         }
 
-        protected void OnPropertyChanged([CallerMemberName] string propertyName = null) =>
-           PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+       static protected void OnPropertyChanged([CallerMemberName] string propertyName = null) =>
+           PropertyChanged?.Invoke(MSGraphQueriesHelper.UserSignedOut, new PropertyChangedEventArgs(propertyName));
 
-        protected bool SetProperty<T>(ref T storage, T value, [CallerMemberName] string propertyName = null)
+       static protected bool SetProperty<T>(ref T storage, T value, [CallerMemberName] string propertyName = null)
         {
             if (object.Equals(storage, value))
             {
