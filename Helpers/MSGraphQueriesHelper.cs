@@ -124,6 +124,7 @@ namespace ImageBrowser.Helpers
         /// <returns>GraphServiceClient.</returns>
         public static async Task<GraphServiceClient> SignInAndInitializeGraphServiceClient()
         {
+            SetProperty(ref UserSignedOut, false);
             SetProperty(ref UserSignedOut, true);
            // UserSignedOut = true;
             GraphServiceClient graphClient = new GraphServiceClient(MSGraphURL,
@@ -194,8 +195,10 @@ namespace ImageBrowser.Helpers
             return search.Count.ToString();
         }
 
-       protected static void OnPropertyChanged([CallerMemberName] string propertyName = null) =>
-           PropertyChanged?.Invoke(SigningStatusViewModel.StatusProperty, new PropertyChangedEventArgs(propertyName));
+        protected static void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(/*SigningStatusViewModel.StatusProperty*/ MSGraphQueriesHelper.UserSignedOut, new PropertyChangedEventArgs(propertyName));
+        }
 
        protected static bool SetProperty<T>(ref T storage, T value, [CallerMemberName] string propertyName = null)
         {

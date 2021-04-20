@@ -71,6 +71,8 @@ namespace ImageBrowser.ViewModels
 
         private void SigningStatusViewModel_OnStatusChanged(object sender, PropertyChangedEventArgs e)
         {
+            var newValue = (bool)sender;
+            IsUserSignedOut = newValue;
             OnPropertyChanged("IsUserSignedOut");
         }
 
