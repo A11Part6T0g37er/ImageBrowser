@@ -455,6 +455,8 @@
 							  x:Name="signingOneDrive"
 							  Label=""
 							  x:Uid="signIn"
+							  DataContext="{StaticResource StatusSinging}"
+							  Visibility="{Binding IsUserSignedOut, Converter={StaticResource bool2visInverse},Mode=TwoWay}"
 							  ToolTipService.ToolTip="OneDrive"
 							  Click="SigningOneDrive_ClickAsync" />
 				<AppBarButton Icon="Account"
@@ -462,6 +464,7 @@
 							  Label=""
 							  x:Uid="signOut"
 							  Click="SignOutButton_ClickAsync"
+							  
 DataContext="{StaticResource StatusSinging}"
 
 							  Visibility="{Binding  IsUserSignedOut,  Converter={StaticResource bool2Visibility},Mode=TwoWay}"
