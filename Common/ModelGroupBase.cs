@@ -10,9 +10,9 @@ namespace ImageBrowser.Models
     using System.ComponentModel;
 
     /// <summary>
-    /// For use with XAML controls showing grouped collections
+    /// For use with XAML controls showing grouped collections.
     /// </summary>
-    /// <typeparam name="T">Type of data item</typeparam>
+    /// <typeparam name="T">Type of data item.</typeparam>
     public class ModelGroupBase<T> : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;

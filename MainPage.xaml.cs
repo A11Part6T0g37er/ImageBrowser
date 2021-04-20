@@ -281,7 +281,7 @@ namespace ImageBrowser
         /// <summary>
         /// Imlemented switching between <see cref="ElementTheme"/> .
         /// </summary>
-        /// <param name="sender">Button</param>
+        /// <param name="sender">Button.</param>
         /// <param name="selectedTheme">Button`s <see cref="string"/> tag property.</param>
         private void DefineClickedTheme(object sender, string selectedTheme)
         {

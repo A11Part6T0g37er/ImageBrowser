@@ -12,7 +12,7 @@ namespace ImageBrowser.ViewModels
         public static readonly DependencyObject dependencyObject;
         public static readonly DependencyProperty StatusProperty = DependencyProperty.Register(
   nameof(IsUserSignedOut),
-  typeof(Boolean),
+  typeof(bool),
   typeof(SigningStatusViewModel),
   new PropertyMetadata(false, new PropertyChangedCallback(OnStatusChanged))
 );

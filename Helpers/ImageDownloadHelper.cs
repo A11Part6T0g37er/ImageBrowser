@@ -12,14 +12,14 @@ namespace ImageBrowser.Helpers
     public static class ImageDownloadHelper
     {
         /// <summary>
-        /// Get images from Web
+        /// Get images from Web.
         /// </summary>
-        /// <param name="url">Web link</param>
-        /// <param name="fileName">Unique filename</param>
-        /// <returns>Returns Uri path for FileStorage</returns>
-        public static async Task<String> DownloadImage(string url, String fileName)
+        /// <param name="url">Web link.</param>
+        /// <param name="fileName">Unique filename.</param>
+        /// <returns>Returns Uri path for FileStorage.</returns>
+        public static async Task<string> DownloadImage(string url, string fileName)
         {
-            const String imagesSubdirectory = "DownloadedImages";
+            const string imagesSubdirectory = "DownloadedImages";
             var rootFolder = await ApplicationData.Current.LocalFolder.CreateFolderAsync(imagesSubdirectory, CreationCollisionOption.OpenIfExists);
 
             var storageFile = await rootFolder.CreateFileAsync(fileName, CreationCollisionOption.ReplaceExisting);
@@ -32,7 +32,7 @@ namespace ImageBrowser.Helpers
             }
 
             // Use this path to load image
-            String newPath = String.Format("ms-appdata:///local/{0}/{1}", imagesSubdirectory, fileName);
+            string newPath = string.Format("ms-appdata:///local/{0}/{1}", imagesSubdirectory, fileName);
 
             return newPath;
         }

@@ -49,7 +49,7 @@ namespace ImageBrowser.Helpers
 
             List<DriveItem> oneDriveItems = search.CurrentPage.Select(x => x).ToList();
             StorageFile storageFile;
-            String newPath = String.Empty;
+            string newPath = string.Empty;
             List<StorageFile> downloadedFiles = new List<StorageFile>();
 
             foreach (var item in oneDriveItems)
@@ -119,9 +119,9 @@ namespace ImageBrowser.Helpers
         }
 
         /// <summary>
-        /// Sign in user using MSAL and obtain a token for Microsoft Graph
+        /// Sign in user using MSAL and obtain a token for Microsoft Graph.
         /// </summary>
-        /// <returns>GraphServiceClient</returns>
+        /// <returns>GraphServiceClient.</returns>
         public static async Task<GraphServiceClient> SignInAndInitializeGraphServiceClient()
         {
             SetProperty(ref UserSignedOut, true);
@@ -135,10 +135,10 @@ namespace ImageBrowser.Helpers
         }
 
         /// <summary>
-        /// Signs in the user and obtains an Access token for MS Graph
+        /// Signs in the user and obtains an Access token for MS Graph.
         /// </summary>
-        /// <param name="scopes"></param>
-        /// <returns> Access Token</returns>
+        /// <param name="scopes">Used default const values.</param>
+        /// <returns> Access Token.</returns>
         public static async Task<string> SignInUserAndGetTokenUsingMSAL(string[] scopes)
         {
             // Initialize the MSAL library by building a public client application

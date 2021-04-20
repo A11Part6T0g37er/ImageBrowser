@@ -37,7 +37,7 @@ namespace ImageBrowser
 
         public string ImageTitle
         {
-            get => String.IsNullOrEmpty(imageTitle) ? ImageName : ImageProperties.Title;
+            get => string.IsNullOrEmpty(imageTitle) ? ImageName : ImageProperties.Title;
             set
             {
                 if (ImageProperties.Title != value)

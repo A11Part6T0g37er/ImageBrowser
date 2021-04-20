@@ -8,28 +8,28 @@ namespace ImageBrowser.Models.Serialization
 {
     public class RequestLinkInfo
     {
-        public string type { get; set; }  // enum view, edit или embed
-        public string scope { get; set; } // optional - properties: anonymous or organization
+        public string Type { get; set; }  // enum view, edit или embed
+        public string Scope { get; set; } // optional - properties: anonymous or organization
     }
 
     public class LinkResponseInfo
     {
-        public string id { get; set; }
-        public string[] roles { get; set; }
-        public Link link { get; set; }
+        public string Id { get; set; }
+        public string[] Roles { get; set; }
+        public Link Link { get; set; }
     }
 
     public class Link
     {
-        public string type { get; set; }
-        public string scope { get; set; }
-        public string webUrl { get; set; }
-        public OneDriveApplication application { get; set; }
+        public string Type { get; set; }
+        public string Scope { get; set; }
+        public string WebUrl { get; set; }
+        public OneDriveApplication Application { get; set; }
     }
 
     public class OneDriveApplication
     {
-        public string id { get; set; }
-        public string displayName { get; set; }
+        public string Id { get; set; }
+        public string DisplayName { get; set; }
     }
 }
