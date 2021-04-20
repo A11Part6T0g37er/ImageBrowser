@@ -238,7 +238,7 @@ namespace ImageBrowser
             if (accounts == null)
                 return;
             IAccount firstAccount = accounts.FirstOrDefault();
-
+            
             try
             {
                 await MSGraphQueriesHelper.SingOutMSGraphAccount(firstAccount).ConfigureAwait(false);

@@ -17,7 +17,7 @@ using Windows.UI.Xaml;
 
 namespace ImageBrowser.Helpers
 {
-    public  class MSGraphQueriesHelper 
+    public class MSGraphQueriesHelper
     {
         #region MSGraphAPI
 
@@ -66,35 +66,11 @@ namespace ImageBrowser.Helpers
             return downloadedFiles;
         }
 
-       /* public MSGraphQueriesHelper()
-        {
-         //   SignOutStatus = new RelayCommand(Hello, IsSignedOut);
-            UserSignedOut = false;
-        }*/
-     
-        //public ICommand SignOutStatus { get; set; }
-
-        public  bool IsSignedOut()
+       
+        public bool IsSignedOut()
         {
             return UserSignedOut;
         }
-
-        //public  bool IsUserSignedOut
-        //{
-        //    get
-        //    {
-        //        return UserSignedOut;
-        //    }
-        //    set
-        //    {
-        //       SetProperty(ref UserSignedOut, value);
-        //    }
-        //}
-
-        //public void Hello()
-        //{
-        //    ;
-        //}
 
         public static string CountFiles()
         {
@@ -103,7 +79,7 @@ namespace ImageBrowser.Helpers
 
         public static async Task<IEnumerable<IAccount>> GetMSGraphAccouts()
         {
-            if (publicClientApp!=null)
+            if (publicClientApp != null)
             {
                 return await publicClientApp.GetAccountsAsync().ConfigureAwait(false);
 
@@ -113,8 +89,8 @@ namespace ImageBrowser.Helpers
 
         public static async Task SingOutMSGraphAccount(IAccount firstAccount)
         {
-            SetProperty(ref UserSignedOut,false);
-          //  UserSignedOut =false;
+            SetProperty(ref UserSignedOut, false);
+           
             await publicClientApp.RemoveAsync(firstAccount).ConfigureAwait(false);
         }
 
@@ -124,15 +100,14 @@ namespace ImageBrowser.Helpers
         /// <returns>GraphServiceClient.</returns>
         public static async Task<GraphServiceClient> SignInAndInitializeGraphServiceClient()
         {
-            SetProperty(ref UserSignedOut, false);
-            SetProperty(ref UserSignedOut, true);
-           // UserSignedOut = true;
+            
             GraphServiceClient graphClient = new GraphServiceClient(MSGraphURL,
                 new DelegateAuthenticationProvider(async (requestMessage) =>
                 {
                     await Task.Run(async () => requestMessage.Headers.Authorization = new AuthenticationHeaderValue("bearer", await SignInUserAndGetTokenUsingMSAL(Scopes)));
                 }));
-            return await Task.FromResult(graphClient);
+            SetProperty(ref UserSignedOut, true);
+            return await Task.FromResult(graphClient).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -200,7 +175,7 @@ namespace ImageBrowser.Helpers
             PropertyChanged?.Invoke(/*SigningStatusViewModel.StatusProperty*/ MSGraphQueriesHelper.UserSignedOut, new PropertyChangedEventArgs(propertyName));
         }
 
-       protected static bool SetProperty<T>(ref T storage, T value, [CallerMemberName] string propertyName = null)
+        protected static bool SetProperty<T>(ref T storage, T value, [CallerMemberName] string propertyName = null)
         {
             if (object.Equals(storage, value))
             {
