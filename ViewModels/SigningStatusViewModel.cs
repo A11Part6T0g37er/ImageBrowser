@@ -62,11 +62,18 @@ namespace ImageBrowser.ViewModels
             }
         }
 
-     /*   public SigningStatusViewModel()
+        public SigningStatusViewModel()
         {
             // RegisterPropertyChangedCallback(IsUserSignedOut, OnStatusChanged);
             //  IsUserSignedOut = MSGraphQueriesHelper.UserSignedOut;
-        }*/
+            MSGraphQueriesHelper.PropertyChanged += SigningStatusViewModel_OnStatusChanged;
+        }
+
+        private void SigningStatusViewModel_OnStatusChanged(object sender, PropertyChangedEventArgs e)
+        {
+            OnPropertyChanged("IsUserSignedOut");
+        }
+
         protected void OnPropertyChanged([CallerMemberName] string propertyName = null) =>
                 this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
