@@ -33,6 +33,7 @@
 							  IsSourceGrouped="True" />
 
 		
+		
 		<CollectionViewSource x:Name="FoldersToView"
 							  Source="{x:Bind FoldersToDisplay}"
 							  IsSourceGrouped="False" />
@@ -234,7 +235,8 @@
 						<TextBlock x:Uid="groupedListDefinition"
 								   Text="" />
 					</StackPanel>
-					<ListView ItemsSource="{Binding Source={StaticResource ImagesCollection}}"
+					
+					<ListView ItemsSource="{Binding Source={StaticResource ImagesCollection} }"
 							  RelativePanel.Below="button"
 							  ScrollViewer.HorizontalScrollBarVisibility="Auto"
 							  Background="WhiteSmoke">
@@ -447,7 +449,7 @@
 					RelativePanel.AlignTopWith="TopButtons"
 					HorizontalAlignment="Center"
 					RelativePanel.AlignRightWithPanel="True"
-					Margin="50,0,0,0">
+					Margin="40,0,0,0">
 
 			<CommandBar DefaultLabelPosition="Right"
 						IsOpen="True">
@@ -463,30 +465,31 @@
 							  x:Name="SignOutButton"
 							  Label=""
 							  x:Uid="signOut"
-							  Click="SignOutButton_ClickAsync"
-							  
+							  Command="{Binding SignOutCommand}"
 DataContext="{StaticResource StatusSinging}"
 
 							  Visibility="{Binding  IsUserSignedOut,  Converter={StaticResource bool2Visibility},Mode=TwoWay}"
 							  
 							  FontFamily="Segoe Ui" />
-				<!--using viewModel-->	
-							<!--d:DataContext="{x:Bind viewModels:SigningStatusViewModel}"
-							Visibility="{Binding IsUserSignedOut}"-->
+							  <!--Click="SignOutButton_ClickAsync"-->
 				
-				<!--some kind not working-->
-							  <!--Visibility="{x:Bind helpers:MSGraphQueriesHelper.UserSignedOut, Mode=OneWay, Converter={StaticResource bool2Visibility}}"-->
-							  <!--Visibility="{Binding  helpers:MSGraphQueriesHelper.UserSignedOut , Converter={StaticResource bool2Visibility}}"-->
 							 
 				<AppBarButton x:Name="OpenOneDrive"
 							  Content=""
 							  x:Uid="oneDriveOpen"
-							  Visibility="Collapsed"
-							  Click="OpenOneDrive_Click" />
+							  DataContext="{StaticResource ImageViewModel}"
+							  Command="{Binding OneDriveOpenCommand}"
+							  
+							  Visibility="Visible"/>
+							  <!--Click="OpenOneDrive_Click"--> 
+							  <!--DataContext="{StaticResource StatusSinging}"
+							  Visibility="{Binding IsUserSignedOut, Converter={StaticResource bool2Visibility},Mode=TwoWay}"-->
 				<CommandBar.Content>
 					<StackPanel>
 
-						<TextBlock x:Name="ResultText" />
+						<TextBlock x:Name="ResultText" 
+								DataContext="{StaticResource StatusSinging}"
+								   Text="{Binding ResultText,Mode=TwoWay}"/>
 					</StackPanel>
 				</CommandBar.Content>
 				<CommandBar.SecondaryCommands>

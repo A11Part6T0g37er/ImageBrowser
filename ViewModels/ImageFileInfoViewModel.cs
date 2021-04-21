@@ -4,6 +4,8 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Input;
+using ImageBrowser.Common;
 using ImageBrowser.Helpers;
 using ImageBrowser.Models;
 using Windows.Storage;
@@ -18,6 +20,24 @@ namespace ImageBrowser.ViewModels
         public IList<ImageFileInfo> ObservableCollection { get => observableCollection; }
         public ImageFileInfoViewModel()
         {
+            OneDriveOpenCommand = new RelayCommand(OneDriveOpenAction());
+        }
+
+        private   Action OneDriveOpenAction()
+        {
+            return async () =>
+            {
+                List<StorageFile> downloadedFiles = await MSGraphQueriesHelper.DownloadAllFilesFromOneDrive();
+
+                if (Windows.UI.Core.CoreWindow.GetForCurrentThread() != null)
+                {
+                    var resourceLoader = Windows.ApplicationModel.Resources.ResourceLoader.GetForCurrentView();
+
+                 //   OneDriveInfo.Text = resourceLoader.GetString("CountFiles/Text").ToString() + MSGraphQueriesHelper.CountFiles();
+                }
+
+                await this.PopulateObservableCollectionOfImages(downloadedFiles);
+            };
         }
 
         public void ChangeObservCollection(ObservableCollection<ImageFileInfo> images)
@@ -104,5 +124,9 @@ namespace ImageBrowser.ViewModels
         {
             return this.ObservableCollection.Count > 0;
         }
+
+
+
+       public ICommand OneDriveOpenCommand { get; set; }
     }
 }

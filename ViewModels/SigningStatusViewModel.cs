@@ -21,6 +21,11 @@ namespace ImageBrowser.ViewModels
             typeof(bool),
             typeof(SigningStatusViewModel),
             new PropertyMetadata(false, new PropertyChangedCallback(OnStatusChanged)));
+        public static readonly DependencyProperty ResultTextProperty = DependencyProperty.Register(
+           nameof(ResultText),
+           typeof(string),
+           typeof(SigningStatusViewModel),
+           null);
 
         public event Action ChangeStatusUser = new Action(OnStatusChangedFromHelper);
 
@@ -64,35 +69,57 @@ namespace ImageBrowser.ViewModels
 
         public SigningStatusViewModel()
         {
-         /*   SignOutCommand = new RelayCommand(async()=> {
-                IEnumerable<IAccount> accounts = await MSGraphQueriesHelper.GetMSGraphAccouts();
-                if (accounts == null)
-                    return;
-                IAccount firstAccount = accounts.FirstOrDefault();
-
-                try
-                {
-                    await MSGraphQueriesHelper.SingOutMSGraphAccount(firstAccount).ConfigureAwait(false);
-                    await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-                    {
-                        ResultText.Text = "User has signed-out";
-                        signingOneDrive.Visibility = Visibility.Visible;
-                        OpenOneDrive.Visibility = Visibility.Collapsed;
-                        OneDriveInfo.Text = "";
-                        imageFileInfoViewModel.FlushObservableCollectionOfImages();
-                    });
-                }
-                catch (MsalException ex)
-                {
-                    ResultText.Text = $"Error signing-out user: {ex.Message}";
-                }
-            });*/
+            SignOutCommand = new RelayCommand(SigningOutAsync());
 
 
 
 
             MSGraphQueriesHelper.PropertyChanged += SigningStatusViewModel_OnStatusChanged;
         }
+        public string ResultText
+        {
+            get
+            {
+                return GetValue(ResultTextProperty).ToString();
+            }
+            set
+            {
+                SetValue(ResultTextProperty, value);
+            }
+        }
+        private  Action SigningOutAsync()
+        {
+            return async () =>
+            {
+                IEnumerable<IAccount> accounts = await MSGraphQueriesHelper.GetMSGraphAccouts();
+                if (accounts == null)
+                    return;
+                IAccount firstAccount = accounts.FirstOrDefault();
+                
+                try
+                {
+                  string message =  LocalizationHelper.GetLocalizedStrings("normalSignOut");
+
+                    await MSGraphQueriesHelper.SingOutMSGraphAccount(firstAccount).ConfigureAwait(false);
+                    Trace.WriteLine("From Signing Status  200 OK");
+                    ResultText = message;
+                    /*  await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                      {
+                          
+                          OneDriveInfo.Text = "";
+                          imageFileInfoViewModel.FlushObservableCollectionOfImages();
+                      });
+               */
+                }
+                catch (MsalException ex)
+                {
+
+                    ResultText = $"Error signing-out user: {ex.Message}";
+                }
+            };
+        }
+
+       
 
         private void SigningStatusViewModel_OnStatusChanged(object sender, PropertyChangedEventArgs e)
         {
@@ -105,7 +132,7 @@ namespace ImageBrowser.ViewModels
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
 
-        ICommand SignOutCommand { get; set; }
+     public   ICommand SignOutCommand { get; set; }
 
 
     }

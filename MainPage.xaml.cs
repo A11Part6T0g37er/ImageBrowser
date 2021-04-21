@@ -232,7 +232,7 @@ namespace ImageBrowser
         /// <summary>
         /// Sign out the current user.
         /// </summary>
-        private async void SignOutButton_ClickAsync(object sender, RoutedEventArgs e)
+     /*   private async void SignOutButton_ClickAsync(object sender, RoutedEventArgs e)
         {
             IEnumerable<IAccount> accounts = await MSGraphQueriesHelper.GetMSGraphAccouts();
             if (accounts == null)
@@ -246,7 +246,7 @@ namespace ImageBrowser
                 {
                     ResultText.Text = "User has signed-out";
                     signingOneDrive.Visibility = Visibility.Visible;
-                    OpenOneDrive.Visibility = /*SignOutButton.Visibility =*/ Visibility.Collapsed;
+                    OpenOneDrive.Visibility = *//*SignOutButton.Visibility =*//* Visibility.Collapsed;
                     OneDriveInfo.Text = "";
                     imageFileInfoViewModel.FlushObservableCollectionOfImages();
                 });
@@ -256,7 +256,7 @@ namespace ImageBrowser
                 ResultText.Text = $"Error signing-out user: {ex.Message}";
             }
         }
-
+*/
         private async void OpenOneDrive_Click(object sender, RoutedEventArgs e)
         {
 

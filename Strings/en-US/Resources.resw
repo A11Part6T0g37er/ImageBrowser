@@ -139,6 +139,9 @@
   <data name="default.Label" xml:space="preserve">
     <value>Default</value>
   </data>
+  <data name="errorSignOut" xml:space="preserve">
+    <value>Error signing-out user:</value>
+  </data>
   <data name="groupedGrid" xml:space="preserve">
     <value>Grouped Grid</value>
   </data>
@@ -150,6 +153,9 @@
   </data>
   <data name="light.Label" xml:space="preserve">
     <value>Light</value>
+  </data>
+  <data name="normalSignOut" xml:space="preserve">
+    <value>User has signed out.</value>
   </data>
   <data name="oneDriveOpen.Content" xml:space="preserve">
     <value>Get all from OneDrive</value>
