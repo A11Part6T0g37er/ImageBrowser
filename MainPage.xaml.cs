@@ -42,10 +42,12 @@ namespace ImageBrowser
 
         public MainPage()
         {
+            imageFileInfoViewModel = new ImageFileInfoViewModel();
             InitializeComponent();
+
+
             Current = this;
             SizeChanged += CoreWindow_SizeChanged;
-           
             NavigationCacheMode = NavigationCacheMode.Enabled;
 
           //  DataContext = new MSGraphQueriesHelper();
@@ -229,9 +231,6 @@ namespace ImageBrowser
                    });
         }
 
-        /// <summary>
-        /// Sign out the current user.
-        /// </summary>
      /*   private async void SignOutButton_ClickAsync(object sender, RoutedEventArgs e)
         {
             IEnumerable<IAccount> accounts = await MSGraphQueriesHelper.GetMSGraphAccouts();
@@ -257,6 +256,9 @@ namespace ImageBrowser
             }
         }
 */
+        /// <summary>
+        /// Get all photos from OneDrive.
+        /// </summary>
         private async void OpenOneDrive_Click(object sender, RoutedEventArgs e)
         {
 
