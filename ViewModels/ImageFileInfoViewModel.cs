@@ -12,6 +12,7 @@ using ImageBrowser.Helpers;
 using ImageBrowser.Models;
 using Microsoft.Identity.Client;
 using Windows.Storage;
+using Windows.UI.Popups;
 using Windows.UI.Xaml;
 
 namespace ImageBrowser.ViewModels
@@ -141,7 +142,11 @@ namespace ImageBrowser.ViewModels
                 }
                 catch (MsalException ex)
                 {
-
+                    await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
+                  () =>
+                  {
+                      new MessageDialog("ERROR occures!");
+                  });
                     ResultText = $"Error signing-out user: {ex.Message}";
                 }
             };

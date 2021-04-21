@@ -50,8 +50,6 @@ namespace ImageBrowser
             SizeChanged += CoreWindow_SizeChanged;
             NavigationCacheMode = NavigationCacheMode.Enabled;
 
-          //  DataContext = new MSGraphQueriesHelper();
-
             var DefaultTheme = new Windows.UI.ViewManagement.UISettings();
             var uiTheme = DefaultTheme.GetColorValue(Windows.UI.ViewManagement.UIColorType.Background).ToString();
             if (uiTheme == "#FF000000")
@@ -93,7 +91,7 @@ namespace ImageBrowser
             {
                 // initialize blank state
                 startingGreetingScreen.Visibility = Visibility.Visible;
-                 
+
             }
 
             imageFileInfoViewModel.InitializeGroupingOfViewModel();
@@ -229,49 +227,6 @@ namespace ImageBrowser
                    {
                        new MessageDialog(message);
                    });
-        }
-
-     /*   private async void SignOutButton_ClickAsync(object sender, RoutedEventArgs e)
-        {
-            IEnumerable<IAccount> accounts = await MSGraphQueriesHelper.GetMSGraphAccouts();
-            if (accounts == null)
-                return;
-            IAccount firstAccount = accounts.FirstOrDefault();
-            
-            try
-            {
-                await MSGraphQueriesHelper.SingOutMSGraphAccount(firstAccount).ConfigureAwait(false);
-                await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-                {
-                    ResultText.Text = "User has signed-out";
-                    signingOneDrive.Visibility = Visibility.Visible;
-                    OpenOneDrive.Visibility = *//*SignOutButton.Visibility =*//* Visibility.Collapsed;
-                    OneDriveInfo.Text = "";
-                    imageFileInfoViewModel.FlushObservableCollectionOfImages();
-                });
-            }
-            catch (MsalException ex)
-            {
-                ResultText.Text = $"Error signing-out user: {ex.Message}";
-            }
-        }
-*/
-        /// <summary>
-        /// Get all photos from OneDrive.
-        /// </summary>
-        private async void OpenOneDrive_Click(object sender, RoutedEventArgs e)
-        {
-
-            List<StorageFile> downloadedFiles = await MSGraphQueriesHelper.DownloadAllFilesFromOneDrive();
-
-            if (Windows.UI.Core.CoreWindow.GetForCurrentThread() != null)
-            {
-                var resourceLoader = Windows.ApplicationModel.Resources.ResourceLoader.GetForCurrentView();
-
-                OneDriveInfo.Text = resourceLoader.GetString("CountFiles/Text").ToString() + MSGraphQueriesHelper.CountFiles();
-            }
-
-            await imageFileInfoViewModel.PopulateObservableCollectionOfImages(downloadedFiles);
         }
 
         private void ThemeButton_Click(object sender, RoutedEventArgs e)
