@@ -93,11 +93,12 @@ namespace ImageBrowser.ViewModels
                 
                 try
                 {
+                    await MSGraphQueriesHelper.SingOutMSGraphAccount(firstAccount).ConfigureAwait(false);
                   string message =  LocalizationHelper.GetLocalizedStrings("normalSignOut");
 
-                    await MSGraphQueriesHelper.SingOutMSGraphAccount(firstAccount).ConfigureAwait(false);
                     Trace.WriteLine("From Signing Status  200 OK");
                     ResultText = message;
+                    
                     /*  await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
                       {
                           

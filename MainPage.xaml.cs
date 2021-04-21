@@ -42,8 +42,8 @@ namespace ImageBrowser
 
         public MainPage()
         {
-            imageFileInfoViewModel = new ImageFileInfoViewModel();
             InitializeComponent();
+            imageFileInfoViewModel = new ImageFileInfoViewModel();
 
 
             Current = this;
