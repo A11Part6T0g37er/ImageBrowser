@@ -18,7 +18,7 @@
 												 OnTrue="Collapsed"
 												 OnFalse="Visible" />
 
-		<viewModels:SigningStatusViewModel x:Key="StatusSinging" />
+		
 		<viewModels:ImageFileInfoViewModel x:Key="ImageViewModel" />
 
 		<Thickness x:Key="LargeItemMargin">8</Thickness>
@@ -224,7 +224,9 @@
 						<TextBlock x:Uid="groupedListDefinition"
 								   Text="" />
 					</StackPanel>
-					<TextBlock x:Name="OneDriveInfo" />
+					<TextBlock x:Name="OneDriveInfo" 
+							   DataContext="{x:Bind imageFileInfoViewModel}"
+							   Text="{Binding OneDriveInfoText, Mode=TwoWay}"/>
 				</StackPanel>
 			</PivotItem>
 
@@ -471,8 +473,8 @@
 							  Command="{Binding SignOutCommand}"
 							  Visibility="{Binding  IsUserSignedOut,  Converter={StaticResource bool2Visibility},Mode=TwoWay}"
 							  FontFamily="Segoe Ui" />
-							  <!--DataContext="{StaticResource StatusSinging}"-->
-				<!--Click="SignOutButton_ClickAsync"-->
+							
+				
 
 
 				<AppBarButton x:Name="OpenOneDrive"
@@ -481,9 +483,8 @@
 							  DataContext="{x:Bind imageFileInfoViewModel}"
 							  Command="{Binding OneDriveOpenCommand}"
 							  Visibility="{Binding IsUserSignedOut, Converter={StaticResource bool2Visibility}, Mode=TwoWay}" />
-				<!--Click="OpenOneDrive_Click"-->
-				<!--DataContext="{StaticResource StatusSinging}"
-							  Visibility="{Binding IsUserSignedOut, Converter={StaticResource bool2Visibility},Mode=TwoWay}"-->
+				
+				
 				<CommandBar.Content>
 					<StackPanel>
 

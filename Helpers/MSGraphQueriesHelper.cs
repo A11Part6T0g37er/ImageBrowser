@@ -172,7 +172,7 @@ namespace ImageBrowser.Helpers
 
         protected static void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
-            PropertyChanged?.Invoke(/*SigningStatusViewModel.StatusProperty*/ MSGraphQueriesHelper.UserSignedOut, new PropertyChangedEventArgs(propertyName));
+            PropertyChanged?.Invoke( MSGraphQueriesHelper.UserSignedOut, new PropertyChangedEventArgs(propertyName));
         }
 
         protected static bool SetProperty<T>(ref T storage, T value, [CallerMemberName] string propertyName = null)

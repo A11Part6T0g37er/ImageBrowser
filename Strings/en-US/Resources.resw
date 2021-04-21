@@ -157,6 +157,9 @@
   <data name="normalSignOut" xml:space="preserve">
     <value>User has signed out.</value>
   </data>
+  <data name="oneDriveDownloadedInfoDefault" xml:space="preserve">
+    <value>Nothing has been downloaded yet</value>
+  </data>
   <data name="oneDriveOpen.Content" xml:space="preserve">
     <value>Get all from OneDrive</value>
   </data>

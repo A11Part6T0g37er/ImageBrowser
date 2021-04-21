@@ -16,9 +16,9 @@ using Windows.UI.Xaml;
 
 namespace ImageBrowser.ViewModels
 {
-    internal class ImageFileInfoViewModel: DependencyObject, INotifyPropertyChanged
+    internal class ImageFileInfoViewModel : DependencyObject, INotifyPropertyChanged
     {
-
+        private readonly static string EmptyOneDrive = LocalizationHelper.GetLocalizedStrings("oneDriveDownloadedInfoDefault");
         private IList<ImageFileInfo> observableCollection = new List<ImageFileInfo>();
 
         public IList<ImageFileInfo> ObservableCollection { get => observableCollection; }
@@ -35,6 +35,20 @@ namespace ImageBrowser.ViewModels
            typeof(SigningStatusViewModel),
            new PropertyMetadata(false, new PropertyChangedCallback(OnStatusChanged)));
 
+        public static readonly DependencyProperty OneDriveInfoTextProperty = DependencyProperty.Register(
+         nameof(IsUserSignedOut),
+         typeof(bool),
+         typeof(SigningStatusViewModel),
+         new PropertyMetadata(EmptyOneDrive, new PropertyChangedCallback(OnOneDriveInfoTextChanged)));
+
+        private static void OnOneDriveInfoTextChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            string oldValue = (string)e.OldValue;
+            string newValue = (string)e.NewValue;
+            ImageFileInfoViewModel signingStatus = d as ImageFileInfoViewModel;
+            signingStatus?.OnOneDriveInfoTextChanged(oldValue, newValue);
+        }
+
         public ImageFileInfoViewModel()
         {
             OneDriveOpenCommand = new RelayCommand(OneDriveOpenAction());
@@ -43,7 +57,12 @@ namespace ImageBrowser.ViewModels
 
             MSGraphQueriesHelper.PropertyChanged += SigningStatusViewModel_OnStatusChanged;
         }
-
+        public virtual void OnOneDriveInfoTextChanged(string oldString, string newString)
+        {
+            if (oldString != newString)
+                OneDriveInfoText = newString;
+            OnPropertyChanged("OneDriveInfoText");
+        }
 
         public bool IsUserSignedOut
         {
@@ -59,13 +78,28 @@ namespace ImageBrowser.ViewModels
                 SetValue(StatusProperty, MSGraphQueriesHelper.UserSignedOut);
             }
         }
+        public string OneDriveInfoText
+        {
+            get
+            {
+                return (string)GetValue(OneDriveInfoTextProperty);
+
+            }
+
+            set
+            {
+
+                SetValue(OneDriveInfoTextProperty, value);
+            }
+        }
+
         private static void OnStatusChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             bool oldValue = (bool)e.OldValue;
             bool newValue = (bool)e.NewValue;
-            SigningStatusViewModel signingStatus = d as SigningStatusViewModel;
+            ImageFileInfoViewModel signingStatus = d as ImageFileInfoViewModel;
             signingStatus?.OnStatusChanged(oldValue, newValue);
-            
+
         }
 
         public virtual void OnStatusChanged(bool oldValue, bool newValue)
@@ -92,7 +126,7 @@ namespace ImageBrowser.ViewModels
                     await MSGraphQueriesHelper.SingOutMSGraphAccount(firstAccount).ConfigureAwait(false);
                     string message = LocalizationHelper.GetLocalizedStrings("normalSignOut");
 
-                    
+
                     ResultText = message;
                     Trace.WriteLine("From ImageViewModel");
                     /*  await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
@@ -101,7 +135,9 @@ namespace ImageBrowser.ViewModels
                           OneDriveInfo.Text = "";
                           imageFileInfoViewModel.FlushObservableCollectionOfImages();
                       });
-               */
+                     */
+                    OneDriveInfoText = EmptyOneDrive;
+                    this.FlushObservableCollectionOfImages();
                 }
                 catch (MsalException ex)
                 {
@@ -129,7 +165,7 @@ namespace ImageBrowser.ViewModels
             }
         }
 
-        private   Action OneDriveOpenAction()
+        private Action OneDriveOpenAction()
         {
             return async () =>
             {
@@ -139,7 +175,7 @@ namespace ImageBrowser.ViewModels
                 {
                     var resourceLoader = Windows.ApplicationModel.Resources.ResourceLoader.GetForCurrentView();
 
-                 //   OneDriveInfo.Text = resourceLoader.GetString("CountFiles/Text").ToString() + MSGraphQueriesHelper.CountFiles();
+                    OneDriveInfoText = resourceLoader.GetString("CountFiles/Text").ToString() + MSGraphQueriesHelper.CountFiles();
                 }
 
                 await this.PopulateObservableCollectionOfImages(downloadedFiles);
@@ -236,7 +272,7 @@ namespace ImageBrowser.ViewModels
 
 
 
-       public ICommand OneDriveOpenCommand { get; set; }
+        public ICommand OneDriveOpenCommand { get; set; }
 
         public ICommand SignOutCommand { get; set; }
     }
