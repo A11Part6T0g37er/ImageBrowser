@@ -27,12 +27,7 @@ namespace ImageBrowser.ViewModels
            typeof(SigningStatusViewModel),
            null);
 
-        public event Action ChangeStatusUser = new Action(OnStatusChangedFromHelper);
-
-        private static void OnStatusChangedFromHelper()
-        {
-            Trace.WriteLine("See That?");
-        }
+        
 
         private static void OnStatusChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
