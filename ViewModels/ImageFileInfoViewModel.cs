@@ -10,6 +10,7 @@ using System.Windows.Input;
 using ImageBrowser.Common;
 using ImageBrowser.Helpers;
 using ImageBrowser.Models;
+using Microsoft.Graph;
 using Microsoft.Identity.Client;
 using Windows.Storage;
 using Windows.UI.Popups;
@@ -20,15 +21,18 @@ namespace ImageBrowser.ViewModels
     internal class ImageFileInfoViewModel : DependencyObject, INotifyPropertyChanged
     {
         private readonly static string EmptyOneDrive = LocalizationHelper.GetLocalizedStrings("oneDriveDownloadedInfoDefault");
+        private readonly static string UserSignedOutNormal = LocalizationHelper.GetLocalizedStrings("normalSignOut");
         private IList<ImageFileInfo> observableCollection = new List<ImageFileInfo>();
 
         public IList<ImageFileInfo> ObservableCollection { get => observableCollection; }
 
+        #region DependecyProperties
         public static readonly DependencyProperty ResultTextProperty = DependencyProperty.Register(
-          nameof(ResultText),
-          typeof(string),
-          typeof(SigningStatusViewModel),
-          null);
+        nameof(ResultText),
+        typeof(string),
+        typeof(SigningStatusViewModel),
+       new PropertyMetadata(null, new PropertyChangedCallback(OnResultTextChanged)));
+
 
         public static readonly DependencyProperty StatusProperty = DependencyProperty.Register(
            nameof(IsUserSignedOut),
@@ -40,31 +44,22 @@ namespace ImageBrowser.ViewModels
          nameof(IsUserSignedOut),
          typeof(bool),
          typeof(SigningStatusViewModel),
-         new PropertyMetadata(EmptyOneDrive, new PropertyChangedCallback(OnOneDriveInfoTextChanged)));
+         new PropertyMetadata(EmptyOneDrive, new PropertyChangedCallback(OnOneDriveInfoTextChanged))); 
+        #endregion
 
-        private static void OnOneDriveInfoTextChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            string oldValue = (string)e.OldValue;
-            string newValue = (string)e.NewValue;
-            ImageFileInfoViewModel signingStatus = d as ImageFileInfoViewModel;
-            signingStatus?.OnOneDriveInfoTextChanged(oldValue, newValue);
-        }
-
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ImageFileInfoViewModel"/> class, 
+        /// signup event and initializes commands.
+        /// </summary>
         public ImageFileInfoViewModel()
         {
             OneDriveOpenCommand = new RelayCommand(OneDriveOpenAction());
 
             SignOutCommand = new RelayCommand(SigningOutAsync());
-
+            SignInCommand = new RelayCommand(SigningInAsync());
             MSGraphQueriesHelper.PropertyChanged += SigningStatusViewModel_OnStatusChanged;
         }
-
-        public virtual void OnOneDriveInfoTextChanged(string oldString, string newString)
-        {
-            if (oldString != newString)
-                OneDriveInfoText = newString;
-            OnPropertyChanged("OneDriveInfoText");
-        }
+        #region XamlListningProperties
 
         public bool IsUserSignedOut
         {
@@ -94,7 +89,46 @@ namespace ImageBrowser.ViewModels
                 SetValue(OneDriveInfoTextProperty, value);
             }
         }
+        public string ResultText
+        {
+            get
+            {
+                return (string)GetValue(ResultTextProperty);
+            }
+            set
+            {
+                SetValue(ResultTextProperty, value);
+            }
+        }
 
+        #endregion
+        private static void OnResultTextChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            string oldValue = (string)e.OldValue;
+            string newValue = (string)e.NewValue;
+            ImageFileInfoViewModel resultTextCallBack = d as ImageFileInfoViewModel;
+            resultTextCallBack?.OnResultTextChanged(oldValue, newValue);
+        }
+
+        private static void OnOneDriveInfoTextChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            string oldValue = (string)e.OldValue;
+            string newValue = (string)e.NewValue;
+            ImageFileInfoViewModel signingStatus = d as ImageFileInfoViewModel;
+            signingStatus?.OnOneDriveInfoTextChanged(oldValue, newValue);
+        }
+        public virtual void OnResultTextChanged(string oldString, string newString)
+        {
+            if (oldString != newString)
+                ResultText = newString;
+            OnPropertyChanged("ResultText");
+        }
+        public virtual void OnOneDriveInfoTextChanged(string oldString, string newString)
+        {
+            if (oldString != newString)
+                OneDriveInfoText = newString;
+            OnPropertyChanged("OneDriveInfoText");
+        }
         private static void OnStatusChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             bool oldValue = (bool)e.OldValue;
@@ -114,6 +148,36 @@ namespace ImageBrowser.ViewModels
         protected void OnPropertyChanged([CallerMemberName] string propertyName = null) =>
                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
+        private Action SigningInAsync()
+        {
+            return async () =>
+            {
+                try
+                {
+                    // Sign-in user using MSAL and obtain an access token for MS Graph
+                    GraphServiceClient graphClient = await MSGraphQueriesHelper.SignInAndInitializeGraphServiceClient();
+                    // Call the /me endpoint of Graph
+                    User graphUser = await graphClient.Me.Request().GetAsync();
+
+                       ResultText = "Display Name: " + graphUser.UserPrincipalName + "\nid: " + graphUser.Id;
+                       
+                        
+                    
+                }
+                catch (MsalException msalEx)
+                {
+                    Trace.WriteLine($"Error Acquiring Token:{System.Environment.NewLine}{msalEx}");
+                    ResultText = $"Error Acquiring Token:{System.Environment.NewLine}{msalEx}";
+                }
+                catch (Exception ex)
+                {
+                    Trace.WriteLine($"Error Acquiring Token Silently:{System.Environment.NewLine}{ex}");
+                    ResultText = $"Error Acquiring Token Silently:{System.Environment.NewLine}{ex}";
+                    return;
+                }
+            };
+        }
+
         private Action SigningOutAsync()
         {
             return async () =>
@@ -129,28 +193,27 @@ namespace ImageBrowser.ViewModels
                     string message = LocalizationHelper.GetLocalizedStrings("normalSignOut");
 
 
-                    ResultText = message;
+                    ResultText = UserSignedOutNormal;
                     Trace.WriteLine("From ImageViewModel");
-                    /*  await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-                      {
-                          
-                          OneDriveInfo.Text = "";
-                          imageFileInfoViewModel.FlushObservableCollectionOfImages();
-                      });
-                     */
+              
                     OneDriveInfoText = EmptyOneDrive;
                     this.FlushObservableCollectionOfImages();
                 }
                 catch (MsalException ex)
                 {
-                    await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
-                  () =>
-                  {
-                      new MessageDialog("ERROR occures!");
-                  });
+                    Trace.WriteLine(ex.ToString());
                     ResultText = $"Error signing-out user: {ex.Message}";
                 }
             };
+        }
+        // TODO: catch main UI thread and extract into helper class
+        private async Task ShowPopUpMessage(string message)
+        {
+            await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
+          () =>
+          {
+              new MessageDialog(@"ERROR occures! {0}",message);
+          });
         }
 
         private void SigningStatusViewModel_OnStatusChanged(object sender, PropertyChangedEventArgs e)
@@ -158,17 +221,6 @@ namespace ImageBrowser.ViewModels
             var newValue = (bool)sender;
             IsUserSignedOut = newValue;
             OnPropertyChanged("IsUserSignedOut");
-        }
-        public string ResultText
-        {
-            get
-            {
-                return (string)GetValue(ResultTextProperty);
-            }
-            set
-            {
-                SetValue(ResultTextProperty, value);
-            }
         }
 
         private Action OneDriveOpenAction()
@@ -281,5 +333,6 @@ namespace ImageBrowser.ViewModels
         public ICommand OneDriveOpenCommand { get; set; }
 
         public ICommand SignOutCommand { get; set; }
+        public ICommand SignInCommand { get; set; }
     }
 }

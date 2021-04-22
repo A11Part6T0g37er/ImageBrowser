@@ -201,7 +201,7 @@ namespace ImageBrowser
                 await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
                 {
                     ResultText.Text = "Display Name: " + graphUser.UserPrincipalName + "\nid: " + graphUser.Id;
-
+                    DisplayMessageAsync("Display Name: " + graphUser.UserPrincipalName + "\nid: " + graphUser.Id);
                     //SignOutButton.Visibility = Visibility.Visible;
                     OpenOneDrive.Visibility = Visibility.Visible;
                 });

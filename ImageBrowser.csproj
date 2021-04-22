@@ -135,6 +135,7 @@
       <DependentUpon>DetailPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="Helpers\DisplayUIHelper.cs" />
     <Compile Include="Helpers\EnumHelper.cs" />
     <Compile Include="Helpers\ImageDownloadHelper.cs" />
     <Compile Include="Helpers\ImageFileHelper.cs" />
