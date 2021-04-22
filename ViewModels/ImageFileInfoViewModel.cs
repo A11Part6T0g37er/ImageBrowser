@@ -313,7 +313,7 @@ namespace ImageBrowser.ViewModels
         public void GenerateByDateGroup(IList<ImageFileInfo> lisOfImages)
         {
             var query = from item in lisOfImages
-                        group item by new { yy = item.ImageProperties.DateTaken.Year, mm = item.ImageProperties.DateTaken.Month } into dateKey
+                        group item by new { yy = item.ImageFile.DateCreated.Year, mm = item.ImageFile.DateCreated.Month } into dateKey
                         orderby dateKey.Key.yy descending
                         select new { GroupName = dateKey.Key, Items = dateKey };
             if (GroupedImagesInfos.Count > 0)
