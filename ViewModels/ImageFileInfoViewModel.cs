@@ -33,6 +33,7 @@ namespace ImageBrowser.ViewModels
         public ICommand SignOutCommand { get; set; }
 
         public ICommand SignInCommand { get; set; }
+        public ICommand OpenCLickCommand { get; set; }
 
         #region DependecyProperties
         public static readonly DependencyProperty ResultTextProperty = DependencyProperty.Register(
@@ -64,8 +65,11 @@ namespace ImageBrowser.ViewModels
 
             SignOutCommand = new RelayCommand(SigningOutAsync());
             SignInCommand = new RelayCommand(SigningInAsync());
+            OpenCLickCommand = new RelayCommand(OpenClickAsync());
+
             MSGraphQueriesHelper.PropertyChanged += SigningStatusViewModel_OnStatusChanged;
         }
+
         #region XamlListningProperties
 
         public bool IsUserSignedOut
@@ -238,6 +242,24 @@ namespace ImageBrowser.ViewModels
 
                 await this.PopulateObservableCollectionOfImages(downloadedFiles);
             };
+        }
+
+        private  Action OpenClickAsync()
+        {
+            return async () => PickMultiplePictures();
+        }
+
+        private async Task<ObservableCollection<ImageFileInfo>> PickMultiplePictures()
+        {
+            var picker = new Windows.Storage.Pickers.FileOpenPicker();
+            picker.ViewMode = Windows.Storage.Pickers.PickerViewMode.Thumbnail;
+            picker.SuggestedStartLocation = Windows.Storage.Pickers.PickerLocationId.Desktop;
+
+            picker.FileTypeFilter.Add(".jpg");
+            picker.FileTypeFilter.Add(".jpeg");
+            picker.FileTypeFilter.Add(".png");
+            IReadOnlyCollection<StorageFile> files = await picker.PickMultipleFilesAsync();
+            return await this.PopulateObservableCollectionOfImages(files);
         }
         #endregion
 

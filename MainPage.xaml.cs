@@ -99,25 +99,7 @@ namespace ImageBrowser
         }
 
         //TODO: make folders upload into app
-
-        private async void ButtonOpen_Click(object sender, RoutedEventArgs e)
-        {
-            await PickMultiplePictures();
-        }
-
-        private async Task<ObservableCollection<ImageFileInfo>> PickMultiplePictures()
-        {
-            var picker = new Windows.Storage.Pickers.FileOpenPicker();
-            picker.ViewMode = Windows.Storage.Pickers.PickerViewMode.Thumbnail;
-            picker.SuggestedStartLocation = Windows.Storage.Pickers.PickerLocationId.Desktop;
-
-            picker.FileTypeFilter.Add(".jpg");
-            picker.FileTypeFilter.Add(".jpeg");
-            picker.FileTypeFilter.Add(".png");
-            IReadOnlyCollection<StorageFile> files = await picker.PickMultipleFilesAsync();
-            return await imageFileInfoViewModel.PopulateObservableCollectionOfImages(files);
-        }
-
+    
         // TODO: updating number of  <XAML> Pictures-in-grid columns
         private void GroupedGrid_SizeChanged(object sender, SizeChangedEventArgs e)
         {

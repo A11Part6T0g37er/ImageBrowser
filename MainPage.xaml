@@ -329,7 +329,9 @@
 			<AppBarButton Icon="OpenFile"
 						  Label=""
 						  x:Uid="open"
-						  Click="ButtonOpen_Click" />
+						  DataContext="{x:Bind imageFileInfoViewModel}"
+						  Command="{Binding OpenCLickCommand, Mode=TwoWay}" />
+			<!--Click="ButtonOpen_Click"--> 
 		</CommandBar>
 
 		<Grid x:Name="startingGreetingScreen"
