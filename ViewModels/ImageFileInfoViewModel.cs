@@ -55,7 +55,7 @@ namespace ImageBrowser.ViewModels
         #endregion
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ImageFileInfoViewModel"/> class, 
+        /// Initializes a new instance of the <see cref="ImageFileInfoViewModel"/> class,
         /// signup event and initializes commands.
         /// </summary>
         public ImageFileInfoViewModel()

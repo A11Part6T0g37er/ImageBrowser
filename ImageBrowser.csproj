@@ -156,7 +156,6 @@
     <Compile Include="ViewModels\FoldersViewModel.cs" />
     <Compile Include="ViewModels\ImageFileInfoViewModel.cs" />
     <Compile Include="ViewModels\LanguageViewModel.cs" />
-    <Compile Include="ViewModels\SigningStatusViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">
