@@ -216,7 +216,13 @@
 			<PivotItem Name="All"
 					   x:Uid="all"
 					   Header="">
-				<StackPanel>
+					<Grid>
+					<Grid.RowDefinitions>
+						<RowDefinition />
+						<RowDefinition />
+						
+					</Grid.RowDefinitions>
+				<StackPanel Grid.Row="0">
 					<TextBlock x:Uid="allPictures"
 							   Text="" />
 					<StackPanel Orientation="Horizontal">
@@ -227,7 +233,107 @@
 					<TextBlock x:Name="OneDriveInfo" 
 							   DataContext="{x:Bind imageFileInfoViewModel}"
 							   Text="{Binding OneDriveInfoText, Mode=TwoWay}"/>
-				</StackPanel>
+					</StackPanel>
+					<RefreshContainer x:Name="RefreshArea2"
+										  Grid.Row="1">
+
+
+							<GridView ItemsSource="{Binding Source={StaticResource ImagesCollection}}"
+									  SelectionMode="None"
+									  Name="GroupedGrid2"
+									  ItemsPanel="{StaticResource ImageGridView_ItemsPanelTemplate}"
+									  SizeChanged="GroupedGrid_SizeChanged"
+									  IsItemClickEnabled="True"
+									  ItemClick="GroupedGrid_ItemClick"
+									  RelativePanel.Below="leftControlPanel"
+									  RelativePanel.AlignLeftWithPanel="True"
+									  RelativePanel.AlignRightWithPanel="True"
+									  MinWidth="180" MaxWidth="500"
+									  Margin="15">
+								<GridView.GroupStyle>
+									<GroupStyle>
+										<GroupStyle.HeaderTemplate>
+											<DataTemplate>
+												<TextBlock Text="{Binding Key}"
+														   Style="{StaticResource SubtitleTextBlockStyle}" />
+											</DataTemplate>
+
+
+										</GroupStyle.HeaderTemplate>
+									</GroupStyle>
+								</GridView.GroupStyle>
+								<GridView.ItemTemplate>
+									<DataTemplate x:DataType="local:ImageFileInfo">
+										<Grid Margin="{StaticResource LargeItemMargin}"
+											  Height="{Binding ItemSize, ElementName=page}">
+											<Grid.RowDefinitions>
+												<RowDefinition Height="*" />
+												<RowDefinition Height="Auto" />
+												<RowDefinition Height="Auto" />
+
+											</Grid.RowDefinitions>
+
+											<Image DataContextChanged="ItemImage_DataContextChanged"
+												   x:Name="ItemImage"
+												   Stretch="Uniform"
+												   Source="{x:Bind ImageSource, Mode=OneWay}"
+												   Width="{Binding ItemSize,ElementName=app}"
+												   VerticalAlignment="Top"
+												   HorizontalAlignment="Center"
+												   Grid.Row="0"
+												   Margin="0,0,0,0" />
+
+											<StackPanel Orientation="Vertical"
+														Grid.Row="1"
+														Margin="0,0,0,15">
+												<TextBlock Text="{x:Bind ImageName, Mode=OneWay}"
+														   MaxWidth="500"
+														   TextWrapping="Wrap"
+														   Style="{StaticResource SubtitleTextBlockStyle}"
+														   HorizontalAlignment="Left"
+														   VerticalAlignment="Top" />
+
+											</StackPanel>
+
+											<StackPanel Orientation="Horizontal"
+														Grid.Row="2">
+												<TextBlock TextWrapping="Wrap"
+														   Text="{x:Bind ImageDimensions, Mode=OneWay}"
+														   Margin="0,3,10,0" />
+
+												<ItemsControl ItemsSource="{x:Bind ImageProperties.Keywords, Mode=OneWay}">
+													<ItemsControl.ItemsPanel>
+														<ItemsPanelTemplate>
+															<WrapGrid Orientation="Horizontal"
+																	  MaximumRowsOrColumns="2"
+																	  ItemWidth="40" />
+														</ItemsPanelTemplate>
+													</ItemsControl.ItemsPanel>
+													<ItemsControl.ItemTemplate>
+														<DataTemplate x:DataType="x:String">
+
+															<TextBlock   Text="{Binding}"
+																		 FontSize="12"
+																		 TextWrapping="WrapWholeWords" />
+
+														</DataTemplate>
+													</ItemsControl.ItemTemplate>
+
+
+												</ItemsControl>
+
+											</StackPanel>
+
+										</Grid>
+									</DataTemplate>
+								</GridView.ItemTemplate>
+							</GridView>
+
+						</RefreshContainer>
+				
+					</Grid>
+				
+				
 			</PivotItem>
 
 			<PivotItem x:Name="GroupedList"

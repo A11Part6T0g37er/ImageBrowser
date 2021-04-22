@@ -15,6 +15,7 @@ using Microsoft.Graph;
 using Microsoft.Identity.Client;
 using Windows.Storage;
 using Windows.Storage.Pickers;
+using Windows.Storage.Search;
 using Windows.UI.Popups;
 using Windows.UI.Xaml;
 
@@ -275,15 +276,27 @@ namespace ImageBrowser.ViewModels
             FolderPicker folderPicker = new FolderPicker();
             folderPicker.SuggestedStartLocation = PickerLocationId.Downloads;
             folderPicker.ViewMode = PickerViewMode.Thumbnail;
-            StringBuilder outputText = new StringBuilder();
+           
             folderPicker.FileTypeFilter.Add(".jpg");
             folderPicker.FileTypeFilter.Add(".jpeg");
             folderPicker.FileTypeFilter.Add(".png");
             StorageFolder folder = await folderPicker.PickSingleFolderAsync();
+
+            QueryOptions queryOptions = new QueryOptions(CommonFolderQuery.DefaultQuery);
+            queryOptions.FileTypeFilter.Add(".jpg");
+            queryOptions.FileTypeFilter.Add(".jpeg");
+            queryOptions.FileTypeFilter.Add(".png");
+            var queryResult = folder.CreateFileQueryWithOptions(queryOptions); 
+           List<StorageFile> fileyas = new List<StorageFile>();
             if (folder != null)
             {
                 IReadOnlyList<StorageFile> fileList= await folder.GetFilesAsync();
-                return await this.PopulateObservableCollectionOfImages(fileList);
+                IReadOnlyCollection<StorageFile> storageFiles = await queryResult.GetFilesAsync();
+                foreach(var file in storageFiles)
+                {
+                    fileyas.Add(file);
+                }
+                return await this.PopulateObservableCollectionOfImages(storageFiles);
 
             }
             return null;
