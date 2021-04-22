@@ -465,7 +465,7 @@
 							  Visibility="{Binding IsUserSignedOut, Converter={StaticResource bool2visInverse},Mode=TwoWay}"
 							 Command="{Binding SignInCommand}"
 							  ToolTipService.ToolTip="OneDrive"/>
-							  <!--Click="SigningOneDrive_ClickAsync"--> 
+							 
 				<AppBarButton Icon="Account"
 							  x:Name="SignOutButton"
 							  Label=""

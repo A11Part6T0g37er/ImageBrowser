@@ -33,9 +33,10 @@ namespace ImageBrowser.Helpers
         #endregion
         private static IDriveItemSearchCollectionPage search;
         public static bool UserSignedOut;
-        public bool UserDefenitlySignedOut { get; set; }
-        public static event PropertyChangedEventHandler PropertyChanged;
 
+        public bool UserDefenitlySignedOut { get; set; }
+
+        public static event PropertyChangedEventHandler PropertyChanged;
 
         /// <summary>
         /// Establish connection to OneDrive, get authentication, obtains links of files with query option, downloads files in temporary place.
@@ -66,7 +67,6 @@ namespace ImageBrowser.Helpers
             return downloadedFiles;
         }
 
-       
         public bool IsSignedOut()
         {
             return UserSignedOut;
@@ -82,7 +82,6 @@ namespace ImageBrowser.Helpers
             if (publicClientApp != null)
             {
                 return await publicClientApp.GetAccountsAsync().ConfigureAwait(false);
-
             }
             return null;
         }
@@ -90,7 +89,7 @@ namespace ImageBrowser.Helpers
         public static async Task SingOutMSGraphAccount(IAccount firstAccount)
         {
             SetProperty(ref UserSignedOut, false);
-           
+
             await publicClientApp.RemoveAsync(firstAccount).ConfigureAwait(false);
         }
 
@@ -100,7 +99,7 @@ namespace ImageBrowser.Helpers
         /// <returns>GraphServiceClient.</returns>
         public static async Task<GraphServiceClient> SignInAndInitializeGraphServiceClient()
         {
-            
+
             GraphServiceClient graphClient = new GraphServiceClient(MSGraphURL,
                 new DelegateAuthenticationProvider(async (requestMessage) =>
                 {
@@ -172,7 +171,7 @@ namespace ImageBrowser.Helpers
 
         protected static void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
-            PropertyChanged?.Invoke( MSGraphQueriesHelper.UserSignedOut, new PropertyChangedEventArgs(propertyName));
+            PropertyChanged?.Invoke(MSGraphQueriesHelper.UserSignedOut, new PropertyChangedEventArgs(propertyName));
         }
 
         protected static bool SetProperty<T>(ref T storage, T value, [CallerMemberName] string propertyName = null)
@@ -188,8 +187,5 @@ namespace ImageBrowser.Helpers
                 return true;
             }
         }
-
-
-
     }
 }

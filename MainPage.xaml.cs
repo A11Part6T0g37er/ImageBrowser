@@ -38,13 +38,13 @@ namespace ImageBrowser
         internal ImageBrowser.ViewModels.ImageFileInfoViewModel imageFileInfoViewModel = new ViewModels.ImageFileInfoViewModel();
         ImageFileInfo persistedItem;
         string defaultWinTheme = string.Empty;
+
         public FoldersViewModel FoldersToDisplay { get; set; }
 
         public MainPage()
         {
             InitializeComponent();
             imageFileInfoViewModel = new ImageFileInfoViewModel();
-
 
             Current = this;
             SizeChanged += CoreWindow_SizeChanged;
@@ -91,7 +91,6 @@ namespace ImageBrowser
             {
                 // initialize blank state
                 startingGreetingScreen.Visibility = Visibility.Visible;
-
             }
 
             imageFileInfoViewModel.InitializeGroupingOfViewModel();
@@ -186,47 +185,6 @@ namespace ImageBrowser
         private void Refresh_Click(object sender, RoutedEventArgs e)
         {
             RefreshArea.RequestRefresh();
-        }
-
-        private async void SigningOneDrive_ClickAsync(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                // Sign-in user using MSAL and obtain an access token for MS Graph
-                GraphServiceClient graphClient = await MSGraphQueriesHelper.SignInAndInitializeGraphServiceClient();
-                // Call the /me endpoint of Graph
-                User graphUser = await graphClient.Me.Request().GetAsync();
-
-                // Go back to the UI thread to make changes to the UI
-                await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
-                {
-                    ResultText.Text = "Display Name: " + graphUser.UserPrincipalName + "\nid: " + graphUser.Id;
-                    DisplayMessageAsync("Display Name: " + graphUser.UserPrincipalName + "\nid: " + graphUser.Id);
-                    //SignOutButton.Visibility = Visibility.Visible;
-                    OpenOneDrive.Visibility = Visibility.Visible;
-                });
-            }
-            catch (MsalException msalEx)
-            {
-                await DisplayMessageAsync($"Error Acquiring Token:{System.Environment.NewLine}{msalEx}");
-            }
-            catch (Exception ex)
-            {
-                await DisplayMessageAsync($"Error Acquiring Token Silently:{System.Environment.NewLine}{ex}");
-                return;
-            }
-        }
-
-        /// <summary>
-        /// Displays a message in the ResultText. Can be called from any thread.
-        /// </summary>
-        private async Task DisplayMessageAsync(string message)
-        {
-            await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
-                   () =>
-                   {
-                       new MessageDialog(message);
-                   });
         }
 
         private void ThemeButton_Click(object sender, RoutedEventArgs e)

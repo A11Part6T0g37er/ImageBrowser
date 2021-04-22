@@ -7,6 +7,5 @@ namespace ImageBrowser.Helpers
 {
     public class DisplayUIHelper
     {
-        
     }
 }

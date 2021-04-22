@@ -11,6 +11,7 @@ namespace ImageBrowser.Common.Converters
     public class BooleanToVisibilityConverter : IValueConverter
     {
         public Visibility OnTrue { get; set; }
+
         public Visibility OnFalse { get; set; }
 
         public BooleanToVisibilityConverter()
@@ -21,9 +22,14 @@ namespace ImageBrowser.Common.Converters
 
         public object Convert(object value, Type targetType, object parameter, string language)
         {
-            var v = (bool)value;
+            if (value is bool)
+            {
 
-            return v ? OnTrue : OnFalse;
+                var v = (bool)value;
+
+                return v ? OnTrue : OnFalse;
+            }
+            return null;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, string language)

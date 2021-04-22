@@ -26,25 +26,32 @@ namespace ImageBrowser.ViewModels
 
         public IList<ImageFileInfo> ObservableCollection { get => observableCollection; }
 
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public ICommand OneDriveOpenCommand { get; set; }
+
+        public ICommand SignOutCommand { get; set; }
+
+        public ICommand SignInCommand { get; set; }
+
         #region DependecyProperties
         public static readonly DependencyProperty ResultTextProperty = DependencyProperty.Register(
         nameof(ResultText),
         typeof(string),
-        typeof(SigningStatusViewModel),
+        typeof(ImageFileInfoViewModel),
        new PropertyMetadata(null, new PropertyChangedCallback(OnResultTextChanged)));
-
 
         public static readonly DependencyProperty StatusProperty = DependencyProperty.Register(
            nameof(IsUserSignedOut),
            typeof(bool),
-           typeof(SigningStatusViewModel),
+           typeof(ImageFileInfoViewModel),
            new PropertyMetadata(false, new PropertyChangedCallback(OnStatusChanged)));
 
         public static readonly DependencyProperty OneDriveInfoTextProperty = DependencyProperty.Register(
-         nameof(IsUserSignedOut),
-         typeof(bool),
-         typeof(SigningStatusViewModel),
-         new PropertyMetadata(EmptyOneDrive, new PropertyChangedCallback(OnOneDriveInfoTextChanged))); 
+         nameof(OneDriveInfoText),
+         typeof(string),
+         typeof(ImageFileInfoViewModel),
+         new PropertyMetadata(null, new PropertyChangedCallback(OnOneDriveInfoTextChanged)));
         #endregion
 
         /// <summary>
@@ -66,7 +73,6 @@ namespace ImageBrowser.ViewModels
             get
             {
                 return (bool)GetValue(StatusProperty);
-
             }
 
             set
@@ -75,12 +81,12 @@ namespace ImageBrowser.ViewModels
                 SetValue(StatusProperty, MSGraphQueriesHelper.UserSignedOut);
             }
         }
+
         public string OneDriveInfoText
         {
             get
             {
                 return (string)GetValue(OneDriveInfoTextProperty);
-
             }
 
             set
@@ -89,12 +95,14 @@ namespace ImageBrowser.ViewModels
                 SetValue(OneDriveInfoTextProperty, value);
             }
         }
+
         public string ResultText
         {
             get
             {
                 return (string)GetValue(ResultTextProperty);
             }
+
             set
             {
                 SetValue(ResultTextProperty, value);
@@ -102,12 +110,20 @@ namespace ImageBrowser.ViewModels
         }
 
         #endregion
+        #region DependecyProperties handlers
         private static void OnResultTextChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             string oldValue = (string)e.OldValue;
             string newValue = (string)e.NewValue;
             ImageFileInfoViewModel resultTextCallBack = d as ImageFileInfoViewModel;
             resultTextCallBack?.OnResultTextChanged(oldValue, newValue);
+        }
+
+        public virtual void OnResultTextChanged(string oldString, string newString)
+        {
+            if (oldString != newString)
+                ResultText = newString;
+            OnPropertyChanged("ResultText");
         }
 
         private static void OnOneDriveInfoTextChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
@@ -117,25 +133,20 @@ namespace ImageBrowser.ViewModels
             ImageFileInfoViewModel signingStatus = d as ImageFileInfoViewModel;
             signingStatus?.OnOneDriveInfoTextChanged(oldValue, newValue);
         }
-        public virtual void OnResultTextChanged(string oldString, string newString)
-        {
-            if (oldString != newString)
-                ResultText = newString;
-            OnPropertyChanged("ResultText");
-        }
+
         public virtual void OnOneDriveInfoTextChanged(string oldString, string newString)
         {
             if (oldString != newString)
                 OneDriveInfoText = newString;
             OnPropertyChanged("OneDriveInfoText");
         }
+
         private static void OnStatusChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             bool oldValue = (bool)e.OldValue;
             bool newValue = (bool)e.NewValue;
             ImageFileInfoViewModel signingStatus = d as ImageFileInfoViewModel;
             signingStatus?.OnStatusChanged(oldValue, newValue);
-
         }
 
         public virtual void OnStatusChanged(bool oldValue, bool newValue)
@@ -145,9 +156,18 @@ namespace ImageBrowser.ViewModels
             OnPropertyChanged("IsUserSignedOut");
         }
 
+        private void SigningStatusViewModel_OnStatusChanged(object sender, PropertyChangedEventArgs e)
+        {
+            var newValue = (bool)sender;
+            IsUserSignedOut = newValue;
+            OnPropertyChanged("IsUserSignedOut");
+        }
+        #endregion
+
         protected void OnPropertyChanged([CallerMemberName] string propertyName = null) =>
                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
+        #region Actions for commands in ctor
         private Action SigningInAsync()
         {
             return async () =>
@@ -159,10 +179,7 @@ namespace ImageBrowser.ViewModels
                     // Call the /me endpoint of Graph
                     User graphUser = await graphClient.Me.Request().GetAsync();
 
-                       ResultText = "Display Name: " + graphUser.UserPrincipalName + "\nid: " + graphUser.Id;
-                       
-                        
-                    
+                    ResultText = "Display Name: " + graphUser.UserPrincipalName + "\nid: " + graphUser.Id;
                 }
                 catch (MsalException msalEx)
                 {
@@ -192,10 +209,9 @@ namespace ImageBrowser.ViewModels
                     await MSGraphQueriesHelper.SingOutMSGraphAccount(firstAccount).ConfigureAwait(false);
                     string message = LocalizationHelper.GetLocalizedStrings("normalSignOut");
 
-
                     ResultText = UserSignedOutNormal;
                     Trace.WriteLine("From ImageViewModel");
-              
+
                     OneDriveInfoText = EmptyOneDrive;
                     this.FlushObservableCollectionOfImages();
                 }
@@ -205,22 +221,6 @@ namespace ImageBrowser.ViewModels
                     ResultText = $"Error signing-out user: {ex.Message}";
                 }
             };
-        }
-        // TODO: catch main UI thread and extract into helper class
-        private async Task ShowPopUpMessage(string message)
-        {
-            await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
-          () =>
-          {
-              new MessageDialog(@"ERROR occures! {0}",message);
-          });
-        }
-
-        private void SigningStatusViewModel_OnStatusChanged(object sender, PropertyChangedEventArgs e)
-        {
-            var newValue = (bool)sender;
-            IsUserSignedOut = newValue;
-            OnPropertyChanged("IsUserSignedOut");
         }
 
         private Action OneDriveOpenAction()
@@ -239,6 +239,17 @@ namespace ImageBrowser.ViewModels
                 await this.PopulateObservableCollectionOfImages(downloadedFiles);
             };
         }
+        #endregion
+
+        // TODO: catch main UI thread and extract into helper class
+        private async Task ShowPopUpMessage(string message)
+        {
+            await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
+          () =>
+          {
+              new MessageDialog(@"ERROR occures! {0}", message);
+          });
+        }
 
         public void ChangeObservCollection(ObservableCollection<ImageFileInfo> images)
         {
@@ -246,8 +257,6 @@ namespace ImageBrowser.ViewModels
         }
 
         private ObservableCollection<GroupInfoList<object>> groupedImagesInfos = new ObservableCollection<GroupInfoList<object>>();
-
-        public event PropertyChangedEventHandler PropertyChanged;
 
         public ObservableCollection<GroupInfoList<object>> GroupedImagesInfos { get => groupedImagesInfos; }
 
@@ -323,16 +332,10 @@ namespace ImageBrowser.ViewModels
                 this.GroupedImagesInfos.Clear();
             }
         }
+
         public bool HaveAnyItems()
         {
             return this.ObservableCollection.Count > 0;
         }
-
-
-
-        public ICommand OneDriveOpenCommand { get; set; }
-
-        public ICommand SignOutCommand { get; set; }
-        public ICommand SignInCommand { get; set; }
     }
 }

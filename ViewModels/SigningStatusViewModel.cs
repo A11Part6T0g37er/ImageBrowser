@@ -21,13 +21,12 @@ namespace ImageBrowser.ViewModels
             typeof(bool),
             typeof(SigningStatusViewModel),
             new PropertyMetadata(false, new PropertyChangedCallback(OnStatusChanged)));
+
         public static readonly DependencyProperty ResultTextProperty = DependencyProperty.Register(
            nameof(ResultText),
            typeof(string),
            typeof(SigningStatusViewModel),
            null);
-
-        
 
         private static void OnStatusChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
@@ -52,7 +51,6 @@ namespace ImageBrowser.ViewModels
             get
             {
                 return (bool)GetValue(StatusProperty);
-
             }
 
             set
@@ -66,23 +64,23 @@ namespace ImageBrowser.ViewModels
         {
             SignOutCommand = new RelayCommand(SigningOutAsync());
 
-
-
-
             MSGraphQueriesHelper.PropertyChanged += SigningStatusViewModel_OnStatusChanged;
         }
+
         public string ResultText
         {
             get
             {
                 return GetValue(ResultTextProperty).ToString();
             }
+
             set
             {
                 SetValue(ResultTextProperty, value);
             }
         }
-        private  Action SigningOutAsync()
+
+        private Action SigningOutAsync()
         {
             return async () =>
             {
@@ -90,15 +88,15 @@ namespace ImageBrowser.ViewModels
                 if (accounts == null)
                     return;
                 IAccount firstAccount = accounts.FirstOrDefault();
-                
+
                 try
                 {
                     await MSGraphQueriesHelper.SingOutMSGraphAccount(firstAccount).ConfigureAwait(false);
-                  string message =  LocalizationHelper.GetLocalizedStrings("normalSignOut");
+                    string message = LocalizationHelper.GetLocalizedStrings("normalSignOut");
 
                     Trace.WriteLine("From Signing Status  200 OK");
                     ResultText = message;
-                    
+
                     /*  await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
                       {
                           
@@ -115,8 +113,6 @@ namespace ImageBrowser.ViewModels
             };
         }
 
-       
-
         private void SigningStatusViewModel_OnStatusChanged(object sender, PropertyChangedEventArgs e)
         {
             var newValue = (bool)sender;
@@ -127,9 +123,6 @@ namespace ImageBrowser.ViewModels
         protected void OnPropertyChanged([CallerMemberName] string propertyName = null) =>
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
-
-     public   ICommand SignOutCommand { get; set; }
-
-
+        public ICommand SignOutCommand { get; set; }
     }
 }
