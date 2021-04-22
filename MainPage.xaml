@@ -304,9 +304,11 @@
 							   Margin="20"
 							   Grid.Row="0" />
 					<Button x:Name="openFolders"
-							Click="OpenFolders_Click"
 							Content="Open folder"
-							Grid.Row="1" />
+							Grid.Row="1" 
+							DataContext="{x:Bind imageFileInfoViewModel}"
+							Command="{Binding OpenFoldersCommand}"/>
+							<!--Click="OpenFolders_Click"-->
 					<StackPanel Margin="20,30,0,0"
 								Grid.Row="2">
 

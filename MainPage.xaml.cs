@@ -195,17 +195,5 @@ namespace ImageBrowser
             }
         }
 
-        private async void OpenFolders_Click(object sender, RoutedEventArgs e)
-        {
-            FolderPicker folderPicker = new FolderPicker();
-            folderPicker.SuggestedStartLocation = PickerLocationId.Downloads;
-            folderPicker.ViewMode = PickerViewMode.Thumbnail;
-            folderPicker.FileTypeFilter.Add("*");
-            StorageFolder folder = await folderPicker.PickSingleFolderAsync();
-            if (folder != null)
-            {
-                FoldersToDisplay = new FoldersViewModel(folder);
-            }
-        }
     }
 }

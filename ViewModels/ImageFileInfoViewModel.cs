@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using ImageBrowser.Common;
@@ -13,6 +14,7 @@ using ImageBrowser.Models;
 using Microsoft.Graph;
 using Microsoft.Identity.Client;
 using Windows.Storage;
+using Windows.Storage.Pickers;
 using Windows.UI.Popups;
 using Windows.UI.Xaml;
 
@@ -34,6 +36,7 @@ namespace ImageBrowser.ViewModels
 
         public ICommand SignInCommand { get; set; }
         public ICommand OpenCLickCommand { get; set; }
+        public ICommand OpenFoldersCommand { get; set; }
 
         #region DependecyProperties
         public static readonly DependencyProperty ResultTextProperty = DependencyProperty.Register(
@@ -66,7 +69,7 @@ namespace ImageBrowser.ViewModels
             SignOutCommand = new RelayCommand(SigningOutAsync());
             SignInCommand = new RelayCommand(SigningInAsync());
             OpenCLickCommand = new RelayCommand(OpenClickAsync());
-
+            OpenFoldersCommand = new RelayCommand(OpenFoldersAsync());
             MSGraphQueriesHelper.PropertyChanged += SigningStatusViewModel_OnStatusChanged;
         }
 
@@ -261,6 +264,31 @@ namespace ImageBrowser.ViewModels
             IReadOnlyCollection<StorageFile> files = await picker.PickMultipleFilesAsync();
             return await this.PopulateObservableCollectionOfImages(files);
         }
+
+        private Action OpenFoldersAsync()
+        {
+            return async ()=> OpenFoldersButtonHandler();
+        }
+
+        private async Task<ObservableCollection<ImageFileInfo>> OpenFoldersButtonHandler()
+        {
+            FolderPicker folderPicker = new FolderPicker();
+            folderPicker.SuggestedStartLocation = PickerLocationId.Downloads;
+            folderPicker.ViewMode = PickerViewMode.Thumbnail;
+            StringBuilder outputText = new StringBuilder();
+            folderPicker.FileTypeFilter.Add(".jpg");
+            folderPicker.FileTypeFilter.Add(".jpeg");
+            folderPicker.FileTypeFilter.Add(".png");
+            StorageFolder folder = await folderPicker.PickSingleFolderAsync();
+            if (folder != null)
+            {
+                IReadOnlyList<StorageFile> fileList= await folder.GetFilesAsync();
+                return await this.PopulateObservableCollectionOfImages(fileList);
+
+            }
+            return null;
+        }
+
         #endregion
 
         // TODO: catch main UI thread and extract into helper class
