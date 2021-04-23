@@ -238,9 +238,10 @@
 					</StackPanel>
 					<RefreshContainer x:Name="RefreshArea"
 									  Grid.Row="1"
+									  
 									  DataContext="{x:Bind imageFileInfoViewModel}"
-									  RefreshRequested="RefreshArea_RefreshRequested"
 									  Visibility="{Binding IsAnyObservableItem,Converter={StaticResource bool2Visibility},Mode=TwoWay}">
+									  <!--RefreshRequested="RefreshArea_RefreshRequested"-->
 									  <!--RefreshRequested="{Binding RefreshArea_RefreshRequested}"-->
 
 
@@ -414,6 +415,7 @@
 						<RowDefinition />
 						<RowDefinition />
 						<RowDefinition />
+						<RowDefinition />
 					</Grid.RowDefinitions>
 					<TextBlock Text="Folders opened"
 							   Margin="20"
@@ -428,7 +430,16 @@
 								Grid.Row="2">
 
 					</StackPanel>
-
+					<Grid Grid.Row="3">
+						<Grid.RowDefinitions>
+							<RowDefinition Height="100" />
+						</Grid.RowDefinitions>
+						<Rectangle 
+								Fill="DarkKhaki"
+								Opacity="0.3"
+								   RadiusX="10" RadiusY="10" Width="200"  HorizontalAlignment="Left"/>
+						<TextBlock Text="Path of file to be" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="25"/>
+					</Grid>
 				</Grid>
 			</PivotItem>
 		</Pivot>
@@ -442,7 +453,11 @@
 						  Label=""
 						  x:Uid="refresh"
 						  ToolTipService.ToolTip=""
-						  Click="Refresh_Click" />
+						 DataContext="{x:Bind imageFileInfoViewModel}"
+						  Command="{Binding RefreshCommand}"
+						   />
+			<!--Click="Refresh_Click"-->
+			
 			<AppBarButton Icon="OpenFile"
 						  Label=""
 						  x:Uid="open"

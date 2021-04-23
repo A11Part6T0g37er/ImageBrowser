@@ -47,4 +47,3 @@ namespace ImageBrowser.Models
         }
     }
 }
-

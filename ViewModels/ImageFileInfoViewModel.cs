@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using ImageBrowser.Common;
@@ -39,6 +40,7 @@ namespace ImageBrowser.ViewModels
         public ICommand SignInCommand { get; set; }
         public ICommand OpenCLickCommand { get; set; }
         public ICommand OpenFoldersCommand { get; set; }
+        public ICommand RefreshCommand { get; set; }
 
         #region DependecyProperties
         public static readonly DependencyProperty ResultTextProperty = DependencyProperty.Register(
@@ -76,8 +78,24 @@ namespace ImageBrowser.ViewModels
             SignInCommand = new RelayCommand(SigningInAsync());
             OpenCLickCommand = new RelayCommand(OpenClickAsync());
             OpenFoldersCommand = new RelayCommand(OpenFoldersAsync());
+            RefreshCommand = new RelayCommand(RefreshAreaItemsAsync());
+
             MSGraphQueriesHelper.PropertyChanged += SigningStatusViewModel_OnStatusChanged;
 
+        }
+
+        private  Action RefreshAreaItemsAsync()
+        {
+            ICollection<StorageFile> files = new Collection<StorageFile>();
+
+            for (int i = 0; i < this.ObservableCollection.Count; i++)
+            {
+
+                files.Add(this.ObservableCollection[i].ImageFile);
+            }
+            
+            IReadOnlyCollection<StorageFile> filesReadOnly = (IReadOnlyCollection<StorageFile>)files;
+            return async () => { Trace.WriteLine("REFRESHED by button"); await this.PopulateObservableCollectionOfImages(filesReadOnly); };
         }
 
         #region XamlListningProperties
@@ -314,7 +332,7 @@ namespace ImageBrowser.ViewModels
             queryOptions.FileTypeFilter.Add(".jpg");
             queryOptions.FileTypeFilter.Add(".jpeg");
             queryOptions.FileTypeFilter.Add(".png");
-            var queryResult = folder.CreateFileQueryWithOptions(queryOptions);
+            var queryResult = folder?.CreateFileQueryWithOptions(queryOptions);
             List<StorageFile> fileyas = new List<StorageFile>();
             if (folder != null)
             {
@@ -449,22 +467,7 @@ namespace ImageBrowser.ViewModels
         }
 
 
-        public async void RefreshArea_RefreshRequested(RefreshContainer sender, RefreshRequestedEventArgs args)
-        {
-            using (var RefreshcompletingDeferral = args.GetDeferral())
-            {
-                ICollection<StorageFile> files = new Collection<StorageFile>();
 
-                for (int i = 0; i < this.ObservableCollection.Count; i++)
-                {
-
-                    files.Add(this.ObservableCollection[i].ImageFile);
-                }
-
-                IReadOnlyCollection<StorageFile> filesReadOnly = (IReadOnlyCollection<StorageFile>)files;
-                await this.PopulateObservableCollectionOfImages(filesReadOnly);
-            }
-        }
 
     }
 }
