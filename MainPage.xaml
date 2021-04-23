@@ -218,8 +218,8 @@
 					   Header="">
 					<Grid>
 					<Grid.RowDefinitions>
-						<RowDefinition />
-						<RowDefinition />
+						<RowDefinition Height="Auto"/>
+						<RowDefinition MinHeight="5" Height="*"/>
 						
 					</Grid.RowDefinitions>
 				<StackPanel Grid.Row="0">
@@ -232,15 +232,19 @@
 					</StackPanel>
 					<TextBlock x:Name="OneDriveInfo" 
 							   DataContext="{x:Bind imageFileInfoViewModel}"
-							   Text="{Binding OneDriveInfoText, Mode=TwoWay}"/>
+							   Text="{Binding OneDriveInfoText, Mode=TwoWay}"
+							   Visibility="Visible"/>
 					</StackPanel>
-					<RefreshContainer x:Name="RefreshArea2"
-										  Grid.Row="1">
+					<RefreshContainer x:Name="RefreshArea"
+										  Grid.Row="1"
+									  RefreshRequested="RefreshArea_RefreshRequested" 
+									  DataContext="{x:Bind imageFileInfoViewModel}"
+									  Visibility="{Binding IsAnyObservableItem,Converter={StaticResource bool2Visibility},Mode=TwoWay}">
 
 
 							<GridView ItemsSource="{Binding Source={StaticResource ImagesCollection}}"
 									  SelectionMode="None"
-									  Name="GroupedGrid2"
+									  Name="GroupedGrid"
 									  ItemsPanel="{StaticResource ImageGridView_ItemsPanelTemplate}"
 									  SizeChanged="GroupedGrid_SizeChanged"
 									  IsItemClickEnabled="True"
@@ -248,7 +252,7 @@
 									  RelativePanel.Below="leftControlPanel"
 									  RelativePanel.AlignLeftWithPanel="True"
 									  RelativePanel.AlignRightWithPanel="True"
-									  MinWidth="180" MaxWidth="500"
+									  MinWidth="180"  MinHeight="5"
 									  Margin="15">
 								<GridView.GroupStyle>
 									<GroupStyle>
@@ -272,8 +276,8 @@
 												<RowDefinition Height="Auto" />
 
 											</Grid.RowDefinitions>
-
-											<Image DataContextChanged="ItemImage_DataContextChanged"
+<!--DataContextChanged="ItemImage_DataContextChanged"-->
+											<Image 
 												   x:Name="ItemImage"
 												   Stretch="Uniform"
 												   Source="{x:Bind ImageSource, Mode=OneWay}"
@@ -340,7 +344,11 @@
 					   x:Uid="groupedList"
 					   Header="">
 				<Grid  Margin="0,0,100,0">
-					<StackPanel Orientation="Horizontal">
+					<Grid.RowDefinitions>
+						<RowDefinition Height="Auto"/>
+						<RowDefinition Height="*"/>
+					</Grid.RowDefinitions>
+					<StackPanel Orientation="Horizontal" Grid.Row="0">
 						<TextBlock Text="{x:Bind imageFileInfoViewModel.GroupedImagesInfos.Count, Mode=OneWay}" />
 						<TextBlock x:Uid="groupedListDefinition"
 								   Text="" />
@@ -349,7 +357,7 @@
 					<ListView ItemsSource="{Binding Source={StaticResource ImagesCollection} }"
 							  RelativePanel.Below="button"
 							  ScrollViewer.HorizontalScrollBarVisibility="Auto"
-							  Background="WhiteSmoke">
+							 Grid.Row="1" >
 						<ListView.ItemContainerStyle>
 							<Style TargetType="ListViewItem"
 								   BasedOn="{StaticResource ListViewItemExpanded}">
@@ -390,7 +398,7 @@
 												   Style="{StaticResource TitleTextBlockStyle}"
 												   FontWeight="Bold"
 												   FontSize="14"
-												   Foreground="Black"
+												   
 												   Margin="15,0" />
 									</DataTemplate>
 								</GroupStyle.HeaderTemplate>
@@ -414,7 +422,7 @@
 							Grid.Row="1" 
 							DataContext="{x:Bind imageFileInfoViewModel}"
 							Command="{Binding OpenFoldersCommand}"/>
-							<!--Click="OpenFolders_Click"-->
+							
 					<StackPanel Margin="20,30,0,0"
 								Grid.Row="2">
 
@@ -439,16 +447,18 @@
 						  x:Uid="open"
 						  DataContext="{x:Bind imageFileInfoViewModel}"
 						  Command="{Binding OpenCLickCommand, Mode=TwoWay}" />
-			<!--Click="ButtonOpen_Click"--> 
+			
 		</CommandBar>
 
 		<Grid x:Name="startingGreetingScreen"
-			  Visibility="Collapsed"
 			  RelativePanel.AlignVerticalCenterWithPanel="True"
 			  RelativePanel.AlignHorizontalCenterWithPanel="True"
 			  HorizontalAlignment="Center"
 			  RelativePanel.Below="leftControlPanel"
+			  DataContext="{x:Bind imageFileInfoViewModel}"
+			  Visibility="{Binding IsAnyObservableItem,Converter={StaticResource bool2visInverse},Mode=TwoWay}"
 			  Margin="20,0,0,0">
+			<!--Visibility="Collapsed"-->
 
 			<TextBlock TextWrapping="Wrap"
 					   Text="Nothig here" />
@@ -458,7 +468,7 @@
 
 		</Grid>
 
-		<RefreshContainer x:Name="RefreshArea"
+		<!--<RefreshContainer x:Name="RefreshArea"
 						  RelativePanel.Below="leftControlPanel"
 						  RelativePanel.AlignLeftWithPanel="True"
 						  RelativePanel.AlignRightWithPanel="True"
@@ -556,7 +566,7 @@
 				</GridView.ItemTemplate>
 			</GridView>
 
-		</RefreshContainer>
+		</RefreshContainer>-->
 		<StackPanel x:Name="OneDrivePanel"
 					Orientation="Horizontal"
 					RelativePanel.RightOf="TopButtons"

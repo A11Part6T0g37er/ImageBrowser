@@ -56,7 +56,11 @@ namespace ImageBrowser.ViewModels
          nameof(OneDriveInfoText),
          typeof(string),
          typeof(ImageFileInfoViewModel),
-         new PropertyMetadata(null, new PropertyChangedCallback(OnOneDriveInfoTextChanged)));
+         new PropertyMetadata(EmptyOneDrive, new PropertyChangedCallback(OnOneDriveInfoTextChanged)));
+
+        public static readonly DependencyProperty AnyObservableItemsProperty = DependencyProperty.Register(
+            nameof(IsAnyObservableItem), typeof(bool), typeof(ImageFileInfoViewModel), new PropertyMetadata(false, new PropertyChangedCallback(OnObservableItemsCountChanged)));
+
         #endregion
 
         /// <summary>
@@ -72,9 +76,11 @@ namespace ImageBrowser.ViewModels
             OpenCLickCommand = new RelayCommand(OpenClickAsync());
             OpenFoldersCommand = new RelayCommand(OpenFoldersAsync());
             MSGraphQueriesHelper.PropertyChanged += SigningStatusViewModel_OnStatusChanged;
+
         }
 
         #region XamlListningProperties
+        public bool IsAnyItemsToShow;
 
         public bool IsUserSignedOut
         {
@@ -115,6 +121,13 @@ namespace ImageBrowser.ViewModels
             {
                 SetValue(ResultTextProperty, value);
             }
+        }
+
+        public bool IsAnyObservableItem
+        {
+            get => (bool)GetValue(AnyObservableItemsProperty);
+
+            set => SetValue(AnyObservableItemsProperty, value);
         }
 
         #endregion
@@ -169,6 +182,20 @@ namespace ImageBrowser.ViewModels
             var newValue = (bool)sender;
             IsUserSignedOut = newValue;
             OnPropertyChanged("IsUserSignedOut");
+        }
+
+        private static void OnObservableItemsCountChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            bool oldValue = (bool)e.OldValue;
+            bool newValue = (bool)e.NewValue;
+            ImageFileInfoViewModel obsevableCountChange = d as ImageFileInfoViewModel;
+            obsevableCountChange?.OnObservableItemsCountChanged(oldValue, newValue);
+        }
+        public virtual void OnObservableItemsCountChanged(bool oldValue, bool newValue)
+        {
+            if (oldValue != newValue)
+                IsAnyObservableItem = newValue;
+            OnPropertyChanged(nameof(IsAnyObservableItem));
         }
         #endregion
 
@@ -248,7 +275,7 @@ namespace ImageBrowser.ViewModels
             };
         }
 
-        private  Action OpenClickAsync()
+        private Action OpenClickAsync()
         {
             return async () => PickMultiplePictures();
         }
@@ -268,7 +295,7 @@ namespace ImageBrowser.ViewModels
 
         private Action OpenFoldersAsync()
         {
-            return async ()=> OpenFoldersButtonHandler();
+            return async () => OpenFoldersButtonHandler();
         }
 
         private async Task<ObservableCollection<ImageFileInfo>> OpenFoldersButtonHandler()
@@ -276,7 +303,7 @@ namespace ImageBrowser.ViewModels
             FolderPicker folderPicker = new FolderPicker();
             folderPicker.SuggestedStartLocation = PickerLocationId.Downloads;
             folderPicker.ViewMode = PickerViewMode.Thumbnail;
-           
+
             folderPicker.FileTypeFilter.Add(".jpg");
             folderPicker.FileTypeFilter.Add(".jpeg");
             folderPicker.FileTypeFilter.Add(".png");
@@ -286,13 +313,13 @@ namespace ImageBrowser.ViewModels
             queryOptions.FileTypeFilter.Add(".jpg");
             queryOptions.FileTypeFilter.Add(".jpeg");
             queryOptions.FileTypeFilter.Add(".png");
-            var queryResult = folder.CreateFileQueryWithOptions(queryOptions); 
-           List<StorageFile> fileyas = new List<StorageFile>();
+            var queryResult = folder.CreateFileQueryWithOptions(queryOptions);
+            List<StorageFile> fileyas = new List<StorageFile>();
             if (folder != null)
             {
-                IReadOnlyList<StorageFile> fileList= await folder.GetFilesAsync();
+                IReadOnlyList<StorageFile> fileList = await folder.GetFilesAsync();
                 IReadOnlyCollection<StorageFile> storageFiles = await queryResult.GetFilesAsync();
-                foreach(var file in storageFiles)
+                foreach (var file in storageFiles)
                 {
                     fileyas.Add(file);
                 }
@@ -345,6 +372,7 @@ namespace ImageBrowser.ViewModels
 
                 GroupedImagesInfos.Add(infoList);
             }
+
         }
 
         private void Initialize()
@@ -378,7 +406,7 @@ namespace ImageBrowser.ViewModels
                     this.ObservableCollection.Add(item);
                 }
             }
-
+            IsAnyObservableItem = HaveAnyItems();
             this.InitializeGroupingOfViewModel();
 
             return null;
@@ -393,12 +421,30 @@ namespace ImageBrowser.ViewModels
 
                 this.ObservableCollection.Clear();
                 this.GroupedImagesInfos.Clear();
+                IsAnyObservableItem = HaveAnyItems();
             }
         }
 
         public bool HaveAnyItems()
         {
+
             return this.ObservableCollection.Count > 0;
+        }
+
+
+
+        protected bool SetProperty<T>(ref T storage, T value, [CallerMemberName] string propertyName = null)
+        {
+            if (object.Equals(storage, value))
+            {
+                return false;
+            }
+            else
+            {
+                storage = value;
+                OnPropertyChanged(propertyName);
+                return true;
+            }
         }
     }
 }

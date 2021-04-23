@@ -112,17 +112,17 @@ namespace ImageBrowser
             //{
             //    case "medium":
             //        {
-            //            gridColumnNumber = 2;
+            //            gridColumnNumber = 3;
             //            break;
             //        }
             //    case "large":
             //        {
-            //            gridColumnNumber = 3;
+            //            gridColumnNumber = 4;
             //            break;
             //        }
             //    default:
             //        {
-            //            gridColumnNumber = 1;
+            //            gridColumnNumber = 2;
             //            break;
             //        }
             //}
@@ -134,19 +134,7 @@ namespace ImageBrowser
             persistedItem = e.ClickedItem as ImageFileInfo;
             Frame.Navigate(typeof(DetailPage), e.ClickedItem);
         }
-
-        private void ItemImage_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
-        {
-            if (imageFileInfoViewModel.HaveAnyItems())
-            {
-                startingGreetingScreen.Visibility = Visibility.Collapsed;
-            }
-            else
-            {
-                startingGreetingScreen.Visibility = Visibility.Visible;
-            }
-        }
-
+              
         private async void RefreshArea_RefreshRequested(RefreshContainer sender, RefreshRequestedEventArgs args)
         {
             using (var RefreshcompletingDeferral = args.GetDeferral())
