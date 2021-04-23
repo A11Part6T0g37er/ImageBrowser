@@ -18,7 +18,7 @@
 												 OnTrue="Collapsed"
 												 OnFalse="Visible" />
 
-		
+
 		<viewModels:ImageFileInfoViewModel x:Key="ImageViewModel" />
 
 		<Thickness x:Key="LargeItemMargin">8</Thickness>
@@ -216,128 +216,129 @@
 			<PivotItem Name="All"
 					   x:Uid="all"
 					   Header="">
-					<Grid>
+				<Grid>
 					<Grid.RowDefinitions>
-						<RowDefinition Height="Auto"/>
-						<RowDefinition MinHeight="5" Height="*"/>
-						
+						<RowDefinition Height="Auto" />
+						<RowDefinition MinHeight="5"
+									   Height="*" />
+
 					</Grid.RowDefinitions>
-				<StackPanel Grid.Row="0">
-					<TextBlock x:Uid="allPictures"
-							   Text="" />
-					<StackPanel Orientation="Horizontal">
-						<TextBlock Text="{x:Bind imageFileInfoViewModel.GroupedImagesInfos.Count, Mode=OneWay}" />
-						<TextBlock x:Uid="groupedListDefinition"
+					<StackPanel Grid.Row="0">
+						<TextBlock x:Uid="allPictures"
 								   Text="" />
-					</StackPanel>
-					<TextBlock x:Name="OneDriveInfo" 
-							   DataContext="{x:Bind imageFileInfoViewModel}"
-							   Text="{Binding OneDriveInfoText, Mode=TwoWay}"
-							   Visibility="Visible"/>
+						<StackPanel Orientation="Horizontal">
+							<TextBlock Text="{x:Bind imageFileInfoViewModel.GroupedImagesInfos.Count, Mode=OneWay}" />
+							<TextBlock x:Uid="groupedListDefinition"
+									   Text="" />
+						</StackPanel>
+						<TextBlock x:Name="OneDriveInfo"
+								   DataContext="{x:Bind imageFileInfoViewModel}"
+								   Text="{Binding OneDriveInfoText, Mode=TwoWay}"
+								   Visibility="Visible" />
 					</StackPanel>
 					<RefreshContainer x:Name="RefreshArea"
-										  Grid.Row="1"
-									  RefreshRequested="RefreshArea_RefreshRequested" 
+									  Grid.Row="1"
 									  DataContext="{x:Bind imageFileInfoViewModel}"
+									  RefreshRequested="RefreshArea_RefreshRequested"
 									  Visibility="{Binding IsAnyObservableItem,Converter={StaticResource bool2Visibility},Mode=TwoWay}">
+									  <!--RefreshRequested="{Binding RefreshArea_RefreshRequested}"-->
 
 
-							<GridView ItemsSource="{Binding Source={StaticResource ImagesCollection}}"
-									  SelectionMode="None"
-									  Name="GroupedGrid"
-									  ItemsPanel="{StaticResource ImageGridView_ItemsPanelTemplate}"
-									  SizeChanged="GroupedGrid_SizeChanged"
-									  IsItemClickEnabled="True"
-									  ItemClick="GroupedGrid_ItemClick"
-									  RelativePanel.Below="leftControlPanel"
-									  RelativePanel.AlignLeftWithPanel="True"
-									  RelativePanel.AlignRightWithPanel="True"
-									  MinWidth="180"  MinHeight="5"
-									  Margin="15">
-								<GridView.GroupStyle>
-									<GroupStyle>
-										<GroupStyle.HeaderTemplate>
-											<DataTemplate>
-												<TextBlock Text="{Binding Key}"
-														   Style="{StaticResource SubtitleTextBlockStyle}" />
-											</DataTemplate>
+						<GridView ItemsSource="{Binding Source={StaticResource ImagesCollection}}"
+								  SelectionMode="None"
+								  Name="GroupedGrid"
+								  ItemsPanel="{StaticResource ImageGridView_ItemsPanelTemplate}"
+								  SizeChanged="GroupedGrid_SizeChanged"
+								  IsItemClickEnabled="True"
+								  ItemClick="GroupedGrid_ItemClick"
+								  RelativePanel.Below="leftControlPanel"
+								  RelativePanel.AlignLeftWithPanel="True"
+								  RelativePanel.AlignRightWithPanel="True"
+								  MinWidth="180"
+								  MinHeight="5"
+								  Margin="15">
+							<GridView.GroupStyle>
+								<GroupStyle>
+									<GroupStyle.HeaderTemplate>
+										<DataTemplate>
+											<TextBlock Text="{Binding Key}"
+													   Style="{StaticResource SubtitleTextBlockStyle}" />
+										</DataTemplate>
 
 
-										</GroupStyle.HeaderTemplate>
-									</GroupStyle>
-								</GridView.GroupStyle>
-								<GridView.ItemTemplate>
-									<DataTemplate x:DataType="local:ImageFileInfo">
-										<Grid Margin="{StaticResource LargeItemMargin}"
-											  Height="{Binding ItemSize, ElementName=page}">
-											<Grid.RowDefinitions>
-												<RowDefinition Height="*" />
-												<RowDefinition Height="Auto" />
-												<RowDefinition Height="Auto" />
+									</GroupStyle.HeaderTemplate>
+								</GroupStyle>
+							</GridView.GroupStyle>
+							<GridView.ItemTemplate>
+								<DataTemplate x:DataType="local:ImageFileInfo">
+									<Grid Margin="{StaticResource LargeItemMargin}"
+										  Height="{Binding ItemSize, ElementName=page}">
+										<Grid.RowDefinitions>
+											<RowDefinition Height="*" />
+											<RowDefinition Height="Auto" />
+											<RowDefinition Height="Auto" />
 
-											</Grid.RowDefinitions>
-<!--DataContextChanged="ItemImage_DataContextChanged"-->
-											<Image 
-												   x:Name="ItemImage"
-												   Stretch="Uniform"
-												   Source="{x:Bind ImageSource, Mode=OneWay}"
-												   Width="{Binding ItemSize,ElementName=app}"
-												   VerticalAlignment="Top"
-												   HorizontalAlignment="Center"
-												   Grid.Row="0"
-												   Margin="0,0,0,0" />
+										</Grid.RowDefinitions>
+										<Image x:Name="ItemImage"
+											   Stretch="Uniform"
+											   Source="{x:Bind ImageSource, Mode=OneWay}"
+											   Width="{Binding ItemSize,ElementName=app}"
+											   VerticalAlignment="Top"
+											   HorizontalAlignment="Center"
+											   Grid.Row="0"
+											   Margin="0,0,0,0" />
 
-											<StackPanel Orientation="Vertical"
-														Grid.Row="1"
-														Margin="0,0,0,15">
-												<TextBlock Text="{x:Bind ImageName, Mode=OneWay}"
-														   MaxWidth="500"
-														   TextWrapping="Wrap"
-														   Style="{StaticResource SubtitleTextBlockStyle}"
-														   HorizontalAlignment="Left"
-														   VerticalAlignment="Top" />
+										<StackPanel Orientation="Vertical"
+													Grid.Row="1"
+													Margin="0,0,0,15">
+											<TextBlock Text="{x:Bind ImageName, Mode=OneWay}"
+													   MaxWidth="500"
+													   TextWrapping="Wrap"
+													   Style="{StaticResource SubtitleTextBlockStyle}"
+													   HorizontalAlignment="Left"
+													   VerticalAlignment="Top" />
 
-											</StackPanel>
+										</StackPanel>
 
-											<StackPanel Orientation="Horizontal"
-														Grid.Row="2">
-												<TextBlock TextWrapping="Wrap"
-														   Text="{x:Bind ImageDimensions, Mode=OneWay}"
-														   Margin="0,3,10,0" />
+										<StackPanel Orientation="Horizontal"
+													Grid.Row="2">
+											<TextBlock TextWrapping="Wrap"
+													   Text="{x:Bind ImageDimensions, Mode=OneWay}"
+													   Margin="0,3,10,0" />
 
-												<ItemsControl ItemsSource="{x:Bind ImageProperties.Keywords, Mode=OneWay}">
-													<ItemsControl.ItemsPanel>
-														<ItemsPanelTemplate>
-															<WrapGrid Orientation="Horizontal"
-																	  MaximumRowsOrColumns="2"
-																	  ItemWidth="40" />
-														</ItemsPanelTemplate>
-													</ItemsControl.ItemsPanel>
-													<ItemsControl.ItemTemplate>
-														<DataTemplate x:DataType="x:String">
+											<ItemsControl ItemsSource="{x:Bind ImageProperties.Keywords, Mode=OneWay}">
+												<ItemsControl.ItemsPanel>
+													<ItemsPanelTemplate>
+														<WrapGrid Orientation="Horizontal"
+																  MaximumRowsOrColumns="2"
+																  ItemWidth="40" />
+													</ItemsPanelTemplate>
+												</ItemsControl.ItemsPanel>
+												<ItemsControl.ItemTemplate>
+													<DataTemplate x:DataType="x:String">
 
-															<TextBlock   Text="{Binding}"
-																		 FontSize="12"
-																		 TextWrapping="WrapWholeWords" />
+														<TextBlock   Text="{Binding}"
+																	 FontSize="12"
+																	 TextWrapping="WrapWholeWords" />
 
-														</DataTemplate>
-													</ItemsControl.ItemTemplate>
+													</DataTemplate>
+												</ItemsControl.ItemTemplate>
 
 
-												</ItemsControl>
+											</ItemsControl>
 
-											</StackPanel>
+										</StackPanel>
 
-										</Grid>
-									</DataTemplate>
-								</GridView.ItemTemplate>
-							</GridView>
+									</Grid>
+								</DataTemplate>
+							</GridView.ItemTemplate>
+						</GridView>
 
-						</RefreshContainer>
-				
-					</Grid>
-				
-				
+					</RefreshContainer>
+
+				</Grid>
+
+
 			</PivotItem>
 
 			<PivotItem x:Name="GroupedList"
@@ -345,10 +346,11 @@
 					   Header="">
 				<Grid  Margin="0,0,100,0">
 					<Grid.RowDefinitions>
-						<RowDefinition Height="Auto"/>
-						<RowDefinition Height="*"/>
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="*" />
 					</Grid.RowDefinitions>
-					<StackPanel Orientation="Horizontal" Grid.Row="0">
+					<StackPanel Orientation="Horizontal"
+								Grid.Row="0">
 						<TextBlock Text="{x:Bind imageFileInfoViewModel.GroupedImagesInfos.Count, Mode=OneWay}" />
 						<TextBlock x:Uid="groupedListDefinition"
 								   Text="" />
@@ -357,7 +359,7 @@
 					<ListView ItemsSource="{Binding Source={StaticResource ImagesCollection} }"
 							  RelativePanel.Below="button"
 							  ScrollViewer.HorizontalScrollBarVisibility="Auto"
-							 Grid.Row="1" >
+							  Grid.Row="1">
 						<ListView.ItemContainerStyle>
 							<Style TargetType="ListViewItem"
 								   BasedOn="{StaticResource ListViewItemExpanded}">
@@ -398,7 +400,6 @@
 												   Style="{StaticResource TitleTextBlockStyle}"
 												   FontWeight="Bold"
 												   FontSize="14"
-												   
 												   Margin="15,0" />
 									</DataTemplate>
 								</GroupStyle.HeaderTemplate>
@@ -419,10 +420,10 @@
 							   Grid.Row="0" />
 					<Button x:Name="openFolders"
 							Content="Open folder"
-							Grid.Row="1" 
+							Grid.Row="1"
 							DataContext="{x:Bind imageFileInfoViewModel}"
-							Command="{Binding OpenFoldersCommand}"/>
-							
+							Command="{Binding OpenFoldersCommand}" />
+
 					<StackPanel Margin="20,30,0,0"
 								Grid.Row="2">
 
@@ -447,7 +448,7 @@
 						  x:Uid="open"
 						  DataContext="{x:Bind imageFileInfoViewModel}"
 						  Command="{Binding OpenCLickCommand, Mode=TwoWay}" />
-			
+
 		</CommandBar>
 
 		<Grid x:Name="startingGreetingScreen"
@@ -458,7 +459,6 @@
 			  DataContext="{x:Bind imageFileInfoViewModel}"
 			  Visibility="{Binding IsAnyObservableItem,Converter={StaticResource bool2visInverse},Mode=TwoWay}"
 			  Margin="20,0,0,0">
-			<!--Visibility="Collapsed"-->
 
 			<TextBlock TextWrapping="Wrap"
 					   Text="Nothig here" />
@@ -468,105 +468,6 @@
 
 		</Grid>
 
-		<!--<RefreshContainer x:Name="RefreshArea"
-						  RelativePanel.Below="leftControlPanel"
-						  RelativePanel.AlignLeftWithPanel="True"
-						  RelativePanel.AlignRightWithPanel="True"
-						  RefreshRequested="RefreshArea_RefreshRequested">
-
-
-			<GridView ItemsSource="{Binding Source={StaticResource ImagesCollection}}"
-					  SelectionMode="None"
-					  Name="GroupedGrid"
-					  ItemsPanel="{StaticResource ImageGridView_ItemsPanelTemplate}"
-					  SizeChanged="GroupedGrid_SizeChanged"
-					  IsItemClickEnabled="True"
-					  ItemClick="GroupedGrid_ItemClick"
-					  RelativePanel.Below="leftControlPanel"
-					  RelativePanel.AlignLeftWithPanel="True"
-					  RelativePanel.AlignRightWithPanel="True"
-					  MinWidth="180"
-					  Margin="15">
-				<GridView.GroupStyle>
-					<GroupStyle>
-						<GroupStyle.HeaderTemplate>
-							<DataTemplate>
-								<TextBlock Text="{Binding Key}"
-										   Style="{StaticResource SubtitleTextBlockStyle}" />
-							</DataTemplate>
-
-
-						</GroupStyle.HeaderTemplate>
-					</GroupStyle>
-				</GridView.GroupStyle>
-				<GridView.ItemTemplate>
-					<DataTemplate x:DataType="local:ImageFileInfo">
-						<Grid Margin="{StaticResource LargeItemMargin}"
-							  Height="{Binding ItemSize, ElementName=page}">
-							<Grid.RowDefinitions>
-								<RowDefinition Height="*" />
-								<RowDefinition Height="Auto" />
-								<RowDefinition Height="Auto" />
-
-							</Grid.RowDefinitions>
-
-							<Image DataContextChanged="ItemImage_DataContextChanged"
-								   x:Name="ItemImage"
-								   Stretch="Uniform"
-								   Source="{x:Bind ImageSource, Mode=OneWay}"
-								   Width="{Binding ItemSize,ElementName=app}"
-								   VerticalAlignment="Top"
-								   HorizontalAlignment="Center"
-								   Grid.Row="0"
-								   Margin="0,0,0,0" />
-
-							<StackPanel Orientation="Vertical"
-										Grid.Row="1"
-										Margin="0,0,0,15">
-								<TextBlock Text="{x:Bind ImageName, Mode=OneWay}"
-										   MaxWidth="500"
-										   TextWrapping="Wrap"
-										   Style="{StaticResource SubtitleTextBlockStyle}"
-										   HorizontalAlignment="Left"
-										   VerticalAlignment="Top" />
-
-							</StackPanel>
-
-							<StackPanel Orientation="Horizontal"
-										Grid.Row="2">
-								<TextBlock TextWrapping="Wrap"
-										   Text="{x:Bind ImageDimensions, Mode=OneWay}"
-										   Margin="0,3,10,0" />
-
-								<ItemsControl ItemsSource="{x:Bind ImageProperties.Keywords, Mode=OneWay}">
-									<ItemsControl.ItemsPanel>
-										<ItemsPanelTemplate>
-											<WrapGrid Orientation="Horizontal"
-													  MaximumRowsOrColumns="2"
-													  ItemWidth="40" />
-										</ItemsPanelTemplate>
-									</ItemsControl.ItemsPanel>
-									<ItemsControl.ItemTemplate>
-										<DataTemplate x:DataType="x:String">
-
-											<TextBlock   Text="{Binding}"
-														 FontSize="12"
-														 TextWrapping="WrapWholeWords" />
-
-										</DataTemplate>
-									</ItemsControl.ItemTemplate>
-
-
-								</ItemsControl>
-
-							</StackPanel>
-
-						</Grid>
-					</DataTemplate>
-				</GridView.ItemTemplate>
-			</GridView>
-
-		</RefreshContainer>-->
 		<StackPanel x:Name="OneDrivePanel"
 					Orientation="Horizontal"
 					RelativePanel.RightOf="TopButtons"
@@ -583,9 +484,9 @@
 							  x:Uid="signIn"
 							  DataContext="{x:Bind imageFileInfoViewModel}"
 							  Visibility="{Binding IsUserSignedOut, Converter={StaticResource bool2visInverse},Mode=TwoWay}"
-							 Command="{Binding SignInCommand}"
-							  ToolTipService.ToolTip="OneDrive"/>
-							 
+							  Command="{Binding SignInCommand}"
+							  ToolTipService.ToolTip="OneDrive" />
+
 				<AppBarButton Icon="Account"
 							  x:Name="SignOutButton"
 							  Label=""
@@ -594,8 +495,8 @@
 							  Command="{Binding SignOutCommand}"
 							  Visibility="{Binding  IsUserSignedOut,  Converter={StaticResource bool2Visibility},Mode=TwoWay}"
 							  FontFamily="Segoe Ui" />
-							
-				
+
+
 
 
 				<AppBarButton x:Name="OpenOneDrive"
@@ -604,8 +505,8 @@
 							  DataContext="{x:Bind imageFileInfoViewModel}"
 							  Command="{Binding OneDriveOpenCommand}"
 							  Visibility="{Binding IsUserSignedOut, Converter={StaticResource bool2Visibility}, Mode=TwoWay}" />
-				
-				
+
+
 				<CommandBar.Content>
 					<StackPanel>
 

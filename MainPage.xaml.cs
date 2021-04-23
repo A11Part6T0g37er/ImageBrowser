@@ -134,7 +134,7 @@ namespace ImageBrowser
             persistedItem = e.ClickedItem as ImageFileInfo;
             Frame.Navigate(typeof(DetailPage), e.ClickedItem);
         }
-              
+
         private async void RefreshArea_RefreshRequested(RefreshContainer sender, RefreshRequestedEventArgs args)
         {
             using (var RefreshcompletingDeferral = args.GetDeferral())

@@ -18,6 +18,7 @@ using Windows.Storage.Pickers;
 using Windows.Storage.Search;
 using Windows.UI.Popups;
 using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 
 namespace ImageBrowser.ViewModels
 {
@@ -446,5 +447,24 @@ namespace ImageBrowser.ViewModels
                 return true;
             }
         }
+
+
+        public async void RefreshArea_RefreshRequested(RefreshContainer sender, RefreshRequestedEventArgs args)
+        {
+            using (var RefreshcompletingDeferral = args.GetDeferral())
+            {
+                ICollection<StorageFile> files = new Collection<StorageFile>();
+
+                for (int i = 0; i < this.ObservableCollection.Count; i++)
+                {
+
+                    files.Add(this.ObservableCollection[i].ImageFile);
+                }
+
+                IReadOnlyCollection<StorageFile> filesReadOnly = (IReadOnlyCollection<StorageFile>)files;
+                await this.PopulateObservableCollectionOfImages(filesReadOnly);
+            }
+        }
+
     }
 }
