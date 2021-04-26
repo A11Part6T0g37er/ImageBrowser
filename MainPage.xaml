@@ -35,7 +35,9 @@
 		<CollectionViewSource x:Name="ImagesCollection"
 							  Source="{x:Bind imageFileInfoViewModel.GroupedImagesInfos}"
 							  IsSourceGrouped="True" />
-
+		<CollectionViewSource x:Name="PathCollections"
+							  Source="{x:Bind imageFileInfoViewModel.foldersPath}"
+							  IsSourceGrouped="False" />
 
 
 		<CollectionViewSource x:Name="FoldersToView"
@@ -443,10 +445,10 @@
 			<PivotItem Header="Folders">
 				<Grid>
 					<Grid.RowDefinitions>
-						<RowDefinition />
-						<RowDefinition />
-						<RowDefinition />
-						<RowDefinition />
+						<RowDefinition Height="Auto"/>
+						<RowDefinition Height="Auto"/>
+						<RowDefinition Height="Auto"/>
+						<RowDefinition Height="*"/>
 					</Grid.RowDefinitions>
 					<TextBlock Text="Folders opened"
 							   Margin="20"
@@ -482,18 +484,40 @@
 
 					<StackPanel Margin="20,30,0,0"
 								Grid.Row="2">
-
+						<TextBlock Text="Null error occurs" />
 					</StackPanel>
-					<Grid Grid.Row="3">
-						<Grid.RowDefinitions>
-							<RowDefinition Height="100" />
-						</Grid.RowDefinitions>
-						<Rectangle 
-								Fill="DarkKhaki"
-								Opacity="0.3"
-								   RadiusX="10" RadiusY="10" Width="200"  HorizontalAlignment="Left"/>
-						<TextBlock Text="Path of file to be" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="25"/>
-					</Grid>
+					<GridView Name="FoldersToShow"
+							  Grid.Row="3" 
+							  SelectionMode="None"
+							  ItemsSource="{Binding Source={StaticResource ImagesCollection}}"
+							  MinWidth="180"
+							  MinHeight="5"
+							  Margin="15">
+						<GridView.ItemTemplate>
+							<DataTemplate x:DataType="x:String">
+
+								<StackPanel Orientation="Vertical">
+									<Rectangle Fill="DarkKhaki"
+											   Opacity="0.3"
+											   RadiusX="10"
+											   RadiusY="10"
+											   Width="200"
+											   HorizontalAlignment="Left" />
+									<TextBlock Text="{Binding }"
+											   VerticalAlignment="Bottom"
+											   HorizontalAlignment="Left"
+											   Margin="25" />
+								</StackPanel>
+
+							</DataTemplate>
+						</GridView.ItemTemplate>
+						
+						
+					</GridView>
+					
+						
+						
+					
 				</Grid>
 			</PivotItem>
 		</Pivot>

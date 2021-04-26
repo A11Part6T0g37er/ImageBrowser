@@ -27,10 +27,11 @@ namespace ImageBrowser.ViewModels
     {
         private readonly static string EmptyOneDrive = LocalizationHelper.GetLocalizedStrings("oneDriveDownloadedInfoDefault");
         private readonly static string UserSignedOutNormal = LocalizationHelper.GetLocalizedStrings("normalSignOut");
-        private IList<ImageFileInfo> observableCollection = new List<ImageFileInfo>();
+     
+        private ObservableCollection<ImageFileInfo> observableCollection = new ObservableCollection<ImageFileInfo>();
 
         public IList<ImageFileInfo> ObservableCollection { get => observableCollection; }
-
+        public IList<string> foldersPath = new List<string>();
         public event PropertyChangedEventHandler PropertyChanged;
 
         public ICommand OneDriveOpenCommand { get; set; }
@@ -333,15 +334,12 @@ namespace ImageBrowser.ViewModels
             queryOptions.FileTypeFilter.Add(".jpeg");
             queryOptions.FileTypeFilter.Add(".png");
             var queryResult = folder?.CreateFileQueryWithOptions(queryOptions);
-            List<StorageFile> fileyas = new List<StorageFile>();
+          foldersPath.Add(folder.Path);
             if (folder != null)
             {
                 IReadOnlyList<StorageFile> fileList = await folder.GetFilesAsync();
                 IReadOnlyCollection<StorageFile> storageFiles = await queryResult.GetFilesAsync();
-                foreach (var file in storageFiles)
-                {
-                    fileyas.Add(file);
-                }
+                
                 return await this.PopulateObservableCollectionOfImages(storageFiles);
 
             }
