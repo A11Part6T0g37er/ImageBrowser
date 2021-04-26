@@ -84,19 +84,6 @@ namespace ImageBrowser.ViewModels
 
         }
 
-        private  Action RefreshAreaItemsAsync()
-        {
-            ICollection<StorageFile> files = new Collection<StorageFile>();
-
-            for (int i = 0; i < this.ObservableCollection.Count; i++)
-            {
-
-                files.Add(this.ObservableCollection[i].ImageFile);
-            }
-            
-            IReadOnlyCollection<StorageFile> filesReadOnly = (IReadOnlyCollection<StorageFile>)files;
-            return async () => { Trace.WriteLine("REFRESHED by button"); await this.PopulateObservableCollectionOfImages(filesReadOnly); };
-        }
 
         #region XamlListningProperties
         public bool IsAnyItemsToShow;
@@ -222,6 +209,19 @@ namespace ImageBrowser.ViewModels
                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
         #region Actions for commands in ctor
+        private  Action RefreshAreaItemsAsync()
+        {
+            ICollection<StorageFile> files = new Collection<StorageFile>();
+
+            for (int i = 0; i < this.ObservableCollection.Count; i++)
+            {
+
+                files.Add(this.ObservableCollection[i].ImageFile);
+            }
+            
+            IReadOnlyCollection<StorageFile> filesReadOnly = (IReadOnlyCollection<StorageFile>)files;
+            return async () => { Trace.WriteLine("REFRESHED by button");  await this.PopulateObservableCollectionOfImages(filesReadOnly); };
+        }
         private Action SigningInAsync()
         {
             return async () =>
