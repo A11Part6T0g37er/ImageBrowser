@@ -9,6 +9,7 @@
 	  mc:Ignorable="d"
 	  xmlns:sys="using:System"
 	  xmlns:viewModels="using:ImageBrowser.ViewModels"
+	  xmlns:Models="using:ImageBrowser.Models"
 	  xmlns:Interactivity="using:Microsoft.Xaml.Interactivity"
 	  xmlns:Interactions="using:Microsoft.Xaml.Interactions.Core"
 	  d:DataContext="{d:DesignInstance Type=viewModels:ImageFileInfoViewModel}"
@@ -23,8 +24,8 @@
 
 		<viewModels:ImageFileInfoViewModel x:Key="ImageViewModel" />
 
-		<Thickness x:Key="LargeItemMargin">8</Thickness>
-		<Thickness x:Key="SmallItemMargin">0</Thickness>
+		<Thickness x:Key="LargeItemMargin">8,0,0,0</Thickness>
+		<Thickness x:Key="SmallItemMargin">0,0,0,0</Thickness>
 
 		<ItemsPanelTemplate x:Key="ImageGridView_ItemsPanelTemplate">
 			<ItemsWrapGrid Orientation="Horizontal"
@@ -43,6 +44,8 @@
 		<CollectionViewSource x:Name="FoldersToView"
 							  Source="{x:Bind FoldersToDisplay}"
 							  IsSourceGrouped="False" />
+
+		
 		<Style x:Key="ImageGridView_DefaultItemContainerStyle"
 			   TargetType="GridViewItem">
 			<Setter Property="Background"
@@ -517,12 +520,12 @@
 					<GridView Name="FoldersToShow"
 							  Grid.Row="3"
 							  SelectionMode="None"
-							  ItemsSource="{Binding Source={StaticResource ImagesCollection}}"
+							  ItemsSource="{Binding Source={StaticResource PathCollections}}"
 							  MinWidth="180"
 							  MinHeight="5"
 							  Margin="15">
 						<GridView.ItemTemplate>
-							<DataTemplate x:DataType="x:String">
+							<DataTemplate>
 
 								<StackPanel Orientation="Vertical">
 									<Rectangle Fill="DarkKhaki"
@@ -531,7 +534,7 @@
 											   RadiusY="10"
 											   Width="200"
 											   HorizontalAlignment="Left" />
-									<TextBlock Text="{Binding }"
+									<TextBlock Text="{Binding FolderDisplayName}"
 											   VerticalAlignment="Bottom"
 											   HorizontalAlignment="Left"
 											   Margin="25" />

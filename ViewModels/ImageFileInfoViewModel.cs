@@ -31,7 +31,9 @@ namespace ImageBrowser.ViewModels
         private ObservableCollection<ImageFileInfo> observableCollection = new ObservableCollection<ImageFileInfo>();
 
         public IList<ImageFileInfo> ObservableCollection { get => observableCollection; }
-        public IList<string> foldersPath = new List<string>();
+        public ObservableCollection<FolderInfoModel> foldersPath = new ObservableCollection<FolderInfoModel>();
+        public FoldersViewModel foldersView = new FoldersViewModel();
+        
         public event PropertyChangedEventHandler PropertyChanged;
 
         public ICommand OneDriveOpenCommand { get; set; }
@@ -341,9 +343,10 @@ namespace ImageBrowser.ViewModels
             queryOptions.FileTypeFilter.Add(".jpeg");
             queryOptions.FileTypeFilter.Add(".png");
             var queryResult = folder?.CreateFileQueryWithOptions(queryOptions);
-          foldersPath.Add(folder.Path);
             if (folder != null)
             {
+                //  foldersView.FoldersToDisplay.Add(folder);
+                foldersPath.Add(new FolderInfoModel() { FolderPath = folder.Path, FolderDisplayName = folder.DisplayName });
                 IReadOnlyList<StorageFile> fileList = await folder.GetFilesAsync();
                 IReadOnlyCollection<StorageFile> storageFiles = await queryResult.GetFilesAsync();
                 

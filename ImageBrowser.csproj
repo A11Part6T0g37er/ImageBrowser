@@ -143,6 +143,7 @@
     <Compile Include="Helpers\LocalizationHelper.cs" />
     <Compile Include="Helpers\MSGraphQueriesHelper.cs" />
     <Compile Include="LocalizationModels\Language.cs" />
+    <Compile Include="Models\FolderInfoModel.cs" />
     <Compile Include="Models\GroupInfoList.cs" />
     <Compile Include="Models\ImageFileInfo.cs" />
     <Compile Include="MainPage.xaml.cs">
