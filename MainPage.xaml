@@ -168,7 +168,11 @@
 
 
 	</Page.Resources>
-
+	
+	<Page.DataContext>
+		<viewModels:ImageFileInfoViewModel />
+	</Page.DataContext>
+	
 	<VisualStateManager.VisualStateGroups>
 		<VisualStateGroup>
 			<VisualState x:Name="LargeWindowBreakpoint">
@@ -213,6 +217,7 @@
 
 
 	<RelativePanel>
+		
 		<Pivot x:Name="leftControlPanel"
 			   Title="Image Browser"
 			   Margin="25,0,0,15"
@@ -240,13 +245,25 @@
 								   Text="{Binding OneDriveInfoText, Mode=TwoWay}"
 								   Visibility="Visible" />
 					</StackPanel>
-					<RefreshContainer x:Name="RefreshArea"
+					<RefreshContainer Name="RefreshArea"
 									  Grid.Row="1"
-									  
 									  DataContext="{x:Bind imageFileInfoViewModel}"
-									  Visibility="{Binding IsAnyObservableItem,Converter={StaticResource bool2Visibility},Mode=TwoWay}">
-									  <!--RefreshRequested="RefreshArea_RefreshRequested"-->
-									  <!--RefreshRequested="{Binding RefreshArea_RefreshRequested}"-->
+									  Visibility="{Binding IsAnyObservableItem,Converter={StaticResource bool2Visibility},Mode=TwoWay}"
+									  >
+						<!--RefreshRequested="{Binding RefreshArea_RefreshRequested}"-->
+						
+						<Interactivity:Interaction.Behaviors>
+						<Interactions:EventTriggerBehavior EventName="RefreshRequested"
+														   SourceObject="{Binding ElementName=Refresh}">
+							
+							<Interactions:InvokeCommandAction Command="{Binding RefreshCommand, Mode=TwoWay}"
+															  CommandParameter="{Binding ElementName=RefreshArea, Mode=TwoWay}" />
+							
+						</Interactions:EventTriggerBehavior>
+						</Interactivity:Interaction.Behaviors>
+									  
+						<!--RefreshRequested="RefreshArea_RefreshRequested"-->
+						<!--RefreshRequested="{Binding RefreshArea_RefreshRequested}"-->
 
 
 						<GridView ItemsSource="{Binding Source={StaticResource ImagesCollection}}"
@@ -368,16 +385,14 @@
 										  Label=""
 										  x:Uid="refresh"
 										  ToolTipService.ToolTip=""
-								Click="Refresh_Click"
-										  >
+										  Click="Refresh_Click">
 								<Interactivity:Interaction.Behaviors>
 									<Interactions:EventTriggerBehavior EventName="Click"
-																	   
 																	   SourceObject="{Binding ElementName=Refresh2}">
 										<Interactions:InvokeCommandAction Command="{Binding RefreshCommand}" />
 									</Interactions:EventTriggerBehavior>
 								</Interactivity:Interaction.Behaviors>
-								
+
 							</AppBarButton>
 						</CommandBar>
 					</StackPanel>
@@ -386,8 +401,8 @@
 									  DataContext="{x:Bind imageFileInfoViewModel}"
 									  Visibility="{Binding IsAnyObservableItem,Converter={StaticResource bool2Visibility},Mode=TwoWay}"
 									  RefreshRequested="RefreshArea_RefreshRequested">
-						
-						
+
+
 						<ListView ItemsSource="{Binding Source={StaticResource ImagesCollection} }"
 								  RelativePanel.Below="button"
 								  ScrollViewer.HorizontalScrollBarVisibility="Auto"
@@ -445,10 +460,10 @@
 			<PivotItem Header="Folders">
 				<Grid>
 					<Grid.RowDefinitions>
-						<RowDefinition Height="Auto"/>
-						<RowDefinition Height="Auto"/>
-						<RowDefinition Height="Auto"/>
-						<RowDefinition Height="*"/>
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="*" />
 					</Grid.RowDefinitions>
 					<TextBlock Text="Folders opened"
 							   Margin="20"
@@ -457,37 +472,50 @@
 							Grid.Row="1"
 							HorizontalAlignment="Left"
 							Height="120"
-							Width="270" Background="#00adef"
+							Width="270"
+							Background="#00adef"
 							Style="{StaticResource FolderAddButton}"
 							DataContext="{x:Bind imageFileInfoViewModel}"
 							Command="{Binding OpenFoldersCommand}">
-							<!--Content="Open folder"-->
-
-
-						<StackPanel Orientation="Horizontal">
-							<StackPanel Orientation="Vertical" Margin="0,0,30,0">
-								<TextBlock Text="Add a folder"
-										   VariableSizedWrapGrid.ColumnSpan="2" />
-								<TextBlock Text="Include more in your collection"
-										   FontSize="12"
-										   HorizontalAlignment="Stretch" />
-							</StackPanel>
-							<Viewbox MaxHeight="35"
-									 MaxWidth="35">
-								<SymbolIcon Symbol="NewFolder" />
-							</Viewbox>
+						<Grid >
+							<Grid.RowDefinitions>
+								<RowDefinition Height="Auto" />
+								<RowDefinition Height="*" />
+							</Grid.RowDefinitions>
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="Auto" />
+								<ColumnDefinition Width="*" />
+							</Grid.ColumnDefinitions>
+							
+							<StackPanel Orientation="Vertical"
+									Margin="0,0,30,0" Grid.Row="1">
+							<TextBlock Text="Add a folder"
+									    />
+							<TextBlock Text="Include more in your collection"
+									   FontSize="12"
+									   HorizontalAlignment="Stretch" />
 						</StackPanel>
-
-
-
+						<Viewbox MaxHeight="35"
+								 MaxWidth="35" Grid.Column="1" Grid.Row="1">
+							<SymbolIcon Symbol="NewFolder" />
+						</Viewbox>
+					</Grid>
 					</Button>
+					<!--Content="Open folder"-->
+
+
+					
+
+
+
+
 
 					<StackPanel Margin="20,30,0,0"
 								Grid.Row="2">
 						<TextBlock Text="Null error occurs" />
 					</StackPanel>
 					<GridView Name="FoldersToShow"
-							  Grid.Row="3" 
+							  Grid.Row="3"
 							  SelectionMode="None"
 							  ItemsSource="{Binding Source={StaticResource ImagesCollection}}"
 							  MinWidth="180"
@@ -511,13 +539,13 @@
 
 							</DataTemplate>
 						</GridView.ItemTemplate>
-						
-						
+
+
 					</GridView>
-					
-						
-						
-					
+
+
+
+
 				</Grid>
 			</PivotItem>
 		</Pivot>
@@ -530,12 +558,19 @@
 						  x:Name="Refresh"
 						  Label=""
 						  x:Uid="refresh"
-						  ToolTipService.ToolTip=""
-						 DataContext="{x:Bind imageFileInfoViewModel}"
-						  Command="{Binding RefreshCommand}"
-						   />
+						  ToolTipService.ToolTip="">
+				<!--DataContext="{x:Bind imageFileInfoViewModel}"
+						  Command="{Binding RefreshCommand}"-->
+				
+				
+				<Interactivity:Interaction.Behaviors>
+					<Interactions:EventTriggerBehavior EventName="Click">
+						<Interactions:InvokeCommandAction Command="{Binding RefreshCommand}" />
+					</Interactions:EventTriggerBehavior>
+				</Interactivity:Interaction.Behaviors>
+			</AppBarButton>
 			<!--Click="Refresh_Click"-->
-			
+
 			<AppBarButton Icon="OpenFile"
 						  Label=""
 						  x:Uid="open"
@@ -558,7 +593,7 @@
 			<Image Source="/Assets/Square150x150Logo.scale-200.png"
 				   Margin="0,25,0,0"
 				   HorizontalAlignment="Right" />
-			
+
 		</Grid>
 
 		<StackPanel x:Name="OneDrivePanel"

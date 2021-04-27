@@ -139,7 +139,7 @@ namespace ImageBrowser
 
                     files.Add(imageFileInfoViewModel.ObservableCollection[i].ImageFile);
                 }
-
+            
                 IReadOnlyCollection<StorageFile> filesReadOnly = (IReadOnlyCollection<StorageFile>)files;
                 await imageFileInfoViewModel.PopulateObservableCollectionOfImages(filesReadOnly);
                 Trace.WriteLine("From MainWindow codebehind");
