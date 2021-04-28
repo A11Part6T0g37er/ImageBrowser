@@ -379,31 +379,9 @@
 						<TextBlock Text="{x:Bind imageFileInfoViewModel.GroupedImagesInfos.Count, Mode=OneWay}" />
 						<TextBlock x:Uid="groupedListDefinition"
 								   Text="" />
-						<CommandBar x:Name="ListButtons"
-									DefaultLabelPosition="Right"
-									IsOpen="True"
-									Margin="15">
-							<AppBarButton Icon="Refresh"
-										  x:Name="Refresh2"
-										  Label=""
-										  x:Uid="refresh"
-										  ToolTipService.ToolTip=""
-										  Click="Refresh_Click">
-								<Interactivity:Interaction.Behaviors>
-									<Interactions:EventTriggerBehavior EventName="Click"
-																	   SourceObject="{Binding ElementName=Refresh2}">
-										<Interactions:InvokeCommandAction Command="{Binding RefreshCommand}" />
-									</Interactions:EventTriggerBehavior>
-								</Interactivity:Interaction.Behaviors>
-
-							</AppBarButton>
-						</CommandBar>
+						
 					</StackPanel>
-					<RefreshContainer x:Name="RefreshArea2"
-									  Grid.Row="1"
-									  DataContext="{x:Bind imageFileInfoViewModel}"
-									  Visibility="{Binding IsAnyObservableItem,Converter={StaticResource bool2Visibility},Mode=TwoWay}"
-									  RefreshRequested="RefreshArea_RefreshRequested">
+					
 
 
 						<ListView ItemsSource="{Binding Source={StaticResource ImagesCollection} }"
@@ -457,7 +435,7 @@
 								</GroupStyle>
 							</ListView.GroupStyle>
 						</ListView>
-					</RefreshContainer>
+					
 				</Grid>
 			</PivotItem>
 			<PivotItem Header="Folders">
@@ -562,17 +540,18 @@
 						  Label=""
 						  x:Uid="refresh"
 						  ToolTipService.ToolTip="">
-				<!--DataContext="{x:Bind imageFileInfoViewModel}"
-						  Command="{Binding RefreshCommand}"-->
-				
+				<!--Click="{x:Bind RefreshArea.RequestRefresh}"
+						  >-->
+
 				
 				<Interactivity:Interaction.Behaviors>
 					<Interactions:EventTriggerBehavior EventName="Click">
+						
 						<Interactions:InvokeCommandAction Command="{Binding RefreshCommand}" />
 					</Interactions:EventTriggerBehavior>
 				</Interactivity:Interaction.Behaviors>
 			</AppBarButton>
-			<!--Click="Refresh_Click"-->
+			
 
 			<AppBarButton Icon="OpenFile"
 						  Label=""

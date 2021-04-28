@@ -73,7 +73,17 @@ namespace ImageBrowser
                 return imageSource;
             }
         }
+        public async Task<BitmapImage> GetImageThumbnailAsync()
+        {
+            var thumbnail = await ImageFile.GetThumbnailAsync(ThumbnailMode.PicturesView);
+            // Create a bitmap to be the image source.
+            BitmapImage bitmapImage = new BitmapImage();
+            bitmapImage.SetSource(thumbnail);
+            thumbnail.Dispose();
 
+            return bitmapImage;
+        }
+       
         protected void OnPropertyChanged([CallerMemberName] string propertyName = null) =>
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 

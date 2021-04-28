@@ -128,29 +128,6 @@ namespace ImageBrowser
             Frame.Navigate(typeof(DetailPage), e.ClickedItem);
         }
 
-        private async void RefreshArea_RefreshRequested(RefreshContainer sender, RefreshRequestedEventArgs args)
-        {
-            using (var RefreshcompletingDeferral = args.GetDeferral())
-            {
-                ICollection<StorageFile> files = new Collection<StorageFile>();
-
-                for (int i = 0; i < imageFileInfoViewModel.ObservableCollection.Count; i++)
-                {
-
-                    files.Add(imageFileInfoViewModel.ObservableCollection[i].ImageFile);
-                }
-            
-                IReadOnlyCollection<StorageFile> filesReadOnly = (IReadOnlyCollection<StorageFile>)files;
-                await imageFileInfoViewModel.PopulateObservableCollectionOfImages(filesReadOnly);
-                Trace.WriteLine("From MainWindow codebehind");
-            }
-        }
-
-        private void Refresh_Click(object sender, RoutedEventArgs e)
-        {
-            RefreshArea2.RequestRefresh();
-        }
-
         private void ThemeButton_Click(object sender, RoutedEventArgs e)
         {
             var selectedTheme = ((Button)sender)?.Tag?.ToString();
@@ -177,5 +154,9 @@ namespace ImageBrowser
             }
         }
 
+        private void Refresh_Click_1(object sender, RoutedEventArgs e)
+        {
+           
+        }
     }
 }

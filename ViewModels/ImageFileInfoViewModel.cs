@@ -20,6 +20,7 @@ using Windows.Storage.Search;
 using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media.Imaging;
 
 namespace ImageBrowser.ViewModels
 {
@@ -213,17 +214,23 @@ namespace ImageBrowser.ViewModels
         #region Actions for commands in ctor
         private Action RefreshAreaItemsAsync()
         {
-            
+
             
                 ICollection<StorageFile> files = new Collection<StorageFile>();
-
+            ICollection<StorageFile> filesReal = new Collection<StorageFile>();
+            ICollection<string> fileWithPaths = new Collection<string>();
                 for (int i = 0; i < this.ObservableCollection.Count; i++)
                 {
 
                     files.Add(this.ObservableCollection[i].ImageFile);
+                fileWithPaths.Add( this.ObservableCollection[i].ImagePath );
+
+                // Get BitmapImage
+                var p =  this.ObservableCollection[i].GetImageSourceAsync();
+                
                 }
 
-                IReadOnlyCollection<StorageFile> filesReadOnly = (IReadOnlyCollection<StorageFile>)files;
+             IReadOnlyCollection<StorageFile> filesReadOnly = (IReadOnlyCollection<StorageFile>)files;
                 return async () =>
                 {
                     Trace.WriteLine("REFRESHED by button in command");
@@ -258,7 +265,7 @@ namespace ImageBrowser.ViewModels
                 }
             };
         }
-
+        
         private Action SigningOutAsync()
         {
             return async () =>
