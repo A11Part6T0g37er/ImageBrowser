@@ -633,7 +633,18 @@
 								  x:Name="Dark"
 								  Label=""
 								  x:Uid="dark"
-								  Click="ThemeButton_Click" />
+								  >
+								  <!--Click="ThemeButton_Click"--> 
+					<Interactivity:Interaction.Behaviors>
+						<Interactions:EventTriggerBehavior EventName="Click"
+														   SourceObject="{Binding ElementName=Dark}">
+
+							<Interactions:InvokeCommandAction Command="{Binding ThemeChangeCommand, Mode=TwoWay}"
+															  CommandParameter="{Binding ElementName=Dark, Mode=TwoWay}" />
+
+						</Interactions:EventTriggerBehavior>
+					</Interactivity:Interaction.Behaviors>
+						</AppBarButton>
 					<AppBarButton Tag="Light"
 								  x:Name="Light"
 								  Label=""
