@@ -12,6 +12,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 using Windows.Storage;
 using Windows.Storage.Pickers;
@@ -62,7 +63,7 @@ namespace ImageBrowser
             }
         }
 
-        // TODO: making resisable layout
+        // TODO: making resisable layout, not works yet
         private void CoreWindow_SizeChanged(object sender, SizeChangedEventArgs args)
         {
             var appView = ApplicationView.GetForCurrentView();
@@ -84,22 +85,12 @@ namespace ImageBrowser
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-            SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility =
-                AppViewBackButtonVisibility.Collapsed;
-
-            if (!imageFileInfoViewModel.HaveAnyItems())
-            {
-                // initialize blank state
-                startingGreetingScreen.Visibility = Visibility.Visible;
-            }
-
-            imageFileInfoViewModel.InitializeGroupingOfViewModel();
-
+           
             base.OnNavigatedTo(e);
         }
 
         //TODO: make folders upload into app
-    
+
         // TODO: updating number of  <XAML> Pictures-in-grid columns
         private void GroupedGrid_SizeChanged(object sender, SizeChangedEventArgs e)
         {
@@ -135,28 +126,6 @@ namespace ImageBrowser
             Frame.Navigate(typeof(DetailPage), e.ClickedItem);
         }
 
-        private async void RefreshArea_RefreshRequested(RefreshContainer sender, RefreshRequestedEventArgs args)
-        {
-            using (var RefreshcompletingDeferral = args.GetDeferral())
-            {
-                ICollection<StorageFile> files = new Collection<StorageFile>();
-
-                for (int i = 0; i < imageFileInfoViewModel.ObservableCollection.Count; i++)
-                {
-
-                    files.Add(imageFileInfoViewModel.ObservableCollection[i].ImageFile);
-                }
-
-                IReadOnlyCollection<StorageFile> filesReadOnly = (IReadOnlyCollection<StorageFile>)files;
-                await imageFileInfoViewModel.PopulateObservableCollectionOfImages(filesReadOnly);
-            }
-        }
-
-        private void Refresh_Click(object sender, RoutedEventArgs e)
-        {
-            RefreshArea.RequestRefresh();
-        }
-
         private void ThemeButton_Click(object sender, RoutedEventArgs e)
         {
             var selectedTheme = ((Button)sender)?.Tag?.ToString();
@@ -166,7 +135,7 @@ namespace ImageBrowser
         /// <summary>
         /// Imlemented switching between <see cref="ElementTheme"/> .
         /// </summary>
-        /// <param name="sender">Button.</param>
+        /// <param name="sender">Button that is clicked.</param>
         /// <param name="selectedTheme">Button`s <see cref="string"/> tag property.</param>
         private void DefineClickedTheme(object sender, string selectedTheme)
         {
@@ -182,6 +151,6 @@ namespace ImageBrowser
                 }
             }
         }
-
+                
     }
 }

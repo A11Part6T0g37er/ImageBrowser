@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using ImageBrowser.Common;
@@ -19,6 +20,7 @@ using Windows.Storage.Search;
 using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media.Imaging;
 
 namespace ImageBrowser.ViewModels
 {
@@ -26,10 +28,13 @@ namespace ImageBrowser.ViewModels
     {
         private readonly static string EmptyOneDrive = LocalizationHelper.GetLocalizedStrings("oneDriveDownloadedInfoDefault");
         private readonly static string UserSignedOutNormal = LocalizationHelper.GetLocalizedStrings("normalSignOut");
-        private IList<ImageFileInfo> observableCollection = new List<ImageFileInfo>();
+     
+        private ObservableCollection<ImageFileInfo> observableCollection = new ObservableCollection<ImageFileInfo>();
 
         public IList<ImageFileInfo> ObservableCollection { get => observableCollection; }
-
+        public ObservableCollection<FolderInfoModel> foldersPath = new ObservableCollection<FolderInfoModel>();
+        public FoldersViewModel foldersView = new FoldersViewModel();
+        
         public event PropertyChangedEventHandler PropertyChanged;
 
         public ICommand OneDriveOpenCommand { get; set; }
@@ -39,6 +44,7 @@ namespace ImageBrowser.ViewModels
         public ICommand SignInCommand { get; set; }
         public ICommand OpenCLickCommand { get; set; }
         public ICommand OpenFoldersCommand { get; set; }
+        public ICommand RefreshCommand { get; set; }
 
         #region DependecyProperties
         public static readonly DependencyProperty ResultTextProperty = DependencyProperty.Register(
@@ -76,6 +82,8 @@ namespace ImageBrowser.ViewModels
             SignInCommand = new RelayCommand(SigningInAsync());
             OpenCLickCommand = new RelayCommand(OpenClickAsync());
             OpenFoldersCommand = new RelayCommand(OpenFoldersAsync());
+            RefreshCommand = new RelayCommand(RefreshAreaItemsAsync());
+
             MSGraphQueriesHelper.PropertyChanged += SigningStatusViewModel_OnStatusChanged;
 
         }
@@ -204,6 +212,33 @@ namespace ImageBrowser.ViewModels
                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
         #region Actions for commands in ctor
+        private Action RefreshAreaItemsAsync()
+        {
+
+            
+                ICollection<StorageFile> files = new Collection<StorageFile>();
+            ICollection<StorageFile> filesReal = new Collection<StorageFile>();
+            ICollection<string> fileWithPaths = new Collection<string>();
+                for (int i = 0; i < this.ObservableCollection.Count; i++)
+                {
+
+                    files.Add(this.ObservableCollection[i].ImageFile);
+                fileWithPaths.Add( this.ObservableCollection[i].ImagePath );
+
+                // Get BitmapImage
+                var p =  this.ObservableCollection[i].GetImageSourceAsync();
+                
+                }
+
+             IReadOnlyCollection<StorageFile> filesReadOnly = (IReadOnlyCollection<StorageFile>)files;
+                return async () =>
+                {
+                    Trace.WriteLine("REFRESHED by button in command");
+                    //RefreshArea_RefreshRequested(sender,args);
+                    await this.PopulateObservableCollectionOfImages(filesReadOnly);
+                };
+            
+        }
         private Action SigningInAsync()
         {
             return async () =>
@@ -230,7 +265,7 @@ namespace ImageBrowser.ViewModels
                 }
             };
         }
-
+        
         private Action SigningOutAsync()
         {
             return async () =>
@@ -314,16 +349,14 @@ namespace ImageBrowser.ViewModels
             queryOptions.FileTypeFilter.Add(".jpg");
             queryOptions.FileTypeFilter.Add(".jpeg");
             queryOptions.FileTypeFilter.Add(".png");
-            var queryResult = folder.CreateFileQueryWithOptions(queryOptions);
-            List<StorageFile> fileyas = new List<StorageFile>();
+            var queryResult = folder?.CreateFileQueryWithOptions(queryOptions);
             if (folder != null)
             {
+                //  foldersView.FoldersToDisplay.Add(folder);
+                foldersPath.Add(new FolderInfoModel() { FolderPath = folder.Path, FolderDisplayName = folder.DisplayName });
                 IReadOnlyList<StorageFile> fileList = await folder.GetFilesAsync();
                 IReadOnlyCollection<StorageFile> storageFiles = await queryResult.GetFilesAsync();
-                foreach (var file in storageFiles)
-                {
-                    fileyas.Add(file);
-                }
+                
                 return await this.PopulateObservableCollectionOfImages(storageFiles);
 
             }
@@ -448,7 +481,6 @@ namespace ImageBrowser.ViewModels
             }
         }
 
-
         public async void RefreshArea_RefreshRequested(RefreshContainer sender, RefreshRequestedEventArgs args)
         {
             using (var RefreshcompletingDeferral = args.GetDeferral())
@@ -463,8 +495,9 @@ namespace ImageBrowser.ViewModels
 
                 IReadOnlyCollection<StorageFile> filesReadOnly = (IReadOnlyCollection<StorageFile>)files;
                 await this.PopulateObservableCollectionOfImages(filesReadOnly);
+                Trace.WriteLine("From VievModel execution");
             }
         }
-
+        
     }
 }
