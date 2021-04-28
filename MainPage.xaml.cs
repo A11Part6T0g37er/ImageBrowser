@@ -85,9 +85,7 @@ namespace ImageBrowser
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-            // Hides back button on homepage
-            SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility =
-                AppViewBackButtonVisibility.Collapsed;
+           
             base.OnNavigatedTo(e);
         }
 
@@ -153,10 +151,6 @@ namespace ImageBrowser
                 }
             }
         }
-
-        private void Refresh_Click_1(object sender, RoutedEventArgs e)
-        {
-           
-        }
+                
     }
 }
