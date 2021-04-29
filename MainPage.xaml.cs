@@ -49,28 +49,8 @@ namespace ImageBrowser
             imageFileInfoViewModel = new ImageFileInfoViewModel();
 
             Current = this;
-            SizeChanged += CoreWindow_SizeChanged;
+            
             NavigationCacheMode = NavigationCacheMode.Enabled;
-        }
-
-        // TODO: making resisable layout, not works yet
-        private void CoreWindow_SizeChanged(object sender, SizeChangedEventArgs args)
-        {
-            var appView = ApplicationView.GetForCurrentView();
-            if (args.NewSize.Width > 1008)
-            {
-                VisualStateManager.GoToState(this, "LargeWindowBreakpoint", true);
-            }
-
-            if (args.NewSize.Width < 1008 && args.NewSize.Width > 641)
-            {
-                VisualStateManager.GoToState(this, "MediumWindowBreakpoint", true);
-            }
-
-            if (args.NewSize.Width < 641)
-            {
-                VisualStateManager.GoToState(this, "MinWindowBreakpoint", true);
-            }
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -79,6 +59,6 @@ namespace ImageBrowser
             base.OnNavigatedTo(e);
         }
 
-        
+
     }
 }
