@@ -37,17 +37,16 @@ namespace ImageBrowser.ViewModels
         {
             return _canExecute == null ? true : _canExecute();
         }
-        public void Execute( object parameter)
+        public void Execute(object parameter)
         {
-            if(parameter != null)
+            if (parameter != null)
             {
-            var p = parameter as SizeChangedEventArgs;
-            var e = parameter as FrameworkElement;
-            GroupedGrid_SizeChanged(e, e.ActualWidth);
-
+                var p = parameter as SizeChangedEventArgs;
+                var e = parameter as FrameworkElement;
+                GroupedGrid_SizeChanged(e, e.ActualWidth);
             }
         }
-        public void Execute(object sender,object parameter)
+        public void Execute(object sender, object parameter)
         {
             var p = parameter as SizeChangedEventArgs;
             var e = sender as FrameworkElement;

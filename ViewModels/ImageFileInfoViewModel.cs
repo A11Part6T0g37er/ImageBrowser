@@ -234,22 +234,21 @@ namespace ImageBrowser.ViewModels
             var arg = parameter as Windows.UI.Xaml.Controls.ItemClickEventArgs;
             var item = arg.ClickedItem as ImageFileInfo;
             Services.NavigationService.Instance.Navigate(typeof(DetailPage), item);
-
         }
 
         #region Actions for commands in ctor
         private void GroupedGrid_SizeChanged(object sender, double e)
         {
             var panel = (ItemsWrapGrid)((sender as GridView).ItemsPanelRoot);
-            if (e <=140)
+            if (e <= 140)
             {
                 panel.ItemWidth = 140;
             }
             else
             {
                 panel.ItemWidth = e / 3;
-
-            }            Trace.WriteLine("From RElay multiple command");
+            }
+            Trace.WriteLine("From RElay multiple command");
         }
 
         /// <summary>
@@ -555,5 +554,9 @@ namespace ImageBrowser.ViewModels
                 Trace.WriteLine("From VievModel execution");
             }
         }
+
+        private object imageFileInfoViewModel1;
+
+        public object imageFileInfoViewModel { get =>  imageFileInfoViewModel1; set => SetProperty(ref imageFileInfoViewModel1, value); }
     }
 }

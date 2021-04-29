@@ -29,7 +29,7 @@ namespace ImageBrowser
         }
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
-            
+
 
             if (this.Frame.CanGoBack)
             {

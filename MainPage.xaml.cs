@@ -29,27 +29,18 @@ using Windows.UI.Xaml.Navigation;
 
 namespace ImageBrowser
 {
-
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
     public sealed partial class MainPage : Page
     {
-
-        public static MainPage Current;
         internal ImageBrowser.ViewModels.ImageFileInfoViewModel imageFileInfoViewModel = new ViewModels.ImageFileInfoViewModel();
-        ImageFileInfo persistedItem;
-        string defaultWinTheme = string.Empty;
-
-        public FoldersViewModel FoldersToDisplay { get; set; }
 
         public MainPage()
         {
             InitializeComponent();
-            imageFileInfoViewModel = new ImageFileInfoViewModel();
 
-            Current = this;
-            
+            // Required for go to previous page without loosing its state
             NavigationCacheMode = NavigationCacheMode.Enabled;
         }
 
@@ -58,7 +49,5 @@ namespace ImageBrowser
 
             base.OnNavigatedTo(e);
         }
-
-
     }
 }

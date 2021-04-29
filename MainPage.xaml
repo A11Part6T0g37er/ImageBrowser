@@ -21,7 +21,6 @@
 												 OnTrue="Collapsed"
 												 OnFalse="Visible" />
 
-
 		<viewModels:ImageFileInfoViewModel x:Key="ImageViewModel" />
 
 		<Thickness x:Key="LargeItemMargin">8,0,0,0</Thickness>
@@ -37,22 +36,16 @@
 							  Source="{x:Bind imageFileInfoViewModel.GroupedImagesInfos}"
 							  IsSourceGrouped="True" />
 		<CollectionViewSource x:Name="PathCollections"
-							  Source="{x:Bind imageFileInfoViewModel.foldersPath}"
-							  IsSourceGrouped="False" />
-
-
-		<CollectionViewSource x:Name="FoldersToView"
-							  Source="{x:Bind FoldersToDisplay}"
-							  IsSourceGrouped="False" />
-
-
+							  Source="{x:Bind imageFileInfoViewModel.foldersPath}">
+			
+		</CollectionViewSource>
+		
 		<Style x:Key="ImageGridView_DefaultItemContainerStyle"
 			   TargetType="GridViewItem">
 			<Setter Property="Background"
 					Value="White" />
 			<Setter Property="Margin"
 					Value="{StaticResource LargeItemMargin}" />
-
 		</Style>
 
 		<Style x:Key="ImageGridView_SmallItemContainerStyle"
@@ -62,7 +55,6 @@
 			<Setter Property="Margin"
 					Value="{StaticResource SmallItemMargin}" />
 		</Style>
-
 
 		<DataTemplate x:Key="ImagesGridCollection_Small"
 					  x:DataType="local:ImageFileInfo">
@@ -88,11 +80,8 @@
 						</StackPanel>
 					</ToolTip>
 				</ToolTipService.ToolTip>
-
 			</Grid>
 		</DataTemplate>
-
-
 
 		<DataTemplate x:Key="ImagesGridCollection_Default"
 					  x:DataType="local:ImageFileInfo">
@@ -115,29 +104,21 @@
 							Width="200">
 					<TextBlock Text="{x:Bind ImagePath, Mode=OneWay}"
 							   Style="{StaticResource SubtitleTextBlockStyle}" />
-
 					<StackPanel Orientation="Horizontal"
 								VerticalAlignment="Center"
 								Height="50">
-
-
 						<ListView ItemsSource="{x:Bind ImageProperties.Keywords}"
 								  SelectionMode="Single"
 								  VerticalAlignment="Center"
 								  Margin="0,0,50,0">
-
 							<ListView.ItemTemplate>
-
 								<DataTemplate x:Name="KeyWordds"
 											  x:DataType="local:ImageFileInfo">
 									<ListViewItem>
-
 										<TextBlock  Text="{Binding}"
 													FontSize="12" />
 									</ListViewItem>
-
 								</DataTemplate>
-
 							</ListView.ItemTemplate>
 						</ListView>
 						<ListView>
@@ -159,17 +140,12 @@
 								<TextBlock Text="{Binding ImageName, Mode=OneWay}"
 										   HorizontalAlignment="Right"
 										   Margin="10,0,0,8" />
-
 							</StackPanel>
 						</StackPanel>
 					</ToolTip>
 				</ToolTipService.ToolTip>
-
 			</Grid>
 		</DataTemplate>
-
-
-
 	</Page.Resources>
 
 	<Page.DataContext>
@@ -178,11 +154,13 @@
 
 	<VisualStateManager.VisualStateGroups>
 		<VisualStateGroup>
+			
 			<VisualState x:Name="LargeWindowBreakpoint">
 				<VisualState.StateTriggers>
 					<AdaptiveTrigger MinWindowWidth="{StaticResource LargeWindowBreakpoint}" />
 				</VisualState.StateTriggers>
 			</VisualState>
+			
 			<VisualState x:Name="MediumWindowBreakpoint">
 				<VisualState.StateTriggers>
 					<AdaptiveTrigger MinWindowWidth="{StaticResource MediumWindowBreakpoint}" />
@@ -192,10 +170,9 @@
 							Value="{StaticResource ImagesGridCollection_Default}" />
 					<Setter Target="ImageGridView.ItemContainerStyle"
 							Value="{StaticResource ImageGridView_DefaultItemContainerStyle}" />
-
-
 				</VisualState.Setters>
 			</VisualState>
+			
 			<VisualState x:Name="MinWindowBreakpoint">
 				<VisualState.StateTriggers>
 					<AdaptiveTrigger MinWindowWidth="{StaticResource MinWindowBreakpoint}" />
@@ -209,15 +186,11 @@
 							Value="{StaticResource ImageGridView_SmallItemContainerStyle}" />
 					<Setter Target="GroupedGrid.ItemContainerStyle"
 							Value="{StaticResource ImageGridView_SmallItemContainerStyle}" />
-
 				</VisualState.Setters>
+
 			</VisualState>
 		</VisualStateGroup>
 	</VisualStateManager.VisualStateGroups>
-
-
-
-
 
 	<RelativePanel>
 
