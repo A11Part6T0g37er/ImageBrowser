@@ -93,7 +93,8 @@ namespace ImageBrowser.Common
             }
             if (defineClickedTheme != null)
             {
-                defineClickedTheme(parameter, "Dark");
+                var p = parameter as Windows.UI.Xaml.FrameworkElement;
+                defineClickedTheme(parameter, p.Tag.ToString());
             }
         }
 

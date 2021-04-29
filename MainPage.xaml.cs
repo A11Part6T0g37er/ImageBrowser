@@ -126,11 +126,11 @@ namespace ImageBrowser
             Frame.Navigate(typeof(DetailPage), e.ClickedItem);
         }
 
-        private void ThemeButton_Click(object sender, RoutedEventArgs e)
+       /* private void ThemeButton_Click(object sender, RoutedEventArgs e)
         {
             var selectedTheme = ((Button)sender)?.Tag?.ToString();
             DefineClickedTheme(sender, selectedTheme);
-        }
+        }*/
 
         /// <summary>
         /// Imlemented switching between <see cref="ElementTheme"/> .
