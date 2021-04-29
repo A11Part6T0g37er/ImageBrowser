@@ -14,6 +14,7 @@ using System.Net.Http.Headers;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using Windows.Foundation;
 using Windows.Storage;
 using Windows.Storage.Pickers;
 using Windows.Storage.Search;
@@ -78,33 +79,6 @@ namespace ImageBrowser
             base.OnNavigatedTo(e);
         }
 
-        // TODO: updating number of  <XAML> Pictures-in-grid columns
-        private void GroupedGrid_SizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            var panel = (ItemsWrapGrid)GroupedGrid.ItemsPanelRoot;
-            int gridColumnNumber = 3;
-
-            //VisualState actual = VisualStateGroup.CurrentState;
-
-            //switch (_actual.Name)
-            //{
-            //    case "medium":
-            //        {
-            //            gridColumnNumber = 3;
-            //            break;
-            //        }
-            //    case "large":
-            //        {
-            //            gridColumnNumber = 4;
-            //            break;
-            //        }
-            //    default:
-            //        {
-            //            gridColumnNumber = 2;
-            //            break;
-            //        }
-            //}
-            panel.ItemWidth = e.NewSize.Width / gridColumnNumber;
-        }
+        
     }
 }

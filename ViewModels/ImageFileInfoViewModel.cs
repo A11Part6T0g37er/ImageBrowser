@@ -47,6 +47,7 @@ namespace ImageBrowser.ViewModels
         public ICommand RefreshCommand { get; set; }
         public ICommand ThemeChangeCommand { get; set; }
         public ICommand SettingsNavigateCommand { get; set; }
+        public ICommand GridViewSizeChangeCommand { get; set; }
 
         #region DependecyProperties
         public static readonly DependencyProperty ResultTextProperty = DependencyProperty.Register(
@@ -88,6 +89,7 @@ namespace ImageBrowser.ViewModels
             RefreshCommand = new RelayCommand(RefreshAreaItemsAsync());
             ThemeChangeCommand = new RelayCommand(DefineClickedTheme);
             SettingsNavigateCommand = new RelayCommand(() => { Services.NavigationService.Instance.Navigate(typeof(Settings)); });
+            GridViewSizeChangeCommand = new RelayMultipleCommand(GroupedGrid_SizeChanged);
 
             MSGraphQueriesHelper.PropertyChanged += SigningStatusViewModel_OnStatusChanged;
 
@@ -236,6 +238,19 @@ namespace ImageBrowser.ViewModels
         }
 
         #region Actions for commands in ctor
+        private void GroupedGrid_SizeChanged(object sender, double e)
+        {
+            var panel = (ItemsWrapGrid)((sender as GridView).ItemsPanelRoot);
+            if (e <=140)
+            {
+                panel.ItemWidth = 140;
+            }
+            else
+            {
+                panel.ItemWidth = e / 3;
+
+            }            Trace.WriteLine("From RElay multiple command");
+        }
 
         /// <summary>
         /// Imlemented switching between <see cref="ElementTheme"/> .

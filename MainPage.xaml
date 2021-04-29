@@ -267,19 +267,20 @@
 								  SelectionMode="None"
 								  Name="GroupedGrid"
 								  ItemsPanel="{StaticResource ImageGridView_ItemsPanelTemplate}"
-								  SizeChanged="GroupedGrid_SizeChanged"
 								  IsItemClickEnabled="True"
 								  RelativePanel.Below="leftControlPanel"
 								  RelativePanel.AlignLeftWithPanel="True"
 								  RelativePanel.AlignRightWithPanel="True"
 								  MinWidth="180"
-								  MinHeight="5"
+								  MinHeight="150"
 								  Margin="15">
+								  <!--SizeChanged="GroupedGrid_SizeChanged"-->
 							
 							<Interactivity:Interaction.Behaviors>
 								<Interactions:EventTriggerBehavior EventName="SizeChanged">
-									<Interactions:InvokeCommandAction Command=""
-																   CommandParameter="{Binding Mode=TwoWay}" />
+									<Interactions:InvokeCommandAction Command="{Binding GridViewSizeChangeCommand}"
+																	  CommandParameter="{Binding  ElementName=GroupedGrid , Mode=TwoWay}" />
+									
 								</Interactions:EventTriggerBehavior>
 								<Interactions:EventTriggerBehavior EventName="ItemClick" >
 
@@ -303,46 +304,48 @@
 							<GridView.ItemTemplate>
 								<DataTemplate x:DataType="local:ImageFileInfo">
 									<Grid Margin="{StaticResource LargeItemMargin}"
-										  Height="{Binding ItemSize, ElementName=page}">
+										  Width="{Binding ItemSize,ElementName=app}"
+										>
 										<Grid.RowDefinitions>
 											<RowDefinition Height="*" />
 											<RowDefinition Height="Auto" />
-											<RowDefinition Height="Auto" />
+											<RowDefinition Height="Auto"
+														    />
 
 										</Grid.RowDefinitions>
 										<Image x:Name="ItemImage"
 											   Stretch="Uniform"
 											   Source="{x:Bind ImageSource, Mode=OneWay}"
-											   Width="{Binding ItemSize,ElementName=app}"
+											   
+											    
 											   VerticalAlignment="Top"
 											   HorizontalAlignment="Center"
 											   Grid.Row="0"
-											   Margin="0,0,0,0" />
-
-										<StackPanel Orientation="Vertical"
+											   Margin="2" />
+										<StackPanel Orientation="Horizontal"
 													Grid.Row="1"
-													Margin="0,0,0,15">
+													Margin="0,10,0,15">
 											<TextBlock Text="{x:Bind ImageName, Mode=OneWay}"
-													   MaxWidth="500"
 													   TextWrapping="Wrap"
 													   Style="{StaticResource SubtitleTextBlockStyle}"
 													   HorizontalAlignment="Left"
 													   VerticalAlignment="Top" />
+													   <!--MaxWidth="500"-->
 
 										</StackPanel>
 
-										<StackPanel Orientation="Horizontal"
+										<StackPanel Orientation="Vertical"
 													Grid.Row="2">
 											<TextBlock TextWrapping="Wrap"
 													   Text="{x:Bind ImageDimensions, Mode=OneWay}"
-													   Margin="0,3,10,0" />
+													   Margin="0,3,10,5" />
 
-											<ItemsControl ItemsSource="{x:Bind ImageProperties.Keywords, Mode=OneWay}">
+											<ItemsControl ItemsSource="{x:Bind ImageProperties.Keywords, Mode=OneWay}" Margin="0,0,0,10">
 												<ItemsControl.ItemsPanel>
 													<ItemsPanelTemplate>
 														<WrapGrid Orientation="Horizontal"
-																  MaximumRowsOrColumns="2"
-																  ItemWidth="40" />
+																  MaximumRowsOrColumns="4"
+																   ItemWidth="50"/>
 													</ItemsPanelTemplate>
 												</ItemsControl.ItemsPanel>
 												<ItemsControl.ItemTemplate>
