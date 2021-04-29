@@ -28,13 +28,13 @@ namespace ImageBrowser.ViewModels
     {
         private readonly static string EmptyOneDrive = LocalizationHelper.GetLocalizedStrings("oneDriveDownloadedInfoDefault");
         private readonly static string UserSignedOutNormal = LocalizationHelper.GetLocalizedStrings("normalSignOut");
-     
+
         private ObservableCollection<ImageFileInfo> observableCollection = new ObservableCollection<ImageFileInfo>();
 
         public IList<ImageFileInfo> ObservableCollection { get => observableCollection; }
         public ObservableCollection<FolderInfoModel> foldersPath = new ObservableCollection<FolderInfoModel>();
         public FoldersViewModel foldersView = new FoldersViewModel();
-        
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         public ICommand OneDriveOpenCommand { get; set; }
@@ -46,6 +46,7 @@ namespace ImageBrowser.ViewModels
         public ICommand OpenFoldersCommand { get; set; }
         public ICommand RefreshCommand { get; set; }
         public ICommand ThemeChangeCommand { get; set; }
+        public ICommand SettingsNavigateCommand { get; set; }
 
         #region DependecyProperties
         public static readonly DependencyProperty ResultTextProperty = DependencyProperty.Register(
@@ -71,7 +72,7 @@ namespace ImageBrowser.ViewModels
 
         #endregion
 
-            string defaultWinTheme = string.Empty;
+        string defaultWinTheme = string.Empty;
         /// <summary>
         /// Initializes a new instance of the <see cref="ImageFileInfoViewModel"/> class,
         /// signup event and initializes commands.
@@ -86,9 +87,9 @@ namespace ImageBrowser.ViewModels
             OpenFoldersCommand = new RelayCommand(OpenFoldersAsync());
             RefreshCommand = new RelayCommand(RefreshAreaItemsAsync());
             ThemeChangeCommand = new RelayCommand(DefineClickedTheme);
+            SettingsNavigateCommand = new RelayCommand(() => { Services.NavigationService.Instance.Navigate(typeof(Settings)); });
+
             MSGraphQueriesHelper.PropertyChanged += SigningStatusViewModel_OnStatusChanged;
-
-
 
             var DefaultTheme = new Windows.UI.ViewManagement.UISettings();
             var uiTheme = DefaultTheme.GetColorValue(Windows.UI.ViewManagement.UIColorType.Background).ToString();
@@ -100,9 +101,7 @@ namespace ImageBrowser.ViewModels
             {
                 defaultWinTheme = "Light";
             }
-
         }
-
 
         #region XamlListningProperties
         public bool IsAnyItemsToShow;
@@ -227,8 +226,17 @@ namespace ImageBrowser.ViewModels
         protected void OnPropertyChanged([CallerMemberName] string propertyName = null) =>
                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
+
+        public async void ClickPictInGrid(object sender, object parameter)
+        {
+            var arg = parameter as Windows.UI.Xaml.Controls.ItemClickEventArgs;
+            var item = arg.ClickedItem as ImageFileInfo;
+            Services.NavigationService.Instance.Navigate(typeof(DetailPage), item);
+
+        }
+
         #region Actions for commands in ctor
-        
+
         /// <summary>
         /// Imlemented switching between <see cref="ElementTheme"/> .
         /// </summary>
@@ -248,33 +256,33 @@ namespace ImageBrowser.ViewModels
                 }
             }
         }
+
+        /// <summary>
+        /// Reload collections of user added files.
+        /// </summary>
         private Action RefreshAreaItemsAsync()
         {
-
-            
-                ICollection<StorageFile> files = new Collection<StorageFile>();
+            ICollection<StorageFile> files = new Collection<StorageFile>();
             ICollection<StorageFile> filesReal = new Collection<StorageFile>();
             ICollection<string> fileWithPaths = new Collection<string>();
-                for (int i = 0; i < this.ObservableCollection.Count; i++)
-                {
+            for (int i = 0; i < this.ObservableCollection.Count; i++)
+            {
 
-                    files.Add(this.ObservableCollection[i].ImageFile);
-                fileWithPaths.Add( this.ObservableCollection[i].ImagePath );
+                files.Add(this.ObservableCollection[i].ImageFile);
+                fileWithPaths.Add(this.ObservableCollection[i].ImagePath);
 
                 // Get BitmapImage
-                var p =  this.ObservableCollection[i].GetImageSourceAsync();
-                
-                }
+                var p = this.ObservableCollection[i].GetImageSourceAsync();
+            }
 
-             IReadOnlyCollection<StorageFile> filesReadOnly = (IReadOnlyCollection<StorageFile>)files;
-                return async () =>
-                {
-                    Trace.WriteLine("REFRESHED by button in command");
-                    //RefreshArea_RefreshRequested(sender,args);
-                    await this.PopulateObservableCollectionOfImages(filesReadOnly);
-                };
-            
+            IReadOnlyCollection<StorageFile> filesReadOnly = (IReadOnlyCollection<StorageFile>)files;
+            return async () =>
+            {
+                Trace.WriteLine("REFRESHED by button in command");
+                await this.PopulateObservableCollectionOfImages(filesReadOnly);
+            };
         }
+
         private Action SigningInAsync()
         {
             return async () =>
@@ -301,7 +309,7 @@ namespace ImageBrowser.ViewModels
                 }
             };
         }
-        
+
         private Action SigningOutAsync()
         {
             return async () =>
@@ -392,9 +400,8 @@ namespace ImageBrowser.ViewModels
                 foldersPath.Add(new FolderInfoModel() { FolderPath = folder.Path, FolderDisplayName = folder.DisplayName });
                 IReadOnlyList<StorageFile> fileList = await folder.GetFilesAsync();
                 IReadOnlyCollection<StorageFile> storageFiles = await queryResult.GetFilesAsync();
-                
-                return await this.PopulateObservableCollectionOfImages(storageFiles);
 
+                return await this.PopulateObservableCollectionOfImages(storageFiles);
             }
             return null;
         }
@@ -442,7 +449,6 @@ namespace ImageBrowser.ViewModels
 
                 GroupedImagesInfos.Add(infoList);
             }
-
         }
 
         private void Initialize()
@@ -534,6 +540,5 @@ namespace ImageBrowser.ViewModels
                 Trace.WriteLine("From VievModel execution");
             }
         }
-        
     }
 }

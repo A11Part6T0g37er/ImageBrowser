@@ -82,14 +82,14 @@ namespace ImageBrowser.Common
         /// </param>
         public void Execute(object parameter)
         {
-            if (_command!=null)
+            if (_command != null)
             {
-                _command(parameter); 
+                _command(parameter);
             }
             if (_execute != null)
             {
 
-                _execute(); 
+                _execute();
             }
             if (defineClickedTheme != null)
             {

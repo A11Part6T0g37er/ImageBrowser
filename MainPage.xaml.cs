@@ -50,17 +50,6 @@ namespace ImageBrowser
             Current = this;
             SizeChanged += CoreWindow_SizeChanged;
             NavigationCacheMode = NavigationCacheMode.Enabled;
-
-            var DefaultTheme = new Windows.UI.ViewManagement.UISettings();
-            var uiTheme = DefaultTheme.GetColorValue(Windows.UI.ViewManagement.UIColorType.Background).ToString();
-            if (uiTheme == "#FF000000")
-            {
-                defaultWinTheme = "Dark";
-            }
-            else if (uiTheme == "#FFFFFFFF")
-            {
-                defaultWinTheme = "Light";
-            }
         }
 
         // TODO: making resisable layout, not works yet
@@ -85,11 +74,9 @@ namespace ImageBrowser
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-           
+
             base.OnNavigatedTo(e);
         }
-
-        //TODO: make folders upload into app
 
         // TODO: updating number of  <XAML> Pictures-in-grid columns
         private void GroupedGrid_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -119,38 +106,5 @@ namespace ImageBrowser
             //}
             panel.ItemWidth = e.NewSize.Width / gridColumnNumber;
         }
-
-        private void GroupedGrid_ItemClick(object sender, ItemClickEventArgs e)
-        {
-            persistedItem = e.ClickedItem as ImageFileInfo;
-            Frame.Navigate(typeof(DetailPage), e.ClickedItem);
-        }
-
-       /* private void ThemeButton_Click(object sender, RoutedEventArgs e)
-        {
-            var selectedTheme = ((Button)sender)?.Tag?.ToString();
-            DefineClickedTheme(sender, selectedTheme);
-        }*/
-
-        /// <summary>
-        /// Imlemented switching between <see cref="ElementTheme"/> .
-        /// </summary>
-        /// <param name="sender">Button that is clicked.</param>
-        /// <param name="selectedTheme">Button`s <see cref="string"/> tag property.</param>
-        private void DefineClickedTheme(object sender, string selectedTheme)
-        {
-            if (selectedTheme != null)
-            {
-                if (selectedTheme == "Default")
-                {
-                    ((sender as Button).XamlRoot.Content as Frame).RequestedTheme = EnumHelper.GetEnum<ElementTheme>(defaultWinTheme);
-                }
-                else
-                {
-                    ((sender as Button).XamlRoot.Content as Frame).RequestedTheme = EnumHelper.GetEnum<ElementTheme>(selectedTheme);
-                }
-            }
-        }
-                
     }
 }

@@ -12,7 +12,7 @@ namespace ImageBrowser.ViewModels
     {
         public ObservableCollection<StorageFolder> FoldersToDisplay { get; set; }
 
-        
+
         public FoldersViewModel(StorageFolder storageFolder)
         {
             FoldersToDisplay = new ObservableCollection<StorageFolder>();
