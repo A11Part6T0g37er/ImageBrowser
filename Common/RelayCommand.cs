@@ -17,7 +17,9 @@ namespace ImageBrowser.Common
     public class RelayCommand : ICommand
     {
         private readonly Action _execute;
+        private readonly Action<object> _command;
         private readonly Func<bool> _canExecute;
+        private Action<object, string> defineClickedTheme;
 
         /// <summary>
         /// Raised when RaiseCanExecuteChanged is called.
@@ -47,6 +49,16 @@ namespace ImageBrowser.Common
             _execute = execute;
             _canExecute = canExecute;
         }
+        public RelayCommand(Action<object> commandAction, Func<bool> canExecute = null)
+        {
+            _command = commandAction;
+            _canExecute = canExecute;
+        }
+
+        public RelayCommand(Action<object, string> defineClickedTheme)
+        {
+            this.defineClickedTheme = defineClickedTheme;
+        }
 
         /// <summary>
         /// Determines whether this RelayCommand can execute in its current state.
@@ -70,7 +82,20 @@ namespace ImageBrowser.Common
         /// </param>
         public void Execute(object parameter)
         {
-            _execute();
+            if (_command!=null)
+            {
+                _command(parameter); 
+            }
+            if (_execute != null)
+            {
+
+                _execute(); 
+            }
+            if (defineClickedTheme != null)
+            {
+                var p = parameter as Windows.UI.Xaml.FrameworkElement;
+                defineClickedTheme(parameter, p.Tag.ToString());
+            }
         }
 
         /// <summary>

@@ -45,6 +45,7 @@ namespace ImageBrowser.ViewModels
         public ICommand OpenCLickCommand { get; set; }
         public ICommand OpenFoldersCommand { get; set; }
         public ICommand RefreshCommand { get; set; }
+        public ICommand ThemeChangeCommand { get; set; }
 
         #region DependecyProperties
         public static readonly DependencyProperty ResultTextProperty = DependencyProperty.Register(
@@ -70,6 +71,7 @@ namespace ImageBrowser.ViewModels
 
         #endregion
 
+            string defaultWinTheme = string.Empty;
         /// <summary>
         /// Initializes a new instance of the <see cref="ImageFileInfoViewModel"/> class,
         /// signup event and initializes commands.
@@ -83,10 +85,24 @@ namespace ImageBrowser.ViewModels
             OpenCLickCommand = new RelayCommand(OpenClickAsync());
             OpenFoldersCommand = new RelayCommand(OpenFoldersAsync());
             RefreshCommand = new RelayCommand(RefreshAreaItemsAsync());
-
+            ThemeChangeCommand = new RelayCommand(DefineClickedTheme);
             MSGraphQueriesHelper.PropertyChanged += SigningStatusViewModel_OnStatusChanged;
 
+
+
+            var DefaultTheme = new Windows.UI.ViewManagement.UISettings();
+            var uiTheme = DefaultTheme.GetColorValue(Windows.UI.ViewManagement.UIColorType.Background).ToString();
+            if (uiTheme == "#FF000000")
+            {
+                defaultWinTheme = "Dark";
+            }
+            else if (uiTheme == "#FFFFFFFF")
+            {
+                defaultWinTheme = "Light";
+            }
+
         }
+
 
         #region XamlListningProperties
         public bool IsAnyItemsToShow;
@@ -212,6 +228,26 @@ namespace ImageBrowser.ViewModels
                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
         #region Actions for commands in ctor
+        
+        /// <summary>
+        /// Imlemented switching between <see cref="ElementTheme"/> .
+        /// </summary>
+        /// <param name="sender">Button that is clicked.</param>
+        /// <param name="selectedTheme">Button`s <see cref="string"/> tag property.</param>
+        private void DefineClickedTheme(object sender, string selectedTheme)
+        {
+            if (selectedTheme != null)
+            {
+                if (selectedTheme == "Default")
+                {
+                    ((sender as Button).XamlRoot.Content as Frame).RequestedTheme = EnumHelper.GetEnum<ElementTheme>(defaultWinTheme);
+                }
+                else
+                {
+                    ((sender as Button).XamlRoot.Content as Frame).RequestedTheme = EnumHelper.GetEnum<ElementTheme>(selectedTheme);
+                }
+            }
+        }
         private Action RefreshAreaItemsAsync()
         {
 

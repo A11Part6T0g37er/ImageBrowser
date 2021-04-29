@@ -633,17 +633,48 @@
 								  x:Name="Dark"
 								  Label=""
 								  x:Uid="dark"
-								  Click="ThemeButton_Click" />
+								  >
+								  <!--Click="ThemeButton_Click"--> 
+					<Interactivity:Interaction.Behaviors>
+						<Interactions:EventTriggerBehavior EventName="Click"
+														   SourceObject="{Binding ElementName=Dark}">
+
+							<Interactions:InvokeCommandAction Command="{Binding ThemeChangeCommand, Mode=TwoWay}"
+															  CommandParameter="{Binding ElementName=Dark, Mode=TwoWay}" />
+
+						</Interactions:EventTriggerBehavior>
+					</Interactivity:Interaction.Behaviors>
+						</AppBarButton>
 					<AppBarButton Tag="Light"
 								  x:Name="Light"
 								  Label=""
-								  x:Uid="light"
-								  Click="ThemeButton_Click" />
+								  x:Uid="light">
+						
+						<Interactivity:Interaction.Behaviors>
+							<Interactions:EventTriggerBehavior EventName="Click"
+															   SourceObject="{Binding ElementName=Light}">
+
+								<Interactions:InvokeCommandAction Command="{Binding ThemeChangeCommand, Mode=TwoWay}"
+																  CommandParameter="{Binding ElementName=Light, Mode=TwoWay}" />
+
+							</Interactions:EventTriggerBehavior>
+						</Interactivity:Interaction.Behaviors>
+					</AppBarButton>
 					<AppBarButton Tag="Default"
 								  x:Name="Default"
 								  Label=""
-								  x:Uid="default"
-								  Click="ThemeButton_Click" />
+								  x:Uid="default">
+						
+						<Interactivity:Interaction.Behaviors>
+							<Interactions:EventTriggerBehavior EventName="Click"
+															   SourceObject="{Binding ElementName=Default}">
+
+								<Interactions:InvokeCommandAction Command="{Binding ThemeChangeCommand, Mode=TwoWay}"
+																  CommandParameter="{Binding ElementName=Default, Mode=TwoWay}" />
+
+							</Interactions:EventTriggerBehavior>
+						</Interactivity:Interaction.Behaviors>
+					</AppBarButton>
 				</CommandBar.SecondaryCommands>
 			</CommandBar>
 		</StackPanel>
