@@ -25,7 +25,7 @@ namespace ImageBrowser
         {
             item = e.Parameter as ImageFileInfo;
 
-            ImageSource = await item.GetImageSourceAsync();
+            ImageSource = await item.GetImageSourceAsync().ConfigureAwait(true);
 
             targetImage.Source = ImageSource;
 

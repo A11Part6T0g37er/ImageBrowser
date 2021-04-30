@@ -34,12 +34,12 @@ namespace ImageBrowser
     /// </summary>
     public sealed partial class MainPage : Page
     {
-     //   internal ImageBrowser.ViewModels.ImageFileInfoViewModel imageFileInfoViewModel = new ViewModels.ImageFileInfoViewModel();
-
+        //   internal ImageBrowser.ViewModels.ImageFileInfoViewModel imageFileInfoViewModel = new ViewModels.ImageFileInfoViewModel();
+        
         public MainPage()
         {
-           InitializeComponent();
-
+            InitializeComponent();
+           
             // Required for go to previous page without loosing its state
             NavigationCacheMode = NavigationCacheMode.Enabled;
         }

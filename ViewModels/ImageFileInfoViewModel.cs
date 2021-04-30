@@ -242,15 +242,10 @@ namespace ImageBrowser.ViewModels
         private void GroupedGrid_SizeChanged(object sender, double e)
         {
             var panel = (ItemsWrapGrid)((sender as GridView).ItemsPanelRoot);
-            /*if (e <= 180)
-            {
-                panel.ItemWidth = 180;
-            }
-            else
-            {*/
-                panel.ItemWidth = e / 3;
-            //}
-            Trace.WriteLine("From RElay multiple command");
+            
+            panel.ItemWidth = e / 3;
+            
+           // Trace.WriteLine("From RElay multiple command");
         }
 
         /// <summary>
@@ -539,26 +534,8 @@ namespace ImageBrowser.ViewModels
             }
         }
 
-        public async void RefreshArea_RefreshRequested(RefreshContainer sender, RefreshRequestedEventArgs args)
-        {
-            using (var RefreshcompletingDeferral = args.GetDeferral())
-            {
-                ICollection<StorageFile> files = new Collection<StorageFile>();
-
-                for (int i = 0; i < this.ObservableCollection.Count; i++)
-                {
-
-                    files.Add(this.ObservableCollection[i].ImageFile);
-                }
-
-                IReadOnlyCollection<StorageFile> filesReadOnly = (IReadOnlyCollection<StorageFile>)files;
-                await this.PopulateObservableCollectionOfImages(filesReadOnly);
-                Trace.WriteLine("From VievModel execution");
-            }
-        }
-
         private object imageFileInfoViewModel1;
 
-        public object imageFileInfoViewModel { get =>  imageFileInfoViewModel1; set => SetProperty(ref imageFileInfoViewModel1, value); }
+        public object imageFileInfoViewModel { get => imageFileInfoViewModel1; set => SetProperty(ref imageFileInfoViewModel1, value); }
     }
 }
