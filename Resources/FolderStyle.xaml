@@ -5,7 +5,7 @@
 	
 		<DataTemplate x:Key="FolderStyle">
 
-			<StackPanel Orientation="Vertical">
+			<!--<StackPanel Orientation="Vertical">
 				<Rectangle Fill="DarkKhaki"
 						   Opacity="0.3"
 						   RadiusX="10"
@@ -17,8 +17,24 @@
 						   VerticalAlignment="Bottom"
 						   HorizontalAlignment="Left"
 						   Margin="25" />
+			</StackPanel>-->
+		<Grid Height="180"
+			  Width="320"
+			  >
+			<Image Source="ms-appx:///Assets/Placeholder.png"
+				   Stretch="UniformToFill" />
+			<StackPanel Orientation="Vertical"
+						Height="85"
+						VerticalAlignment="Bottom"
+						Background="{ThemeResource SystemBaseLowColor}"
+						Padding="12">
+				<TextBlock Text="{Binding FolderDisplayName}" />
+				<TextBlock Text="{Binding FolderPath}"
+						   Style="{ThemeResource CaptionTextBlockStyle}"
+						   Foreground="{ThemeResource SystemControlPageTextBaseMediumBrush}" 
+						   Margin="10,0,0,20"/>
 			</StackPanel>
-
-		</DataTemplate>
+		</Grid>
+	</DataTemplate>
 	
 </ResourceDictionary>

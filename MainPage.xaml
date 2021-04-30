@@ -280,8 +280,8 @@
 								<DataTemplate x:DataType="local:ImageFileInfo"><!--x:DataType="local:ImageFileInfo"-->
 									<Grid Margin="{StaticResource LargeItemMargin}" MaxWidth="500">
 										<!--Width="{Binding ItemSize,ElementName=page}"
-										-->
-										  <!--Height="{Binding ItemSize,ElementName=page}"-->
+										
+										  Height="{Binding ItemSize,ElementName=page}"-->
 										<Grid.RowDefinitions>
 											<RowDefinition Height="*" />
 											<RowDefinition Height="Auto" />
