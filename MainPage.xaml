@@ -371,7 +371,16 @@
 					<ListView ItemsSource="{Binding Source={StaticResource ImagesCollection} }"
 							  RelativePanel.Below="button"
 							  ScrollViewer.HorizontalScrollBarVisibility="Auto"
+							  IsItemClickEnabled="True"
 							  Grid.Row="1">
+						<Interactivity:Interaction.Behaviors>
+							<Interactions:EventTriggerBehavior EventName="ItemClick">
+
+							<Interactions:CallMethodAction MethodName="ClickPictInGrid"
+														   TargetObject="{Binding Mode=OneWay}" />
+
+						</Interactions:EventTriggerBehavior>
+						</Interactivity:Interaction.Behaviors>
 
 						<ListView.ItemContainerStyle>
 							<Style TargetType="ListViewItem"
