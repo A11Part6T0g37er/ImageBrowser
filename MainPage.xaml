@@ -486,25 +486,9 @@
 							  ItemsSource="{Binding Source={StaticResource PathCollections}}"
 							  MinWidth="180"
 							  MinHeight="5"
-							  Margin="15">
-						<GridView.ItemTemplate>
-							<DataTemplate>
-
-								<StackPanel Orientation="Vertical">
-									<Rectangle Fill="DarkKhaki"
-											   Opacity="0.3"
-											   RadiusX="10"
-											   RadiusY="10"
-											   Width="200"
-											   HorizontalAlignment="Left" />
-									<TextBlock Text="{Binding FolderDisplayName}"
-											   VerticalAlignment="Bottom"
-											   HorizontalAlignment="Left"
-											   Margin="25" />
-								</StackPanel>
-
-							</DataTemplate>
-						</GridView.ItemTemplate>
+							  Margin="15"
+							  ItemTemplate="{StaticResource FolderStyle}">
+						
 					</GridView>
 				</Grid>
 			</PivotItem>
