@@ -21,17 +21,18 @@
 		<Grid Height="180"
 			  Width="320"
 			  >
-			<Image Source="ms-appx:///Assets/Placeholder.png"
+			<Image Source="Assets/Placeholder.png"
 				   Stretch="UniformToFill" />
 			<StackPanel Orientation="Vertical"
 						Height="85"
 						VerticalAlignment="Bottom"
 						Background="{ThemeResource SystemBaseLowColor}"
 						Padding="12">
-				<TextBlock Text="{Binding FolderDisplayName}" />
+				<TextBlock Text="{Binding FolderDisplayName}"
+						   Foreground="Black" />
 				<TextBlock Text="{Binding FolderPath}"
 						   Style="{ThemeResource CaptionTextBlockStyle}"
-						   Foreground="{ThemeResource SystemControlPageTextBaseMediumBrush}" 
+						   Foreground="Black" 
 						   Margin="10,0,0,20"/>
 			</StackPanel>
 		</Grid>

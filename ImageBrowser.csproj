@@ -170,6 +170,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\backlit-photography-10.jpg" />
+    <Content Include="Assets\Placeholder.png" />
     <Content Include="Assets\rule_of_thirds_landscape_2048x2048.jpg" />
     <Content Include="Assets\stock-photo-104292369.jpg" />
     <Content Include="Properties\Default.rd.xml" />
