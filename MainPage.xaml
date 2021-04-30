@@ -23,13 +23,13 @@
 
 		<viewModels:ImageFileInfoViewModel x:Key="ImageViewModel" />
 
-		<Thickness x:Key="LargeItemMargin">8,0,0,0</Thickness>
+		<Thickness x:Key="LargeItemMargin">8,8,8,0</Thickness>
 		<Thickness x:Key="SmallItemMargin">0,0,0,0</Thickness>
 
 		<ItemsPanelTemplate x:Key="ImageGridView_ItemsPanelTemplate">
 			<ItemsWrapGrid Orientation="Horizontal"
 						   ScrollViewer.VerticalScrollMode="Auto"
-						   MaximumRowsOrColumns="5" />
+						   MaximumRowsOrColumns="3"  ItemWidth="380"/>
 		</ItemsPanelTemplate>
 
 		<CollectionViewSource x:Name="ImagesCollection"
@@ -244,14 +244,14 @@
 								  RelativePanel.Below="leftControlPanel"
 								  RelativePanel.AlignLeftWithPanel="True"
 								  RelativePanel.AlignRightWithPanel="True"
-								  MinWidth="180"
-								  MinHeight="150"
+								  MinHeight="15"
 								  Margin="15">
 								  <!--SizeChanged="GroupedGrid_SizeChanged"-->
+								  <!--MinWidth="280"-->
 							
 							<Interactivity:Interaction.Behaviors>
 								<Interactions:EventTriggerBehavior EventName="SizeChanged">
-									<Interactions:InvokeCommandAction Command="{Binding GridViewSizeChangeCommand}"
+									<Interactions:InvokeCommandAction Command="{Binding GridViewSizeChangeCommand,Mode=TwoWay}"
 																	  CommandParameter="{Binding  ElementName=GroupedGrid , Mode=TwoWay}" />
 									
 								</Interactions:EventTriggerBehavior>
@@ -276,36 +276,36 @@
 							</GridView.GroupStyle>
 							<GridView.ItemTemplate>
 								<DataTemplate x:DataType="local:ImageFileInfo">
-									<Grid Margin="{StaticResource LargeItemMargin}"
-										  Width="{Binding ItemSize,ElementName=app}"
-										>
+									<Grid Margin="{StaticResource LargeItemMargin}" MaxWidth="500">
+										<!--Width="{Binding ItemSize,ElementName=page}"
+										-->
+										  <!--Height="{Binding ItemSize,ElementName=page}"-->
 										<Grid.RowDefinitions>
 											<RowDefinition Height="*" />
 											<RowDefinition Height="Auto" />
-											<RowDefinition Height="Auto"
-														    />
+											<RowDefinition Height="Auto"/>
 
 										</Grid.RowDefinitions>
+										
 										<Image x:Name="ItemImage"
 											   Stretch="Uniform"
 											   Source="{x:Bind ImageSource, Mode=OneWay}"
-											   
+											  
 											    
 											   VerticalAlignment="Top"
 											   HorizontalAlignment="Center"
 											   Grid.Row="0"
 											   Margin="2" />
-										<StackPanel Orientation="Horizontal"
-													Grid.Row="1"
+										<Grid Grid.Row="1"
 													Margin="0,10,0,15">
 											<TextBlock Text="{x:Bind ImageName, Mode=OneWay}"
 													   TextWrapping="Wrap"
 													   Style="{StaticResource SubtitleTextBlockStyle}"
+													   MaxWidth="500" 
 													   HorizontalAlignment="Left"
 													   VerticalAlignment="Top" />
-													   <!--MaxWidth="500"-->
 
-										</StackPanel>
+										</Grid>
 
 										<StackPanel Orientation="Vertical"
 													Grid.Row="2">

@@ -170,7 +170,7 @@ namespace ImageBrowser.ViewModels
         {
             if (oldString != newString)
                 ResultText = newString;
-            OnPropertyChanged("ResultText");
+            OnPropertyChanged(nameof(ResultText));
         }
 
         private static void OnOneDriveInfoTextChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
@@ -185,7 +185,7 @@ namespace ImageBrowser.ViewModels
         {
             if (oldString != newString)
                 OneDriveInfoText = newString;
-            OnPropertyChanged("OneDriveInfoText");
+            OnPropertyChanged(nameof(OneDriveInfoText));
         }
 
         private static void OnStatusChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
@@ -200,14 +200,14 @@ namespace ImageBrowser.ViewModels
         {
             if (oldValue != newValue)
                 IsUserSignedOut = newValue;
-            OnPropertyChanged("IsUserSignedOut");
+            OnPropertyChanged(nameof(IsUserSignedOut));
         }
 
         private void SigningStatusViewModel_OnStatusChanged(object sender, PropertyChangedEventArgs e)
         {
             var newValue = (bool)sender;
             IsUserSignedOut = newValue;
-            OnPropertyChanged("IsUserSignedOut");
+            OnPropertyChanged(nameof(IsUserSignedOut));
         }
 
         private static void OnObservableItemsCountChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
@@ -240,14 +240,14 @@ namespace ImageBrowser.ViewModels
         private void GroupedGrid_SizeChanged(object sender, double e)
         {
             var panel = (ItemsWrapGrid)((sender as GridView).ItemsPanelRoot);
-            if (e <= 140)
+            /*if (e <= 180)
             {
-                panel.ItemWidth = 140;
+                panel.ItemWidth = 180;
             }
             else
-            {
+            {*/
                 panel.ItemWidth = e / 3;
-            }
+            //}
             Trace.WriteLine("From RElay multiple command");
         }
 

@@ -43,6 +43,7 @@ namespace ImageBrowser.ViewModels
             {
                 var p = parameter as SizeChangedEventArgs;
                 var e = parameter as FrameworkElement;
+                
                 GroupedGrid_SizeChanged(e, e.ActualWidth);
             }
         }

@@ -15,8 +15,10 @@ namespace ImageBrowser.ViewModels
 
         public FoldersViewModel(StorageFolder storageFolder)
         {
-            FoldersToDisplay = new ObservableCollection<StorageFolder>();
-            FoldersToDisplay.Add(storageFolder);
+            FoldersToDisplay = new ObservableCollection<StorageFolder>
+            {
+                storageFolder
+            };
         }
 
         public FoldersViewModel()
