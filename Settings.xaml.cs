@@ -40,7 +40,7 @@ namespace ImageBrowser
                 SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
             }
 
-            base.OnNavigatedTo(e);
+          base.OnNavigatedTo(e);
         }
     }
 }

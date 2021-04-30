@@ -32,7 +32,9 @@ namespace ImageBrowser.ViewModels
         private ObservableCollection<ImageFileInfo> observableCollection = new ObservableCollection<ImageFileInfo>();
 
         public IList<ImageFileInfo> ObservableCollection { get => observableCollection; }
-        public ObservableCollection<FolderInfoModel> foldersPath = new ObservableCollection<FolderInfoModel>();
+
+        private ObservableCollection<FolderInfoModel> _foldersPath = new ObservableCollection<FolderInfoModel>();
+        public ObservableCollection<FolderInfoModel> foldersPath { get { return _foldersPath; } set { _foldersPath = value; } }
         public FoldersViewModel foldersView = new FoldersViewModel();
 
         public event PropertyChangedEventHandler PropertyChanged;
