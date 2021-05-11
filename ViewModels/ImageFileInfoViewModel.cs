@@ -20,6 +20,7 @@ using Windows.Storage.Search;
 using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Media.Imaging;
 
 namespace ImageBrowser.ViewModels
@@ -35,6 +36,9 @@ namespace ImageBrowser.ViewModels
 
         private ObservableCollection<FolderInfoModel> _foldersPath = new ObservableCollection<FolderInfoModel>();
         public ObservableCollection<FolderInfoModel> foldersPath { get { return _foldersPath; } set { _foldersPath = value; } }
+        public CollectionViewSource FoldersZooomView { get => foldersZooomView; set {  SetProperty(ref foldersZooomView,value,nameof(FoldersZooomView)); } }
+        //  public ObservableCollection<object> foldersKey = new ObservableCollection<object>();
+
         public FoldersViewModel foldersView = new FoldersViewModel();
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -242,10 +246,10 @@ namespace ImageBrowser.ViewModels
         private void GroupedGrid_SizeChanged(object sender, double e)
         {
             var panel = (ItemsWrapGrid)((sender as GridView).ItemsPanelRoot);
-            
+
             panel.ItemWidth = e / 3;
-            
-           // Trace.WriteLine("From RElay multiple command");
+
+            // Trace.WriteLine("From RElay multiple command");
         }
 
         /// <summary>
@@ -391,6 +395,7 @@ namespace ImageBrowser.ViewModels
 
         private async Task<ObservableCollection<ImageFileInfo>> OpenFoldersButtonHandler()
         {
+
             FolderPicker folderPicker = new FolderPicker();
             folderPicker.SuggestedStartLocation = PickerLocationId.Downloads;
             folderPicker.ViewMode = PickerViewMode.Thumbnail;
@@ -406,12 +411,18 @@ namespace ImageBrowser.ViewModels
             queryOptions.FileTypeFilter.Add(".png");
             queryOptions.FolderDepth = FolderDepth.Deep;
             var queryResult = folder?.CreateFileQueryWithOptions(queryOptions);
-           
+
             queryResult.ContentsChanged += OnContentsChanged;
             if (folder != null)
             {
                 //  foldersView.FoldersToDisplay.Add(folder);
                 foldersPath.Add(new FolderInfoModel() { FolderPath = folder.Path, FolderDisplayName = folder.DisplayName });
+                var groupedData = from foldering in foldersPath
+                                  group foldering by foldering.FolderDisplayName into folderLetter
+                                  orderby folderLetter.Key
+                                  select folderLetter;
+
+                FoldersZooomView = new CollectionViewSource() { IsSourceGrouped = true, Source = groupedData };
                 IReadOnlyList<StorageFile> fileList = await folder.GetFilesAsync();
                 IReadOnlyCollection<StorageFile> storageFiles = await queryResult.GetFilesAsync();
 
@@ -421,7 +432,7 @@ namespace ImageBrowser.ViewModels
         }
         async void OnContentsChanged(IStorageQueryResultBase sender, object args)
         {
-            // Do stuff, e.g. check for changes
+            // TODO: Do stuff, e.g. check for changes
         }
         #endregion
 
@@ -541,6 +552,7 @@ namespace ImageBrowser.ViewModels
         }
 
         private object imageFileInfoViewModel1;
+        private CollectionViewSource foldersZooomView;
 
         public object imageFileInfoViewModel { get => imageFileInfoViewModel1; set => SetProperty(ref imageFileInfoViewModel1, value); }
     }

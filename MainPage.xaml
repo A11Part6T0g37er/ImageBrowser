@@ -146,6 +146,22 @@
 				</ToolTipService.ToolTip>
 			</Grid>
 		</DataTemplate>
+
+
+		<DataTemplate x:Key="ZoomedInGroupHeaderTemplate">
+			<TextBlock Text="{Binding Key}"
+					   Foreground="{ThemeResource ApplicationForegroundThemeBrush}"
+					   Style="{StaticResource SubtitleTextBlockStyle}" />
+		</DataTemplate>
+
+		<DataTemplate x:Key="ZoomedOutTemplate">
+			<TextBlock Text="{Binding Group.Key}"
+					   Style="{StaticResource SubtitleTextBlockStyle}" />
+		</DataTemplate>
+		<CollectionViewSource x:Name="groupedFolders"
+							  IsSourceGrouped="True"
+							  Source="{Binding FoldersZooomView}" />
+
 	</Page.Resources>
 
 	<Page.DataContext>
@@ -431,12 +447,13 @@
 
 				</Grid>
 			</PivotItem>
+			
 			<PivotItem Header="Folders">
 				<Grid>
 					<Grid.RowDefinitions>
 						<RowDefinition Height="Auto" />
 						<RowDefinition Height="Auto" />
-						
+						<RowDefinition Height="2*" />
 						<RowDefinition Height="*" />
 					</Grid.RowDefinitions>
 					<TextBlock Text="Folders opened"
@@ -455,6 +472,7 @@
 							<Grid.RowDefinitions>
 								<RowDefinition Height="Auto" />
 								<RowDefinition Height="*" />
+								
 							</Grid.RowDefinitions>
 							<Grid.ColumnDefinitions>
 								<ColumnDefinition Width="Auto" />
@@ -479,10 +497,65 @@
 							</Viewbox>
 						</Grid>
 					</Button>
-					
-					<GridView Name="FoldersToShow"
-							  Grid.Row="2"
-							  SelectionMode="None"
+					<SemanticZoom  Grid.Row="2"
+								  
+								   MinWidth="200" Margin="15"
+								   IsZoomOutButtonEnabled="True">
+						<SemanticZoom.ZoomedOutView>
+							
+							<GridView Name="FoldersToShow"
+									  ItemsSource="{Binding foldersPath}"
+									  SelectionMode="None"									  
+									 
+									  
+									  Margin="10"
+									  >
+								<GridView.ItemTemplate>
+									<DataTemplate >
+										<TextBlock Margin="10,0,30,0" Text="{Binding FolderDisplayName}" />
+									</DataTemplate>
+								</GridView.ItemTemplate>
+								
+								
+							</GridView>
+						</SemanticZoom.ZoomedOutView>
+						<SemanticZoom.ZoomedInView>
+
+							<GridView  ItemsSource="{Binding foldersPath}"
+									   MinWidth="180"
+									   MinHeight="105"
+									  >
+								<GridView.ItemTemplate>
+									<DataTemplate>
+										<Grid Height="180"
+											  Width="320">
+											<Image Source="Assets/Placeholder.png"
+												   Stretch="UniformToFill" />
+											<StackPanel Orientation="Vertical"
+														Height="85"
+														VerticalAlignment="Bottom"
+														Background="{ThemeResource SystemBaseLowColor}"
+														Padding="12">
+												<TextBlock Text="{Binding FolderDisplayName}"
+														   Foreground="Black" />
+												<TextBlock Text="{Binding FolderPath}"
+														   Style="{ThemeResource CaptionTextBlockStyle}"
+														   Foreground="Black"
+														   Margin="10,0,0,20" />
+											</StackPanel>
+										</Grid>
+									</DataTemplate>
+								</GridView.ItemTemplate>
+								<GridView.GroupStyle>
+									<GroupStyle 												HeaderTemplate="{Binding FolderDisplayName }" />
+<!--HidesIfEmpty="True"-->
+								</GridView.GroupStyle>
+							</GridView>
+						</SemanticZoom.ZoomedInView>
+					</SemanticZoom>
+					<GridView Name="FoldersToShowOriginal"
+							  Grid.Row="3"
+							  SelectionMode="Single"
 							  ItemsSource="{Binding Source={StaticResource PathCollections}}"
 							  MinWidth="180"
 							  MinHeight="5"
