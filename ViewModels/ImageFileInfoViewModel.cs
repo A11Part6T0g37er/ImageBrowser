@@ -404,7 +404,10 @@ namespace ImageBrowser.ViewModels
             queryOptions.FileTypeFilter.Add(".jpg");
             queryOptions.FileTypeFilter.Add(".jpeg");
             queryOptions.FileTypeFilter.Add(".png");
+            queryOptions.FolderDepth = FolderDepth.Deep;
             var queryResult = folder?.CreateFileQueryWithOptions(queryOptions);
+           
+            queryResult.ContentsChanged += OnContentsChanged;
             if (folder != null)
             {
                 //  foldersView.FoldersToDisplay.Add(folder);
@@ -416,7 +419,10 @@ namespace ImageBrowser.ViewModels
             }
             return null;
         }
-
+        async void OnContentsChanged(IStorageQueryResultBase sender, object args)
+        {
+            // Do stuff, e.g. check for changes
+        }
         #endregion
 
         // TODO: catch main UI thread and extract into helper class

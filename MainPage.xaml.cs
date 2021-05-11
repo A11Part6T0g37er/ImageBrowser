@@ -30,11 +30,10 @@ using Windows.UI.Xaml.Navigation;
 namespace ImageBrowser
 {
     /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
+    /// Homepage of browser.
     /// </summary>
     public sealed partial class MainPage : Page
     {
-        //   internal ImageBrowser.ViewModels.ImageFileInfoViewModel imageFileInfoViewModel = new ViewModels.ImageFileInfoViewModel();
         
         public MainPage()
         {
