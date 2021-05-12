@@ -31,14 +31,18 @@ namespace ImageBrowser.ViewModels
         private readonly static string UserSignedOutNormal = LocalizationHelper.GetLocalizedStrings("normalSignOut");
 
         private ObservableCollection<ImageFileInfo> observableCollection = new ObservableCollection<ImageFileInfo>();
-
         public IList<ImageFileInfo> ObservableCollection { get => observableCollection; }
 
-        //private ObservableCollection<FolderInfoModel> _foldersPath = new ObservableCollection<FolderInfoModel>();
+        private ObservableCollection<GroupInfoList<object>> groupedImagesInfos = new ObservableCollection<GroupInfoList<object>>();
+        public ObservableCollection<GroupInfoList<object>> GroupedImagesInfos { get => groupedImagesInfos; }
+
         private FoldersItemsCollection foldersItem = new FoldersItemsCollection();
+        public FoldersItemsCollection FoldersItem { get => foldersItem; /*set => foldersItem = value; */}
+
+       
 
 
-        public FoldersViewModel foldersView = new FoldersViewModel();
+       
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -245,7 +249,7 @@ namespace ImageBrowser.ViewModels
         {
             var arg = parameter as Windows.UI.Xaml.Controls.ItemClickEventArgs;
             var item = arg.ClickedItem as FolderInfoModel;
-
+         var obj =    sender as StackPanel;
             //Services.NavigationService.Instance.Navigate(typeof(DetailPage), item);
         }
 
@@ -418,11 +422,11 @@ namespace ImageBrowser.ViewModels
             queryOptions.FileTypeFilter.Add(".png");
             queryOptions.FolderDepth = FolderDepth.Deep;
             var queryResult = folder?.CreateFileQueryWithOptions(queryOptions);
-
+            IReadOnlyList<StorageFolder> folderList = await folder?.GetFoldersAsync();
             queryResult.ContentsChanged += OnContentsChanged;
             if (folder != null)
             {
-                //  foldersView.FoldersToDisplay.Add(folder);
+                
                 FoldersItem.foldersPath.Add(new FolderInfoModel() { FolderPath = folder.Path, FolderDisplayName = folder.DisplayName });
                 
 
@@ -454,10 +458,6 @@ namespace ImageBrowser.ViewModels
         {
             observableCollection = images;
         }
-
-        private ObservableCollection<GroupInfoList<object>> groupedImagesInfos = new ObservableCollection<GroupInfoList<object>>();
-
-        public ObservableCollection<GroupInfoList<object>> GroupedImagesInfos { get => groupedImagesInfos; }
 
         public void GenerateByDateGroup(IList<ImageFileInfo> lisOfImages)
         {
@@ -556,10 +556,5 @@ namespace ImageBrowser.ViewModels
             }
         }
 
-        private object imageFileInfoViewModel1;
-        
-
-        public object imageFileInfoViewModel { get => imageFileInfoViewModel1; set => SetProperty(ref imageFileInfoViewModel1, value); }
-        public FoldersItemsCollection FoldersItem { get => foldersItem; set => foldersItem = value; }
     }
 }

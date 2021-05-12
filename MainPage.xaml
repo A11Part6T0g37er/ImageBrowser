@@ -213,23 +213,20 @@
 					<StackPanel Grid.Row="0">
 						<TextBlock x:Uid="allPictures"
 								   Text="" />
-						<StackPanel Orientation="Horizontal"><!--x:Bind imageFileInfoViewModel.GroupedImagesInfos.Count-->
+						<StackPanel Orientation="Horizontal">
 							<TextBlock Text="{Binding GroupedImagesInfos.Count, Mode=OneWay}" />
 							<TextBlock x:Uid="groupedListDefinition"
 									   Text="" />
 						</StackPanel>
 						<TextBlock x:Name="OneDriveInfo"
 								   Text="{Binding OneDriveInfoText, Mode=TwoWay}"
-								   Visibility="Visible" /><!--x:Bind imageFileInfoViewModel-->
-						<!--Binding OneDriveInfoText-->
-						<!--DataContext="{x:Bind imageFileInfoViewModel}"-->
+								   Visibility="Visible" />
+						
+						
 					</StackPanel>
 					<RefreshContainer Name="RefreshArea"
 									  Grid.Row="1"
 									  Visibility="{Binding IsAnyObservableItem,Converter={StaticResource bool2Visibility},Mode=TwoWay}">
-									  <!--DataContext="{Binding imageFileInfoViewModel}"-->
-						<!--x:Bind imageFileInfoViewModel
-						Binding IsAnyObservableItem,Converter={StaticResource bool2Visibility},Mode=TwoWay}-->
 						<Interactivity:Interaction.Behaviors>
 							<Interactions:EventTriggerBehavior EventName="RefreshRequested"
 															   SourceObject="{Binding ElementName=Refresh}">
@@ -279,7 +276,7 @@
 								</GroupStyle>
 							</GridView.GroupStyle>
 							<GridView.ItemTemplate>
-								<DataTemplate x:DataType="local:ImageFileInfo"><!--x:DataType="local:ImageFileInfo"-->
+								<DataTemplate x:DataType="local:ImageFileInfo">
 									<Grid Margin="{StaticResource LargeItemMargin}" MaxWidth="500">
 										<!--Width="{Binding ItemSize,ElementName=page}"
 										
@@ -362,7 +359,7 @@
 					</Grid.RowDefinitions>
 					<StackPanel Orientation="Horizontal"
 								Grid.Row="0">
-						<TextBlock Text="{Binding imageFileInfoViewModel.GroupedImagesInfos.Count, Mode=OneWay}" />
+						<TextBlock Text="{Binding GroupedImagesInfos.Count, Mode=OneWay}" />
 						<TextBlock x:Uid="groupedListDefinition"
 								   Text="" />
 
@@ -528,7 +525,7 @@
 						  Label=""
 						  x:Uid="open"
 						  Command="{Binding OpenCLickCommand, Mode=TwoWay}" />
-						  <!--DataContext="{x:Bind imageFileInfoViewModel}"-->
+						  
 		</CommandBar>
 
 		<Grid x:Name="startingGreetingScreen"
@@ -538,7 +535,8 @@
 			  RelativePanel.Below="leftControlPanel"
 			  Visibility="{Binding IsAnyObservableItem,Converter={StaticResource bool2visInverse},Mode=TwoWay}"
 			  Margin="20,0,0,0">
-			  <!--DataContext="{x:Bind imageFileInfoViewModel}"-->
+			 
+			
 			<TextBlock TextWrapping="Wrap"
 					   Text="Nothig here" />
 			<Image Source="/Assets/Square150x150Logo.scale-200.png"
@@ -563,7 +561,7 @@
 							  Visibility="{Binding IsUserSignedOut, Converter={StaticResource bool2visInverse},Mode=TwoWay}"
 							  Command="{Binding SignInCommand}"
 							  ToolTipService.ToolTip="OneDrive" />
-							  <!--DataContext="{x:Bind imageFileInfoViewModel}"-->
+							  
 
 				<AppBarButton Icon="Account"
 							  x:Name="SignOutButton"
@@ -572,19 +570,18 @@
 							  Command="{Binding SignOutCommand}"
 							  Visibility="{Binding  IsUserSignedOut,  Converter={StaticResource bool2Visibility},Mode=TwoWay}"
 							  FontFamily="Segoe Ui" />
-							  <!--DataContext="{x:Bind imageFileInfoViewModel}"-->
+							
 				<AppBarButton x:Name="OpenOneDrive"
 							  Content=""
 							  x:Uid="oneDriveOpen"
 							  Command="{Binding OneDriveOpenCommand}"
 							  Visibility="{Binding IsUserSignedOut, Converter={StaticResource bool2Visibility}, Mode=TwoWay}" />
-							  <!--DataContext="{x:Bind imageFileInfoViewModel}"-->
-
+							 
 				<CommandBar.Content>
 					<StackPanel>
 						<TextBlock x:Name="ResultText"
 								   Text="{Binding ResultText,Mode=TwoWay}" />
-								   <!--DataContext="{x:Bind imageFileInfoViewModel}"-->
+								   
 					</StackPanel>
 				</CommandBar.Content>
 
