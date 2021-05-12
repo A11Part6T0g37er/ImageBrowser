@@ -39,10 +39,10 @@ namespace ImageBrowser.ViewModels
         private FoldersItemsCollection foldersItem = new FoldersItemsCollection();
         public FoldersItemsCollection FoldersItem { get => foldersItem; /*set => foldersItem = value; */}
 
-       
 
 
-       
+
+
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -249,7 +249,7 @@ namespace ImageBrowser.ViewModels
         {
             var arg = parameter as Windows.UI.Xaml.Controls.ItemClickEventArgs;
             var item = arg.ClickedItem as FolderInfoModel;
-         var obj =    sender as StackPanel;
+            var obj = sender as StackPanel;
             //Services.NavigationService.Instance.Navigate(typeof(DetailPage), item);
         }
 
@@ -426,12 +426,9 @@ namespace ImageBrowser.ViewModels
             queryResult.ContentsChanged += OnContentsChanged;
             if (folder != null)
             {
-                
-                FoldersItem.foldersPath.Add(new FolderInfoModel() { FolderPath = folder.Path, FolderDisplayName = folder.DisplayName });
-                
 
+                FoldersItem.foldersPath.Add(new FolderInfoModel() { FolderPath = folder.Path, FolderDisplayName = folder.DisplayName, FolderList = (Collection<StorageFolder>)folderList  });
                 
-                IReadOnlyList<StorageFile> fileList = await folder.GetFilesAsync();
                 IReadOnlyCollection<StorageFile> storageFiles = await queryResult.GetFilesAsync();
 
                 return await this.PopulateObservableCollectionOfImages(storageFiles);
