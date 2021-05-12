@@ -24,7 +24,7 @@
 			<Image Source="Assets/Placeholder.png"
 				   Stretch="UniformToFill" />
 			<StackPanel Orientation="Vertical"
-						Height="85"
+						Height="55"
 						VerticalAlignment="Bottom"
 						Background="{ThemeResource SystemBaseLowColor}"
 						Padding="12">
@@ -33,7 +33,7 @@
 				<TextBlock Text="{Binding FolderPath}"
 						   Style="{ThemeResource CaptionTextBlockStyle}"
 						   Foreground="Black" 
-						   Margin="10,0,0,20"/>
+						   Margin="10,0,0,20" TextWrapping="WrapWholeWords"/>
 			</StackPanel>
 		</Grid>
 	</DataTemplate>

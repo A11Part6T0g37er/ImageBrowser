@@ -36,8 +36,7 @@ namespace ImageBrowser.ViewModels
 
         private ObservableCollection<FolderInfoModel> _foldersPath = new ObservableCollection<FolderInfoModel>();
         public ObservableCollection<FolderInfoModel> foldersPath { get { return _foldersPath; } set { _foldersPath = value; } }
-        public CollectionViewSource FoldersZooomView { get => foldersZooomView; set {  SetProperty(ref foldersZooomView,value,nameof(FoldersZooomView)); } }
-        //  public ObservableCollection<object> foldersKey = new ObservableCollection<object>();
+      
 
         public FoldersViewModel foldersView = new FoldersViewModel();
 
@@ -422,7 +421,7 @@ namespace ImageBrowser.ViewModels
                                   orderby folderLetter.Key
                                   select folderLetter;
 
-                FoldersZooomView = new CollectionViewSource() { IsSourceGrouped = true, Source = groupedData };
+                
                 IReadOnlyList<StorageFile> fileList = await folder.GetFilesAsync();
                 IReadOnlyCollection<StorageFile> storageFiles = await queryResult.GetFilesAsync();
 
