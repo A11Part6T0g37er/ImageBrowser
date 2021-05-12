@@ -1,41 +1,70 @@
-﻿<ResourceDictionary
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+					xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+					xmlns:media="using:Microsoft.Toolkit.Uwp.UI.Media">
 
-	
-		<DataTemplate x:Key="FolderStyle">
 
-			<!--<StackPanel Orientation="Vertical">
-				<Rectangle Fill="DarkKhaki"
-						   Opacity="0.3"
-						   RadiusX="10"
-						   RadiusY="10"
-						   Width="200"
-						   Height="100"
-						   HorizontalAlignment="Left" />
-				<TextBlock Text="{Binding FolderDisplayName}"
-						   VerticalAlignment="Bottom"
-						   HorizontalAlignment="Left"
-						   Margin="25" />
-			</StackPanel>-->
-		<Grid Height="180"
-			  Width="320"
-			  >
-			<Image Source="Assets/Placeholder.png"
-				   Stretch="UniformToFill" />
-			<StackPanel Orientation="Vertical"
-						Height="55"
-						VerticalAlignment="Bottom"
-						Background="{ThemeResource SystemBaseLowColor}"
-						Padding="12">
-				<TextBlock Text="{Binding FolderDisplayName}"
-						   Foreground="Black" />
-				<TextBlock Text="{Binding FolderPath}"
-						   Style="{ThemeResource CaptionTextBlockStyle}"
-						   Foreground="Black" 
-						   Margin="10,0,0,20" TextWrapping="WrapWholeWords"/>
-			</StackPanel>
+	<DataTemplate x:Key="FolderStyle" >
+
+		<Grid Height="120"
+			  Width="320">
+
+			<Image Source="/Assets/Square150x150Logo.scale-200.png"
+				   Stretch="UniformToFill" VerticalAlignment="Center"/>
+			<Border 
+					Grid.Row="0"
+					>
+				<Border.Background>
+					<media:BackdropBlurBrush Amount="9" />
+
+
+
+				</Border.Background>
+			</Border>
+
+			<Grid>
+				<Grid.RowDefinitions>
+					<RowDefinition Height="*" />
+					<RowDefinition Height="Auto" />
+
+				</Grid.RowDefinitions>
+				
+
+				<Grid Background="{ThemeResource SystemControlAcrylicElementBrush}"
+					  Grid.Row="1">
+					<Grid.RowDefinitions>
+						<RowDefinition Height="*" />
+						<RowDefinition Height="Auto" />
+
+					</Grid.RowDefinitions>
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="250" />
+						<ColumnDefinition Width="*" />
+					</Grid.ColumnDefinitions>
+					<StackPanel x:Name="DescriptionPlace" Orientation="Vertical"
+								Margin="10,10,30,10"
+								Grid.Row="1">
+						<TextBlock Text="{Binding FolderDisplayName}"
+								   Style="{ThemeResource BaseTextBlockStyle}" />
+						<TextBlock Text="{Binding FolderPath}"
+								   FontSize="12"
+								   HorizontalAlignment="Left"
+								   Style="{ThemeResource BodyTextBlockStyle}"
+								   TextWrapping="NoWrap"
+								   Width="{Binding Width,ElementName=DescriptionPlace}"
+								   TextTrimming="WordEllipsis" />
+					</StackPanel>
+					<Viewbox MaxHeight="25"
+							 MaxWidth="25"
+							 Grid.Column="1"
+							 Grid.Row="1">
+
+						<FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}"
+								  Glyph="&#xE838;" />
+					</Viewbox>
+				</Grid>
+			</Grid>
 		</Grid>
+		
 	</DataTemplate>
-	
+
 </ResourceDictionary>

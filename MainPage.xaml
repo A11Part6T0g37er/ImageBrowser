@@ -36,7 +36,7 @@
 							  Source="{Binding GroupedImagesInfos}"
 							  IsSourceGrouped="True" />
 		<CollectionViewSource x:Name="PathCollections"
-							  Source="{Binding foldersPath}">
+							  Source="{Binding FoldersItem.foldersPath}">
 			
 		</CollectionViewSource>
 		
@@ -491,8 +491,19 @@
 							  MinWidth="180"
 							  MinHeight="5"
 							  Margin="15"
+							  IsItemClickEnabled="True"
+							  
 							  ItemTemplate="{StaticResource FolderStyle}">
-						
+						<Interactivity:Interaction.Behaviors>
+							
+							<Interactions:EventTriggerBehavior EventName="ItemClick">
+
+								<Interactions:CallMethodAction MethodName="ClickFoldersInGrid"
+															   TargetObject="{Binding Mode=OneWay}" />
+
+							</Interactions:EventTriggerBehavior>
+						</Interactivity:Interaction.Behaviors>
+
 					</GridView>
 				</Grid>
 			</PivotItem>

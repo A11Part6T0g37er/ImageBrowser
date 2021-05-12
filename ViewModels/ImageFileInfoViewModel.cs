@@ -34,9 +34,9 @@ namespace ImageBrowser.ViewModels
 
         public IList<ImageFileInfo> ObservableCollection { get => observableCollection; }
 
-        private ObservableCollection<FolderInfoModel> _foldersPath = new ObservableCollection<FolderInfoModel>();
-        public ObservableCollection<FolderInfoModel> foldersPath { get { return _foldersPath; } set { _foldersPath = value; } }
-      
+        //private ObservableCollection<FolderInfoModel> _foldersPath = new ObservableCollection<FolderInfoModel>();
+        private FoldersItemsCollection foldersItem = new FoldersItemsCollection();
+
 
         public FoldersViewModel foldersView = new FoldersViewModel();
 
@@ -241,6 +241,14 @@ namespace ImageBrowser.ViewModels
             Services.NavigationService.Instance.Navigate(typeof(DetailPage), item);
         }
 
+        public async void ClickFoldersInGrid(object sender, object parameter)
+        {
+            var arg = parameter as Windows.UI.Xaml.Controls.ItemClickEventArgs;
+            var item = arg.ClickedItem as FolderInfoModel;
+
+            //Services.NavigationService.Instance.Navigate(typeof(DetailPage), item);
+        }
+
         #region Actions for commands in ctor
         private void GroupedGrid_SizeChanged(object sender, double e)
         {
@@ -415,11 +423,8 @@ namespace ImageBrowser.ViewModels
             if (folder != null)
             {
                 //  foldersView.FoldersToDisplay.Add(folder);
-                foldersPath.Add(new FolderInfoModel() { FolderPath = folder.Path, FolderDisplayName = folder.DisplayName });
-                var groupedData = from foldering in foldersPath
-                                  group foldering by foldering.FolderDisplayName into folderLetter
-                                  orderby folderLetter.Key
-                                  select folderLetter;
+                FoldersItem.foldersPath.Add(new FolderInfoModel() { FolderPath = folder.Path, FolderDisplayName = folder.DisplayName });
+                
 
                 
                 IReadOnlyList<StorageFile> fileList = await folder.GetFilesAsync();
@@ -511,6 +516,7 @@ namespace ImageBrowser.ViewModels
             }
             IsAnyObservableItem = HaveAnyItems();
             this.InitializeGroupingOfViewModel();
+            FoldersItem.AddPicts(observableCollection);
 
             return null;
         }
@@ -551,8 +557,9 @@ namespace ImageBrowser.ViewModels
         }
 
         private object imageFileInfoViewModel1;
-        private CollectionViewSource foldersZooomView;
+        
 
         public object imageFileInfoViewModel { get => imageFileInfoViewModel1; set => SetProperty(ref imageFileInfoViewModel1, value); }
+        public FoldersItemsCollection FoldersItem { get => foldersItem; set => foldersItem = value; }
     }
 }
