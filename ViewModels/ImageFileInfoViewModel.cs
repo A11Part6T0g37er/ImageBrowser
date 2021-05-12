@@ -422,12 +422,12 @@ namespace ImageBrowser.ViewModels
             queryOptions.FileTypeFilter.Add(".png");
             queryOptions.FolderDepth = FolderDepth.Deep;
             var queryResult = folder?.CreateFileQueryWithOptions(queryOptions);
-            IReadOnlyList<StorageFolder> folderList = await folder?.GetFoldersAsync();
+           // IReadOnlyList<StorageFolder> folderList = await folder?.GetFoldersAsync();
             queryResult.ContentsChanged += OnContentsChanged;
             if (folder != null)
             {
 
-                FoldersItem.foldersPath.Add(new FolderInfoModel() { FolderPath = folder.Path, FolderDisplayName = folder.DisplayName, FolderList = (Collection<StorageFolder>)folderList  });
+                FoldersItem.foldersPath.Add(new FolderInfoModel() { FolderPath = folder.Path, FolderDisplayName = folder.DisplayName/*, FolderList = (Collection<StorageFolder>)folderList */ });
                 
                 IReadOnlyCollection<StorageFile> storageFiles = await queryResult.GetFilesAsync();
 
