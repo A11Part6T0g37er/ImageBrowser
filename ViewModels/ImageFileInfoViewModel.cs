@@ -20,6 +20,7 @@ using Windows.Storage.Search;
 using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Media.Imaging;
 
 namespace ImageBrowser.ViewModels
@@ -33,8 +34,10 @@ namespace ImageBrowser.ViewModels
 
         public IList<ImageFileInfo> ObservableCollection { get => observableCollection; }
 
-        private ObservableCollection<FolderInfoModel> _foldersPath = new ObservableCollection<FolderInfoModel>();
-        public ObservableCollection<FolderInfoModel> foldersPath { get { return _foldersPath; } set { _foldersPath = value; } }
+        //private ObservableCollection<FolderInfoModel> _foldersPath = new ObservableCollection<FolderInfoModel>();
+        private FoldersItemsCollection foldersItem = new FoldersItemsCollection();
+
+
         public FoldersViewModel foldersView = new FoldersViewModel();
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -238,14 +241,22 @@ namespace ImageBrowser.ViewModels
             Services.NavigationService.Instance.Navigate(typeof(DetailPage), item);
         }
 
+        public async void ClickFoldersInGrid(object sender, object parameter)
+        {
+            var arg = parameter as Windows.UI.Xaml.Controls.ItemClickEventArgs;
+            var item = arg.ClickedItem as FolderInfoModel;
+
+            //Services.NavigationService.Instance.Navigate(typeof(DetailPage), item);
+        }
+
         #region Actions for commands in ctor
         private void GroupedGrid_SizeChanged(object sender, double e)
         {
             var panel = (ItemsWrapGrid)((sender as GridView).ItemsPanelRoot);
-            
+
             panel.ItemWidth = e / 3;
-            
-           // Trace.WriteLine("From RElay multiple command");
+
+            // Trace.WriteLine("From RElay multiple command");
         }
 
         /// <summary>
@@ -391,6 +402,7 @@ namespace ImageBrowser.ViewModels
 
         private async Task<ObservableCollection<ImageFileInfo>> OpenFoldersButtonHandler()
         {
+
             FolderPicker folderPicker = new FolderPicker();
             folderPicker.SuggestedStartLocation = PickerLocationId.Downloads;
             folderPicker.ViewMode = PickerViewMode.Thumbnail;
@@ -406,12 +418,15 @@ namespace ImageBrowser.ViewModels
             queryOptions.FileTypeFilter.Add(".png");
             queryOptions.FolderDepth = FolderDepth.Deep;
             var queryResult = folder?.CreateFileQueryWithOptions(queryOptions);
-           
+
             queryResult.ContentsChanged += OnContentsChanged;
             if (folder != null)
             {
                 //  foldersView.FoldersToDisplay.Add(folder);
-                foldersPath.Add(new FolderInfoModel() { FolderPath = folder.Path, FolderDisplayName = folder.DisplayName });
+                FoldersItem.foldersPath.Add(new FolderInfoModel() { FolderPath = folder.Path, FolderDisplayName = folder.DisplayName });
+                
+
+                
                 IReadOnlyList<StorageFile> fileList = await folder.GetFilesAsync();
                 IReadOnlyCollection<StorageFile> storageFiles = await queryResult.GetFilesAsync();
 
@@ -421,7 +436,7 @@ namespace ImageBrowser.ViewModels
         }
         async void OnContentsChanged(IStorageQueryResultBase sender, object args)
         {
-            // Do stuff, e.g. check for changes
+            // TODO: Do stuff, e.g. check for changes
         }
         #endregion
 
@@ -501,6 +516,7 @@ namespace ImageBrowser.ViewModels
             }
             IsAnyObservableItem = HaveAnyItems();
             this.InitializeGroupingOfViewModel();
+            FoldersItem.AddPicts(observableCollection);
 
             return null;
         }
@@ -541,7 +557,9 @@ namespace ImageBrowser.ViewModels
         }
 
         private object imageFileInfoViewModel1;
+        
 
         public object imageFileInfoViewModel { get => imageFileInfoViewModel1; set => SetProperty(ref imageFileInfoViewModel1, value); }
+        public FoldersItemsCollection FoldersItem { get => foldersItem; set => foldersItem = value; }
     }
 }
