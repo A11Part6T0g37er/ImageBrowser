@@ -42,8 +42,6 @@ namespace ImageBrowser.ViewModels
 
 
 
-
-
         public event PropertyChangedEventHandler PropertyChanged;
 
         public ICommand OneDriveOpenCommand { get; set; }
@@ -70,6 +68,9 @@ namespace ImageBrowser.ViewModels
            typeof(bool),
            typeof(ImageFileInfoViewModel),
            new PropertyMetadata(false, new PropertyChangedCallback(OnStatusChanged)));
+
+        public static readonly DependencyProperty SubFoldersProperty = DependencyProperty.Register(nameof(IsFolderDived), typeof(bool), typeof(ImageFileInfoViewModel), new PropertyMetadata(false, new PropertyChangedCallback(OnSubFoldersDiveInto)));
+
 
         public static readonly DependencyProperty OneDriveInfoTextProperty = DependencyProperty.Register(
          nameof(OneDriveInfoText),
@@ -115,6 +116,20 @@ namespace ImageBrowser.ViewModels
         }
 
         #region XamlListningProperties
+
+        public bool IsFolderDived
+        {
+            get
+            {
+                return (bool)GetValue(SubFoldersProperty);
+            }
+            set
+            {
+                SetValue(SubFoldersProperty, value);
+            }
+        }
+
+
         public bool IsAnyItemsToShow;
 
         public bool IsUserSignedOut
@@ -167,6 +182,25 @@ namespace ImageBrowser.ViewModels
 
         #endregion
         #region DependecyProperties handlers
+
+        private static void OnSubFoldersDiveInto(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            bool oldValue = (bool)e.OldValue;
+            bool newValue = (bool)e.NewValue;
+
+            var viewModel = d as ImageFileInfoViewModel;
+            viewModel?.OnSubFoldersDiveInto(oldValue, newValue);
+
+        }
+        public virtual void OnSubFoldersDiveInto(bool oldValue, bool newValue)
+        {
+            if (oldValue != newValue)
+            {
+                IsFolderDived = newValue;
+                OnPropertyChanged(nameof(IsFolderDived));
+            }
+        }
+
         private static void OnResultTextChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             string oldValue = (string)e.OldValue;
@@ -249,8 +283,35 @@ namespace ImageBrowser.ViewModels
         {
             var arg = parameter as Windows.UI.Xaml.Controls.ItemClickEventArgs;
             var item = arg.ClickedItem as FolderInfoModel;
+
+            IsFolderDived = true;
             FoldersItem.foldersPath.Clear();
-            FoldersItem.foldersPath.Add(item);
+            if(item.FolderList.Count == 1)
+            {
+              var nestedFolders = await  item.FolderList[0].GetFoldersAsync();
+                FolderInfoModel folderNew ;
+                foreach (var folder in nestedFolders)
+                {
+                   folderNew = new FolderInfoModel() { FolderList = nestedFolders, FolderDisplayName = folder.DisplayName, FolderPath = folder.Path};
+                    FoldersItem.foldersPath.Add(folderNew);
+                    return;
+                }
+                
+            }
+            else
+            {
+                FolderInfoModel folderNew;
+                foreach (var folder in item.FolderList)
+            {
+              folderNew = new FolderInfoModel() { FolderDisplayName= folder.DisplayName, FolderList = await folder.GetFoldersAsync(), FolderPath = folder.Path };
+            FoldersItem.foldersPath.Add(folderNew);
+            }
+            
+
+                var i = item.FolderList.FirstOrDefault();
+             var getSomething =   item.FolderList.Any(x=>x.DisplayName == item.FolderDisplayName);
+            }
+            
             //Services.NavigationService.Instance.Navigate(typeof(DetailPage), item);
         }
 
@@ -423,14 +484,19 @@ namespace ImageBrowser.ViewModels
               queryOptions.FileTypeFilter.Add(".png");*/
             queryOptions.FileTypeFilter.Add("*");
             queryOptions.FolderDepth = FolderDepth.Deep;
+            queryOptions.IndexerOption = IndexerOption.UseIndexerWhenAvailable;
             var queryResult = folder?.CreateFileQueryWithOptions(queryOptions);
             queryResult.ContentsChanged += OnContentsChanged;
             if (folder != null)
             {
-                IReadOnlyList<StorageFolder> folderList = await (folder.GetFoldersAsync());
+
+                var Resultsubfolders = folder.CreateFolderQueryWithOptions(/*new QueryOptions() { FolderDepth = FolderDepth.Deep, IndexerOption = IndexerOption.UseIndexerWhenAvailable }*/ queryOptions);
+                var subFolders = await Resultsubfolders.GetFoldersAsync();
+
                 Windows.Storage.AccessCache.StorageApplicationPermissions.MostRecentlyUsedList.AddOrReplace("PickedFolderToken", folder);
-                FoldersItem.foldersPath.Add(new FolderInfoModel() { FolderPath = folder.Path, FolderDisplayName = folder.DisplayName, FolderList = folderList });
-                
+                FoldersItem.foldersPath.Add(new FolderInfoModel() { FolderPath = folder.Path, FolderDisplayName = folder.DisplayName, FolderList = subFolders });
+                var s = subFolders.Last().Path;
+                int a = subFolders.Count();
                 IReadOnlyCollection<StorageFile> storageFiles = await queryResult.GetFilesAsync();
 
                 return await this.PopulateObservableCollectionOfImages(storageFiles);
