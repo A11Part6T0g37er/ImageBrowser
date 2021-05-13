@@ -249,7 +249,8 @@ namespace ImageBrowser.ViewModels
         {
             var arg = parameter as Windows.UI.Xaml.Controls.ItemClickEventArgs;
             var item = arg.ClickedItem as FolderInfoModel;
-            var obj = sender as StackPanel;
+            FoldersItem.foldersPath.Clear();
+            FoldersItem.foldersPath.Add(item);
             //Services.NavigationService.Instance.Navigate(typeof(DetailPage), item);
         }
 
@@ -417,17 +418,18 @@ namespace ImageBrowser.ViewModels
             StorageFolder folder = await folderPicker.PickSingleFolderAsync();
 
             QueryOptions queryOptions = new QueryOptions(CommonFolderQuery.DefaultQuery);
-            queryOptions.FileTypeFilter.Add(".jpg");
-            queryOptions.FileTypeFilter.Add(".jpeg");
-            queryOptions.FileTypeFilter.Add(".png");
+            /*  queryOptions.FileTypeFilter.Add(".jpg");
+              queryOptions.FileTypeFilter.Add(".jpeg");
+              queryOptions.FileTypeFilter.Add(".png");*/
+            queryOptions.FileTypeFilter.Add("*");
             queryOptions.FolderDepth = FolderDepth.Deep;
             var queryResult = folder?.CreateFileQueryWithOptions(queryOptions);
-           // IReadOnlyList<StorageFolder> folderList = await folder?.GetFoldersAsync();
             queryResult.ContentsChanged += OnContentsChanged;
             if (folder != null)
             {
-
-                FoldersItem.foldersPath.Add(new FolderInfoModel() { FolderPath = folder.Path, FolderDisplayName = folder.DisplayName/*, FolderList = (Collection<StorageFolder>)folderList */ });
+                IReadOnlyList<StorageFolder> folderList = await (folder.GetFoldersAsync());
+                Windows.Storage.AccessCache.StorageApplicationPermissions.MostRecentlyUsedList.AddOrReplace("PickedFolderToken", folder);
+                FoldersItem.foldersPath.Add(new FolderInfoModel() { FolderPath = folder.Path, FolderDisplayName = folder.DisplayName, FolderList = folderList });
                 
                 IReadOnlyCollection<StorageFile> storageFiles = await queryResult.GetFilesAsync();
 
