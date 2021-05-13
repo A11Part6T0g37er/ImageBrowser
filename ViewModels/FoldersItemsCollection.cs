@@ -15,7 +15,7 @@ namespace ImageBrowser.ViewModels
 
         private ObservableCollection<ImageFileInfo> pictCollection = new ObservableCollection<ImageFileInfo>();
 
-        public IList<ImageFileInfo> PictsFromFolders { get => pictCollection; }
+        public IList<ImageFileInfo> PictsFromFolders { get => pictCollection; set => pictCollection = (ObservableCollection<ImageFileInfo>)value; }
 
         public void AddPicts(ObservableCollection<ImageFileInfo> images)
         {

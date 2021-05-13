@@ -37,8 +37,10 @@ namespace ImageBrowser.ViewModels
         public ObservableCollection<GroupInfoList<object>> GroupedImagesInfos { get => groupedImagesInfos; }
 
         private FoldersItemsCollection foldersItem = new FoldersItemsCollection();
-        public FoldersItemsCollection FoldersItem { get => foldersItem; /*set => foldersItem = value; */}
+        public FoldersItemsCollection FoldersItem { get => foldersItem; }
 
+        public FoldersItemsCollection VaultStorageOfFolders;
+        public List<FolderInfoModel> MirorData;
 
 
 
@@ -279,8 +281,24 @@ namespace ImageBrowser.ViewModels
             Services.NavigationService.Instance.Navigate(typeof(DetailPage), item);
         }
 
+        public async void RestoreFoldersInGrid(object sender, object parameter)
+        {
+            IsFolderDived = false;
+            foldersItem.foldersPath.Clear();
+            foreach (var item in MirorData)
+            {
+                foldersItem.foldersPath.Add(item);
+            }
+           
+            
+        }
+
         public async void ClickFoldersInGrid(object sender, object parameter)
         {
+            //if(VaultStorageOfFolders is null)
+            //{
+            //    VaultStorageOfFolders = FoldersItem;
+            //}
             var arg = parameter as Windows.UI.Xaml.Controls.ItemClickEventArgs;
             var item = arg.ClickedItem as FolderInfoModel;
 
@@ -499,6 +517,8 @@ namespace ImageBrowser.ViewModels
                 int a = subFolders.Count();
                 IReadOnlyCollection<StorageFile> storageFiles = await queryResult.GetFilesAsync();
 
+                MirorData = FoldersItem.foldersPath.ToList();
+               // VaultStorageOfFolders = new FoldersItemsCollection() { PictsFromFolders = FoldersItem.PictsFromFolders, foldersPath = (ObservableCollection<FolderInfoModel>) FoldersItem.foldersPath.Select(x=>x) };
                 return await this.PopulateObservableCollectionOfImages(storageFiles);
             }
             return null;
@@ -582,7 +602,7 @@ namespace ImageBrowser.ViewModels
             IsAnyObservableItem = HaveAnyItems();
             this.InitializeGroupingOfViewModel();
             FoldersItem.AddPicts(observableCollection);
-
+           
             return null;
         }
 

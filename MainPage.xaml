@@ -488,12 +488,20 @@
 					</Button>
 
 					<RelativePanel Grid.Row="2">
-						
-					<HyperlinkButton x:Name="GetBack"
-							Margin="0,15,0,0"
-							Content="GET back"
-							MinHeight="10" 
-							Visibility="{Binding IsFolderDived, Converter={StaticResource bool2Visibility}}" />
+
+						<HyperlinkButton x:Name="GetBack"
+										 Margin="0,15,0,0"
+										 Content="GET back"
+										 MinHeight="10"
+										 ClickMode="Release"
+										 Visibility="{Binding IsFolderDived, Converter={StaticResource bool2Visibility}}">
+							<Interactivity:Interaction.Behaviors>
+								<Interactions:EventTriggerBehavior EventName="Click">
+									<Interactions:CallMethodAction MethodName="RestoreFoldersInGrid"
+																   TargetObject="{Binding Mode=OneWay}" />
+								</Interactions:EventTriggerBehavior>
+							</Interactivity:Interaction.Behaviors>
+						</HyperlinkButton>
 						<GridView Name="FoldersToShowOriginal"
 								  RelativePanel.Below="GetBack"
 								  SelectionMode="Single"
