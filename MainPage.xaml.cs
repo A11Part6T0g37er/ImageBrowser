@@ -14,6 +14,7 @@ using System.Net.Http.Headers;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using Windows.ApplicationModel.Background;
 using Windows.Foundation;
 using Windows.Storage;
 using Windows.Storage.Pickers;
@@ -34,11 +35,11 @@ namespace ImageBrowser
     /// </summary>
     public sealed partial class MainPage : Page
     {
-        
+
         public MainPage()
         {
             InitializeComponent();
-           
+
             // Required for go to previous page without loosing its state
             NavigationCacheMode = NavigationCacheMode.Enabled;
         }
