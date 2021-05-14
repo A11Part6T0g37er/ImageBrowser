@@ -505,8 +505,13 @@
 								</Interactions:EventTriggerBehavior>
 							</Interactivity:Interaction.Behaviors>
 						</HyperlinkButton>
+						<TextBlock Text=""
+								   x:Name="NoPhotos"
+								   x:Uid="NoPhotosFound"
+								   RelativePanel.Below="GetBack"
+								   Visibility="{Binding IsNoItemsToShow, Converter={StaticResource bool2Visibility}}"/>
 						<GridView Name="FoldersToShowOriginal"
-								  RelativePanel.Below="GetBack"
+								  RelativePanel.Below="NoPhotos"
 								  SelectionMode="Single"
 								  MinWidth="180"
 								  MinHeight="5"

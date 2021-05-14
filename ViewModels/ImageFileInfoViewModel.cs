@@ -1,34 +1,30 @@
-﻿using System;
+﻿using ImageBrowser.Common;
+using ImageBrowser.Helpers;
+using ImageBrowser.Models;
+using Microsoft.Graph;
+using Microsoft.Identity.Client;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using ImageBrowser.Common;
-using ImageBrowser.Helpers;
-using ImageBrowser.Models;
-using Microsoft.Graph;
-using Microsoft.Identity.Client;
 using Windows.Storage;
 using Windows.Storage.Pickers;
 using Windows.Storage.Search;
 using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Media.Imaging;
 
 namespace ImageBrowser.ViewModels
 {
     internal class ImageFileInfoViewModel : DependencyObject, INotifyPropertyChanged
     {
-        private readonly static string EmptyOneDrive = LocalizationHelper.GetLocalizedStrings("oneDriveDownloadedInfoDefault");
-        private readonly static string UserSignedOutNormal = LocalizationHelper.GetLocalizedStrings("normalSignOut");
+        private static readonly string EmptyOneDrive = LocalizationHelper.GetLocalizedStrings("oneDriveDownloadedInfoDefault");
+        private static readonly string UserSignedOutNormal = LocalizationHelper.GetLocalizedStrings("normalSignOut");
 
         private ObservableCollection<ImageFileInfo> observableCollection = new ObservableCollection<ImageFileInfo>();
         public IList<ImageFileInfo> ObservableCollection { get => observableCollection; }
@@ -73,6 +69,8 @@ namespace ImageBrowser.ViewModels
 
         public static readonly DependencyProperty SubFoldersProperty = DependencyProperty.Register(nameof(IsFolderDived), typeof(bool), typeof(ImageFileInfoViewModel), new PropertyMetadata(false, new PropertyChangedCallback(OnSubFoldersDiveInto)));
 
+        public static readonly DependencyProperty ItemsToShowProperty = DependencyProperty.Register(nameof(IsNoItemsToShow), typeof(bool), typeof(ImageFileInfoViewModel), new PropertyMetadata(false, new PropertyChangedCallback(OnItemsToShow)));
+
 
         public static readonly DependencyProperty OneDriveInfoTextProperty = DependencyProperty.Register(
          nameof(OneDriveInfoText),
@@ -84,7 +82,6 @@ namespace ImageBrowser.ViewModels
             nameof(IsAnyObservableItem), typeof(bool), typeof(ImageFileInfoViewModel), new PropertyMetadata(false, new PropertyChangedCallback(OnObservableItemsCountChanged)));
 
         #endregion
-
         string defaultWinTheme = string.Empty;
         /// <summary>
         /// Initializes a new instance of the <see cref="ImageFileInfoViewModel"/> class,
@@ -132,7 +129,17 @@ namespace ImageBrowser.ViewModels
         }
 
 
-        public bool IsAnyItemsToShow;
+        public bool IsNoItemsToShow
+        {
+            get
+            {
+                return (bool)GetValue(ItemsToShowProperty);
+            }
+            set
+            {
+                SetValue(ItemsToShowProperty, value);
+            }
+        }
 
         public bool IsUserSignedOut
         {
@@ -185,6 +192,22 @@ namespace ImageBrowser.ViewModels
         #endregion
         #region DependecyProperties handlers
 
+        private static void OnItemsToShow(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            bool oldValue = (bool)e.OldValue;
+            bool newValue = (bool)e.NewValue;
+
+            var viewModel = d as ImageFileInfoViewModel;
+            viewModel?.OnItemsToShow(oldValue, newValue);
+        }
+        public virtual void OnItemsToShow(bool oldValue, bool newValue)
+        {
+            if (oldValue != newValue)
+            {
+                IsNoItemsToShow = newValue;
+                OnPropertyChanged(nameof(IsNoItemsToShow));
+            }
+        }
         private static void OnSubFoldersDiveInto(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             bool oldValue = (bool)e.OldValue;
@@ -290,11 +313,12 @@ namespace ImageBrowser.ViewModels
             {
                 FoldersItem.foldersPath.Add(item);
             }
+            IsNoItemsToShow = false;
         }
 
         public async void ClickFoldersInGrid(object sender, object parameter)
         {
-           
+
             var arg = parameter as Windows.UI.Xaml.Controls.ItemClickEventArgs;
             var item = arg.ClickedItem as FolderInfoModel;
 
@@ -311,16 +335,19 @@ namespace ImageBrowser.ViewModels
             string folderName = parentFolder.DisplayName;
 
             IReadOnlyList<StorageFile> listFiles = await ImageDownloadHelper.ExtractFromFolderPicts(parentFolder);
+            FoldersItem.PictsFromFolders.Clear();
             if (listFiles.Any())
             {
-                FoldersItem.PictsFromFolders.Clear();
+                IsNoItemsToShow = false;
+                foreach (var pictOfFolder in listFiles)
+                {
+                    FoldersItem.PictsFromFolders.Add(await ImageFileHelper.LoadImageInfo(pictOfFolder));
+                    return;
+                }
             }
+            IsNoItemsToShow = true;
 
-            foreach (var pictOfFolder in listFiles)
-            {
-                FoldersItem.PictsFromFolders.Add(await ImageFileHelper.LoadImageInfo(pictOfFolder));
-            }
-          
+
         }
 
 
@@ -362,21 +389,21 @@ namespace ImageBrowser.ViewModels
             ICollection<StorageFile> files = new Collection<StorageFile>();
             ICollection<StorageFile> filesReal = new Collection<StorageFile>();
             ICollection<string> fileWithPaths = new Collection<string>();
-            for (int i = 0; i < this.ObservableCollection.Count; i++)
+            for (int i = 0; i < ObservableCollection.Count; i++)
             {
 
-                files.Add(this.ObservableCollection[i].ImageFile);
-                fileWithPaths.Add(this.ObservableCollection[i].ImagePath);
+                files.Add(ObservableCollection[i].ImageFile);
+                fileWithPaths.Add(ObservableCollection[i].ImagePath);
 
                 // Get BitmapImage
-                var p = this.ObservableCollection[i].GetImageSourceAsync();
+                var p = ObservableCollection[i].GetImageSourceAsync();
             }
 
             IReadOnlyCollection<StorageFile> filesReadOnly = (IReadOnlyCollection<StorageFile>)files;
             return async () =>
             {
                 Trace.WriteLine("REFRESHED by button in command");
-                await this.PopulateObservableCollectionOfImages(filesReadOnly);
+                await PopulateObservableCollectionOfImages(filesReadOnly);
             };
         }
 
@@ -425,7 +452,7 @@ namespace ImageBrowser.ViewModels
                     Trace.WriteLine("From ImageViewModel");
 
                     OneDriveInfoText = EmptyOneDrive;
-                    this.FlushObservableCollectionOfImages();
+                    FlushObservableCollectionOfImages();
                 }
                 catch (MsalException ex)
                 {
@@ -448,7 +475,7 @@ namespace ImageBrowser.ViewModels
                     OneDriveInfoText = resourceLoader.GetString("CountFiles/Text").ToString() + MSGraphQueriesHelper.CountFiles();
                 }
 
-                await this.PopulateObservableCollectionOfImages(downloadedFiles);
+                await PopulateObservableCollectionOfImages(downloadedFiles);
             };
         }
 
@@ -467,7 +494,7 @@ namespace ImageBrowser.ViewModels
             picker.FileTypeFilter.Add(".jpeg");
             picker.FileTypeFilter.Add(".png");
             IReadOnlyCollection<StorageFile> files = await picker.PickMultipleFilesAsync();
-            return await this.PopulateObservableCollectionOfImages(files);
+            return await PopulateObservableCollectionOfImages(files);
         }
 
         private Action OpenFoldersAsync()
@@ -576,8 +603,8 @@ namespace ImageBrowser.ViewModels
 
         {
 
-            if (this.ObservableCollection.Count > 0)
-                this.Initialize();
+            if (ObservableCollection.Count > 0)
+                Initialize();
         }
 
         public async Task<ObservableCollection<ImageFileInfo>> PopulateObservableCollectionOfImages(IReadOnlyCollection<StorageFile> files)
@@ -587,17 +614,17 @@ namespace ImageBrowser.ViewModels
             else
             {
 
-                this.ObservableCollection.Clear();
-                this.GroupedImagesInfos.Clear();
+                ObservableCollection.Clear();
+                GroupedImagesInfos.Clear();
                 foreach (var file in files)
                 {
                     ImageFileInfo item = await ImageFileHelper.LoadImageInfo(file);
 
-                    this.ObservableCollection.Add(item);
+                    ObservableCollection.Add(item);
                 }
             }
             IsAnyObservableItem = HaveAnyItems();
-            this.InitializeGroupingOfViewModel();
+            InitializeGroupingOfViewModel();
 
 
             return null;
@@ -605,13 +632,13 @@ namespace ImageBrowser.ViewModels
 
         public void FlushObservableCollectionOfImages()
         {
-            if (this.ObservableCollection.Count <= 0)
+            if (ObservableCollection.Count <= 0)
             { }
             else
             {
 
-                this.ObservableCollection.Clear();
-                this.GroupedImagesInfos.Clear();
+                ObservableCollection.Clear();
+                GroupedImagesInfos.Clear();
                 IsAnyObservableItem = HaveAnyItems();
             }
         }
@@ -619,7 +646,7 @@ namespace ImageBrowser.ViewModels
         public bool HaveAnyItems()
         {
 
-            return this.ObservableCollection.Count > 0;
+            return ObservableCollection.Count > 0;
         }
 
 
