@@ -332,9 +332,10 @@ namespace ImageBrowser.ViewModels
                 FoldersItem.foldersPath.Add(folderNew);
             }
             StorageFolder parentFolder = await FileRetrieveHelper.GetParentFolder(item);
-            string folderName = parentFolder.DisplayName;
-
-            IReadOnlyList<StorageFile> listFiles = await ImageDownloadHelper.ExtractFromFolderPicts(parentFolder);
+            //string folderName = parentFolder.DisplayName;
+            if (parentFolder == null)
+                return;
+            IReadOnlyList<StorageFile> listFiles = await ImageDownloadHelper.ExtractFromFolderPicts(parentFolder).ConfigureAwait(true);
             FoldersItem.PictsFromFolders.Clear();
             if (listFiles.Any())
             {
@@ -342,8 +343,8 @@ namespace ImageBrowser.ViewModels
                 foreach (var pictOfFolder in listFiles)
                 {
                     FoldersItem.PictsFromFolders.Add(await ImageFileHelper.LoadImageInfo(pictOfFolder));
-                    return;
                 }
+                    return;
             }
             IsNoItemsToShow = true;
 
