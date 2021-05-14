@@ -43,9 +43,9 @@
 					<StackPanel x:Name="DescriptionPlace" Orientation="Vertical"
 								Margin="10,10,30,10"
 								Grid.Row="1">
-						<TextBlock Text="{Binding FolderDisplayName}"
+						<TextBlock Text="{Binding FolderList.DisplayName}"
 								   Style="{ThemeResource BaseTextBlockStyle}" />
-						<TextBlock Text="{Binding FolderPath}"
+						<TextBlock Text="{Binding FolderList.Path}"
 								   FontSize="12"
 								   HorizontalAlignment="Left"
 								   Style="{ThemeResource BodyTextBlockStyle}"

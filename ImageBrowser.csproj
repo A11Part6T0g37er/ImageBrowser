@@ -139,6 +139,7 @@
     <Compile Include="Helpers\CallUIThreadHelper.cs" />
     <Compile Include="Helpers\DisplayUIHelper.cs" />
     <Compile Include="Helpers\EnumHelper.cs" />
+    <Compile Include="Helpers\FileRetrieveHelper.cs" />
     <Compile Include="Helpers\ImageDownloadHelper.cs" />
     <Compile Include="Helpers\ImageFileHelper.cs" />
     <Compile Include="Helpers\LocalizationHelper.cs" />

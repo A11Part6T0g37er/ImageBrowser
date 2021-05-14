@@ -1,44 +1,44 @@
-﻿using System;
+﻿using ImageBrowser.Common;
+using ImageBrowser.Helpers;
+using ImageBrowser.Models;
+using Microsoft.Graph;
+using Microsoft.Identity.Client;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using ImageBrowser.Common;
-using ImageBrowser.Helpers;
-using ImageBrowser.Models;
-using Microsoft.Graph;
-using Microsoft.Identity.Client;
 using Windows.Storage;
 using Windows.Storage.Pickers;
 using Windows.Storage.Search;
 using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Media.Imaging;
 
 namespace ImageBrowser.ViewModels
 {
     internal class ImageFileInfoViewModel : DependencyObject, INotifyPropertyChanged
     {
-        private readonly static string EmptyOneDrive = LocalizationHelper.GetLocalizedStrings("oneDriveDownloadedInfoDefault");
-        private readonly static string UserSignedOutNormal = LocalizationHelper.GetLocalizedStrings("normalSignOut");
+        private static readonly string EmptyOneDrive = LocalizationHelper.GetLocalizedStrings("oneDriveDownloadedInfoDefault");
+        private static readonly string UserSignedOutNormal = LocalizationHelper.GetLocalizedStrings("normalSignOut");
 
         private ObservableCollection<ImageFileInfo> observableCollection = new ObservableCollection<ImageFileInfo>();
-
         public IList<ImageFileInfo> ObservableCollection { get => observableCollection; }
 
-        //private ObservableCollection<FolderInfoModel> _foldersPath = new ObservableCollection<FolderInfoModel>();
+        private ObservableCollection<GroupInfoList<object>> groupedImagesInfos = new ObservableCollection<GroupInfoList<object>>();
+        public ObservableCollection<GroupInfoList<object>> GroupedImagesInfos { get => groupedImagesInfos; }
+
         private FoldersItemsCollection foldersItem = new FoldersItemsCollection();
+        public FoldersItemsCollection FoldersItem { get => foldersItem; }
+
+        public FoldersItemsCollection VaultStorageOfFolders;
+        public List<FolderInfoModel> MirorData;
 
 
-        public FoldersViewModel foldersView = new FoldersViewModel();
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -67,6 +67,11 @@ namespace ImageBrowser.ViewModels
            typeof(ImageFileInfoViewModel),
            new PropertyMetadata(false, new PropertyChangedCallback(OnStatusChanged)));
 
+        public static readonly DependencyProperty SubFoldersProperty = DependencyProperty.Register(nameof(IsFolderDived), typeof(bool), typeof(ImageFileInfoViewModel), new PropertyMetadata(false, new PropertyChangedCallback(OnSubFoldersDiveInto)));
+
+        public static readonly DependencyProperty ItemsToShowProperty = DependencyProperty.Register(nameof(IsNoItemsToShow), typeof(bool), typeof(ImageFileInfoViewModel), new PropertyMetadata(false, new PropertyChangedCallback(OnItemsToShow)));
+
+
         public static readonly DependencyProperty OneDriveInfoTextProperty = DependencyProperty.Register(
          nameof(OneDriveInfoText),
          typeof(string),
@@ -77,7 +82,6 @@ namespace ImageBrowser.ViewModels
             nameof(IsAnyObservableItem), typeof(bool), typeof(ImageFileInfoViewModel), new PropertyMetadata(false, new PropertyChangedCallback(OnObservableItemsCountChanged)));
 
         #endregion
-
         string defaultWinTheme = string.Empty;
         /// <summary>
         /// Initializes a new instance of the <see cref="ImageFileInfoViewModel"/> class,
@@ -111,7 +115,31 @@ namespace ImageBrowser.ViewModels
         }
 
         #region XamlListningProperties
-        public bool IsAnyItemsToShow;
+
+        public bool IsFolderDived
+        {
+            get
+            {
+                return (bool)GetValue(SubFoldersProperty);
+            }
+            set
+            {
+                SetValue(SubFoldersProperty, value);
+            }
+        }
+
+
+        public bool IsNoItemsToShow
+        {
+            get
+            {
+                return (bool)GetValue(ItemsToShowProperty);
+            }
+            set
+            {
+                SetValue(ItemsToShowProperty, value);
+            }
+        }
 
         public bool IsUserSignedOut
         {
@@ -163,6 +191,41 @@ namespace ImageBrowser.ViewModels
 
         #endregion
         #region DependecyProperties handlers
+
+        private static void OnItemsToShow(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            bool oldValue = (bool)e.OldValue;
+            bool newValue = (bool)e.NewValue;
+
+            var viewModel = d as ImageFileInfoViewModel;
+            viewModel?.OnItemsToShow(oldValue, newValue);
+        }
+        public virtual void OnItemsToShow(bool oldValue, bool newValue)
+        {
+            if (oldValue != newValue)
+            {
+                IsNoItemsToShow = newValue;
+                OnPropertyChanged(nameof(IsNoItemsToShow));
+            }
+        }
+        private static void OnSubFoldersDiveInto(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            bool oldValue = (bool)e.OldValue;
+            bool newValue = (bool)e.NewValue;
+
+            var viewModel = d as ImageFileInfoViewModel;
+            viewModel?.OnSubFoldersDiveInto(oldValue, newValue);
+
+        }
+        public virtual void OnSubFoldersDiveInto(bool oldValue, bool newValue)
+        {
+            if (oldValue != newValue)
+            {
+                IsFolderDived = newValue;
+                OnPropertyChanged(nameof(IsFolderDived));
+            }
+        }
+
         private static void OnResultTextChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             string oldValue = (string)e.OldValue;
@@ -241,12 +304,50 @@ namespace ImageBrowser.ViewModels
             Services.NavigationService.Instance.Navigate(typeof(DetailPage), item);
         }
 
+        public async void RestoreFoldersInGrid(object sender, object parameter)
+        {
+            IsFolderDived = false;
+            // foldersItem.foldersPath.Clear();
+            FoldersItem.ResetCollection();
+            foreach (var item in MirorData)
+            {
+                FoldersItem.foldersPath.Add(item);
+            }
+            IsNoItemsToShow = false;
+        }
+
         public async void ClickFoldersInGrid(object sender, object parameter)
         {
+
             var arg = parameter as Windows.UI.Xaml.Controls.ItemClickEventArgs;
             var item = arg.ClickedItem as FolderInfoModel;
 
-            //Services.NavigationService.Instance.Navigate(typeof(DetailPage), item);
+            IsFolderDived = true;
+            FoldersItem.foldersPath.Clear();
+
+            FolderInfoModel folderNew;
+            foreach (var folder in item.FolderList)
+            {
+                folderNew = new FolderInfoModel() { FolderDisplayName = folder.DisplayName, FolderList = await folder.GetFoldersAsync(), FolderPath = folder.Path };
+                FoldersItem.foldersPath.Add(folderNew);
+            }
+            StorageFolder parentFolder = await FileRetrieveHelper.GetParentFolder(item);
+            string folderName = parentFolder.DisplayName;
+
+            IReadOnlyList<StorageFile> listFiles = await ImageDownloadHelper.ExtractFromFolderPicts(parentFolder);
+            FoldersItem.PictsFromFolders.Clear();
+            if (listFiles.Any())
+            {
+                IsNoItemsToShow = false;
+                foreach (var pictOfFolder in listFiles)
+                {
+                    FoldersItem.PictsFromFolders.Add(await ImageFileHelper.LoadImageInfo(pictOfFolder));
+                    return;
+                }
+            }
+            IsNoItemsToShow = true;
+
+
         }
 
         #region Actions for commands in ctor
@@ -287,21 +388,21 @@ namespace ImageBrowser.ViewModels
             ICollection<StorageFile> files = new Collection<StorageFile>();
             ICollection<StorageFile> filesReal = new Collection<StorageFile>();
             ICollection<string> fileWithPaths = new Collection<string>();
-            for (int i = 0; i < this.ObservableCollection.Count; i++)
+            for (int i = 0; i < ObservableCollection.Count; i++)
             {
 
-                files.Add(this.ObservableCollection[i].ImageFile);
-                fileWithPaths.Add(this.ObservableCollection[i].ImagePath);
+                files.Add(ObservableCollection[i].ImageFile);
+                fileWithPaths.Add(ObservableCollection[i].ImagePath);
 
                 // Get BitmapImage
-                var p = this.ObservableCollection[i].GetImageSourceAsync();
+                var p = ObservableCollection[i].GetImageSourceAsync();
             }
 
             IReadOnlyCollection<StorageFile> filesReadOnly = (IReadOnlyCollection<StorageFile>)files;
             return async () =>
             {
                 Trace.WriteLine("REFRESHED by button in command");
-                await this.PopulateObservableCollectionOfImages(filesReadOnly);
+                await PopulateObservableCollectionOfImages(filesReadOnly);
             };
         }
 
@@ -350,7 +451,7 @@ namespace ImageBrowser.ViewModels
                     Trace.WriteLine("From ImageViewModel");
 
                     OneDriveInfoText = EmptyOneDrive;
-                    this.FlushObservableCollectionOfImages();
+                    FlushObservableCollectionOfImages();
                 }
                 catch (MsalException ex)
                 {
@@ -373,7 +474,7 @@ namespace ImageBrowser.ViewModels
                     OneDriveInfoText = resourceLoader.GetString("CountFiles/Text").ToString() + MSGraphQueriesHelper.CountFiles();
                 }
 
-                await this.PopulateObservableCollectionOfImages(downloadedFiles);
+                await PopulateObservableCollectionOfImages(downloadedFiles);
             };
         }
 
@@ -392,13 +493,15 @@ namespace ImageBrowser.ViewModels
             picker.FileTypeFilter.Add(".jpeg");
             picker.FileTypeFilter.Add(".png");
             IReadOnlyCollection<StorageFile> files = await picker.PickMultipleFilesAsync();
-            return await this.PopulateObservableCollectionOfImages(files);
+            return await PopulateObservableCollectionOfImages(files);
         }
 
         private Action OpenFoldersAsync()
         {
             return async () => OpenFoldersButtonHandler();
         }
+
+        #endregion
 
         private async Task<ObservableCollection<ImageFileInfo>> OpenFoldersButtonHandler()
         {
@@ -416,29 +519,44 @@ namespace ImageBrowser.ViewModels
             queryOptions.FileTypeFilter.Add(".jpg");
             queryOptions.FileTypeFilter.Add(".jpeg");
             queryOptions.FileTypeFilter.Add(".png");
-            queryOptions.FolderDepth = FolderDepth.Deep;
+            // queryOptions.FileTypeFilter.Add("*");
+            queryOptions.FolderDepth = FolderDepth.Shallow;
+            queryOptions.IndexerOption = IndexerOption.UseIndexerWhenAvailable;
             var queryResult = folder?.CreateFileQueryWithOptions(queryOptions);
-
             queryResult.ContentsChanged += OnContentsChanged;
             if (folder != null)
             {
-                //  foldersView.FoldersToDisplay.Add(folder);
-                FoldersItem.foldersPath.Add(new FolderInfoModel() { FolderPath = folder.Path, FolderDisplayName = folder.DisplayName });
                 
+                var Resultsubfolders = folder.CreateFolderQueryWithOptions(queryOptions);
+                var subFolders = await Resultsubfolders.GetFoldersAsync();
 
-                
-                IReadOnlyList<StorageFile> fileList = await folder.GetFilesAsync();
+                Windows.Storage.AccessCache.StorageApplicationPermissions.MostRecentlyUsedList.AddOrReplace("PickedFolderToken", folder);
+                FoldersItem.foldersPath.Add(new FolderInfoModel() { FolderPath = folder.Path, FolderDisplayName = folder.DisplayName, FolderList = subFolders });
+                FoldersItem.CurentFolder = folder;
+
+                // testing purpose only
+                var s = subFolders.Last().Path;
+                int a = subFolders.Count();
+
+                queryOptions.FolderDepth = FolderDepth.Deep;
+               
+
+                queryResult = folder.CreateFileQueryWithOptions(queryOptions);
+
                 IReadOnlyCollection<StorageFile> storageFiles = await queryResult.GetFilesAsync();
 
-                return await this.PopulateObservableCollectionOfImages(storageFiles);
+                // create savePoint
+                MirorData = FoldersItem.foldersPath.ToList();
+
+                return await PopulateObservableCollectionOfImages(storageFiles).ConfigureAwait(false);
             }
             return null;
         }
+        // StorageFileQueryResult 
         async void OnContentsChanged(IStorageQueryResultBase sender, object args)
         {
             // TODO: Do stuff, e.g. check for changes
         }
-        #endregion
 
         // TODO: catch main UI thread and extract into helper class
         private async Task ShowPopUpMessage(string message)
@@ -454,10 +572,6 @@ namespace ImageBrowser.ViewModels
         {
             observableCollection = images;
         }
-
-        private ObservableCollection<GroupInfoList<object>> groupedImagesInfos = new ObservableCollection<GroupInfoList<object>>();
-
-        public ObservableCollection<GroupInfoList<object>> GroupedImagesInfos { get => groupedImagesInfos; }
 
         public void GenerateByDateGroup(IList<ImageFileInfo> lisOfImages)
         {
@@ -494,8 +608,8 @@ namespace ImageBrowser.ViewModels
 
         {
 
-            if (this.ObservableCollection.Count > 0)
-                this.Initialize();
+            if (ObservableCollection.Count > 0)
+                Initialize();
         }
 
         public async Task<ObservableCollection<ImageFileInfo>> PopulateObservableCollectionOfImages(IReadOnlyCollection<StorageFile> files)
@@ -505,31 +619,31 @@ namespace ImageBrowser.ViewModels
             else
             {
 
-                this.ObservableCollection.Clear();
-                this.GroupedImagesInfos.Clear();
+                ObservableCollection.Clear();
+                GroupedImagesInfos.Clear();
                 foreach (var file in files)
                 {
                     ImageFileInfo item = await ImageFileHelper.LoadImageInfo(file);
 
-                    this.ObservableCollection.Add(item);
+                    ObservableCollection.Add(item);
                 }
             }
             IsAnyObservableItem = HaveAnyItems();
-            this.InitializeGroupingOfViewModel();
-            FoldersItem.AddPicts(observableCollection);
+            InitializeGroupingOfViewModel();
+
 
             return null;
         }
 
         public void FlushObservableCollectionOfImages()
         {
-            if (this.ObservableCollection.Count <= 0)
+            if (ObservableCollection.Count <= 0)
             { }
             else
             {
 
-                this.ObservableCollection.Clear();
-                this.GroupedImagesInfos.Clear();
+                ObservableCollection.Clear();
+                GroupedImagesInfos.Clear();
                 IsAnyObservableItem = HaveAnyItems();
             }
         }
@@ -537,7 +651,7 @@ namespace ImageBrowser.ViewModels
         public bool HaveAnyItems()
         {
 
-            return this.ObservableCollection.Count > 0;
+            return ObservableCollection.Count > 0;
         }
 
 
@@ -556,10 +670,5 @@ namespace ImageBrowser.ViewModels
             }
         }
 
-        private object imageFileInfoViewModel1;
-        
-
-        public object imageFileInfoViewModel { get => imageFileInfoViewModel1; set => SetProperty(ref imageFileInfoViewModel1, value); }
-        public FoldersItemsCollection FoldersItem { get => foldersItem; set => foldersItem = value; }
     }
 }

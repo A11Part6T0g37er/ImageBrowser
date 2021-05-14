@@ -1,17 +1,20 @@
 ﻿using ImageBrowser.ViewModels;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using Windows.Storage;
 
 namespace ImageBrowser.Models
 {
-    class FolderInfoModel : BindableBase
+  public  class FolderInfoModel : BindableBase
     {
         private string _displayName;
         private string _path;
 
+        private IReadOnlyList<StorageFolder> folderList;
+
         public string FolderDisplayName { get { return _displayName; } set { base.SetProperty(ref _displayName, value); } }
         public string FolderPath { get { return _path; } set { base.SetProperty(ref _path, value); } }
 
-      
+        public IReadOnlyList<StorageFolder> FolderList { get => folderList; set => base.SetProperty(ref folderList,value); }
     }
 }

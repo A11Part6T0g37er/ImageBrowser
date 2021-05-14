@@ -162,6 +162,9 @@
   <data name="light.Label" xml:space="preserve">
     <value>Light</value>
   </data>
+  <data name="NoPhotosFound.Text" xml:space="preserve">
+    <value>No photos, or folders found.</value>
+  </data>
   <data name="normalSignOut" xml:space="preserve">
     <value>User has signed out.</value>
   </data>

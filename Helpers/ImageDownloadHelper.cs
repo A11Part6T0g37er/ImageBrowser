@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.Storage;
+using Windows.Storage.Search;
 
 namespace ImageBrowser.Helpers
 {
@@ -35,6 +36,19 @@ namespace ImageBrowser.Helpers
             string newPath = string.Format("ms-appdata:///local/{0}/{1}", imagesSubdirectory, fileName);
 
             return newPath;
+        }
+
+        public static async Task<IReadOnlyList<StorageFile>> ExtractFromFolderPicts(StorageFolder parentFolder)
+        {
+            QueryOptions queryOptions = new QueryOptions(CommonFolderQuery.DefaultQuery);
+            queryOptions.FileTypeFilter.Add(".jpg");
+            queryOptions.FileTypeFilter.Add(".jpeg");
+            queryOptions.FileTypeFilter.Add(".png");
+            queryOptions.IndexerOption = IndexerOption.UseIndexerWhenAvailable;
+            queryOptions.FolderDepth = FolderDepth.Shallow;
+            var queryResult = parentFolder?.CreateFileQueryWithOptions(queryOptions);
+            var listFiles = await queryResult.GetFilesAsync();
+            return listFiles;
         }
     }
 }
