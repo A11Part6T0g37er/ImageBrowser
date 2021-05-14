@@ -41,7 +41,10 @@
 							  Source="{Binding FoldersItem.foldersPath}">
 			
 		</CollectionViewSource>
-		
+		<CollectionViewSource x:Name="PIctsInFolder"
+							  IsSourceGrouped="False"
+							  Source="{Binding FoldersItem.PictsFromFolders}" />
+
 		<Style x:Key="ImageGridView_DefaultItemContainerStyle"
 			   TargetType="GridViewItem">
 			<Setter Property="Background"
@@ -584,6 +587,27 @@
 									</Grid>
 				</Grid>
 				</DataTemplate>
+							</GridView.ItemTemplate>
+						</GridView>
+						<GridView x:Name="FolderPhotos"
+								  IsItemClickEnabled="True"
+								  RelativePanel.Below="FoldersToShowOriginal"
+								  Margin="15"
+								  ItemsSource="{Binding Source={StaticResource PIctsInFolder}}">
+							<Interactivity:Interaction.Behaviors>
+								<Interactions:EventTriggerBehavior EventName="ItemClick">
+
+									<Interactions:CallMethodAction MethodName="ClickPictInGrid"
+																   TargetObject="{Binding Mode=OneWay}" />
+
+								</Interactions:EventTriggerBehavior>
+							</Interactivity:Interaction.Behaviors>
+							<GridView.ItemTemplate>
+								<DataTemplate>
+									<Image Source="{Binding ImageSource,Mode=OneWay}"
+										   Stretch="Uniform"
+										   Margin="5" Height="100"/>
+								</DataTemplate>
 							</GridView.ItemTemplate>
 						</GridView>
 					</RelativePanel>

@@ -5,7 +5,7 @@ using Windows.Storage;
 
 namespace ImageBrowser.Models
 {
-    class FolderInfoModel : BindableBase
+  public  class FolderInfoModel : BindableBase
     {
         private string _displayName;
         private string _path;

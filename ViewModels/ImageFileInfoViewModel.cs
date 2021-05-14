@@ -284,54 +284,45 @@ namespace ImageBrowser.ViewModels
         public async void RestoreFoldersInGrid(object sender, object parameter)
         {
             IsFolderDived = false;
-            foldersItem.foldersPath.Clear();
+            // foldersItem.foldersPath.Clear();
+            FoldersItem.ResetCollection();
             foreach (var item in MirorData)
             {
-                foldersItem.foldersPath.Add(item);
+                FoldersItem.foldersPath.Add(item);
             }
-           
-            
         }
 
         public async void ClickFoldersInGrid(object sender, object parameter)
         {
-            //if(VaultStorageOfFolders is null)
-            //{
-            //    VaultStorageOfFolders = FoldersItem;
-            //}
+           
             var arg = parameter as Windows.UI.Xaml.Controls.ItemClickEventArgs;
             var item = arg.ClickedItem as FolderInfoModel;
 
             IsFolderDived = true;
             FoldersItem.foldersPath.Clear();
-            if(item.FolderList.Count == 1)
-            {
-              var nestedFolders = await  item.FolderList[0].GetFoldersAsync();
-                FolderInfoModel folderNew ;
-                foreach (var folder in nestedFolders)
-                {
-                   folderNew = new FolderInfoModel() { FolderList = nestedFolders, FolderDisplayName = folder.DisplayName, FolderPath = folder.Path};
-                    FoldersItem.foldersPath.Add(folderNew);
-                    return;
-                }
-                
-            }
-            else
-            {
-                FolderInfoModel folderNew;
-                foreach (var folder in item.FolderList)
-            {
-              folderNew = new FolderInfoModel() { FolderDisplayName= folder.DisplayName, FolderList = await folder.GetFoldersAsync(), FolderPath = folder.Path };
-            FoldersItem.foldersPath.Add(folderNew);
-            }
-            
 
-                var i = item.FolderList.FirstOrDefault();
-             var getSomething =   item.FolderList.Any(x=>x.DisplayName == item.FolderDisplayName);
+            FolderInfoModel folderNew;
+            foreach (var folder in item.FolderList)
+            {
+                folderNew = new FolderInfoModel() { FolderDisplayName = folder.DisplayName, FolderList = await folder.GetFoldersAsync(), FolderPath = folder.Path };
+                FoldersItem.foldersPath.Add(folderNew);
             }
-            
-            //Services.NavigationService.Instance.Navigate(typeof(DetailPage), item);
+            StorageFolder parentFolder = await FileRetrieveHelper.GetParentFolder(item);
+            string folderName = parentFolder.DisplayName;
+
+            IReadOnlyList<StorageFile> listFiles = await ImageDownloadHelper.ExtractFromFolderPicts(parentFolder);
+            if (listFiles.Any())
+            {
+                FoldersItem.PictsFromFolders.Clear();
+            }
+
+            foreach (var pictOfFolder in listFiles)
+            {
+                FoldersItem.PictsFromFolders.Add(await ImageFileHelper.LoadImageInfo(pictOfFolder));
+            }
+          
         }
+
 
         #region Actions for commands in ctor
         private void GroupedGrid_SizeChanged(object sender, double e)
@@ -507,22 +498,28 @@ namespace ImageBrowser.ViewModels
             queryResult.ContentsChanged += OnContentsChanged;
             if (folder != null)
             {
-
-                var Resultsubfolders = folder.CreateFolderQueryWithOptions(/*new QueryOptions() { FolderDepth = FolderDepth.Deep, IndexerOption = IndexerOption.UseIndexerWhenAvailable }*/ queryOptions);
+                // testing case
+                var Resultsubfolders = folder.CreateFolderQueryWithOptions(queryOptions);
                 var subFolders = await Resultsubfolders.GetFoldersAsync();
 
                 Windows.Storage.AccessCache.StorageApplicationPermissions.MostRecentlyUsedList.AddOrReplace("PickedFolderToken", folder);
                 FoldersItem.foldersPath.Add(new FolderInfoModel() { FolderPath = folder.Path, FolderDisplayName = folder.DisplayName, FolderList = subFolders });
+                FoldersItem.CurentFolder = folder;
+
+                // testing purpose only
                 var s = subFolders.Last().Path;
                 int a = subFolders.Count();
+
                 IReadOnlyCollection<StorageFile> storageFiles = await queryResult.GetFilesAsync();
 
+                // create savePoint
                 MirorData = FoldersItem.foldersPath.ToList();
-               // VaultStorageOfFolders = new FoldersItemsCollection() { PictsFromFolders = FoldersItem.PictsFromFolders, foldersPath = (ObservableCollection<FolderInfoModel>) FoldersItem.foldersPath.Select(x=>x) };
-                return await this.PopulateObservableCollectionOfImages(storageFiles);
+
+                return await PopulateObservableCollectionOfImages(storageFiles).ConfigureAwait(false);
             }
             return null;
         }
+        // StorageFileQueryResult 
         async void OnContentsChanged(IStorageQueryResultBase sender, object args)
         {
             // TODO: Do stuff, e.g. check for changes
@@ -601,8 +598,8 @@ namespace ImageBrowser.ViewModels
             }
             IsAnyObservableItem = HaveAnyItems();
             this.InitializeGroupingOfViewModel();
-           
-           
+
+
             return null;
         }
 
