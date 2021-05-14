@@ -350,7 +350,6 @@ namespace ImageBrowser.ViewModels
 
         }
 
-
         #region Actions for commands in ctor
         private void GroupedGrid_SizeChanged(object sender, double e)
         {
@@ -502,6 +501,8 @@ namespace ImageBrowser.ViewModels
             return async () => OpenFoldersButtonHandler();
         }
 
+        #endregion
+
         private async Task<ObservableCollection<ImageFileInfo>> OpenFoldersButtonHandler()
         {
 
@@ -515,17 +516,17 @@ namespace ImageBrowser.ViewModels
             StorageFolder folder = await folderPicker.PickSingleFolderAsync();
 
             QueryOptions queryOptions = new QueryOptions(CommonFolderQuery.DefaultQuery);
-            /*  queryOptions.FileTypeFilter.Add(".jpg");
-              queryOptions.FileTypeFilter.Add(".jpeg");
-              queryOptions.FileTypeFilter.Add(".png");*/
-            queryOptions.FileTypeFilter.Add("*");
+            queryOptions.FileTypeFilter.Add(".jpg");
+            queryOptions.FileTypeFilter.Add(".jpeg");
+            queryOptions.FileTypeFilter.Add(".png");
+            // queryOptions.FileTypeFilter.Add("*");
             queryOptions.FolderDepth = FolderDepth.Shallow;
             queryOptions.IndexerOption = IndexerOption.UseIndexerWhenAvailable;
             var queryResult = folder?.CreateFileQueryWithOptions(queryOptions);
             queryResult.ContentsChanged += OnContentsChanged;
             if (folder != null)
             {
-                // testing case
+                
                 var Resultsubfolders = folder.CreateFolderQueryWithOptions(queryOptions);
                 var subFolders = await Resultsubfolders.GetFoldersAsync();
 
@@ -536,6 +537,11 @@ namespace ImageBrowser.ViewModels
                 // testing purpose only
                 var s = subFolders.Last().Path;
                 int a = subFolders.Count();
+
+                queryOptions.FolderDepth = FolderDepth.Deep;
+               
+
+                queryResult = folder.CreateFileQueryWithOptions(queryOptions);
 
                 IReadOnlyCollection<StorageFile> storageFiles = await queryResult.GetFilesAsync();
 
@@ -551,7 +557,6 @@ namespace ImageBrowser.ViewModels
         {
             // TODO: Do stuff, e.g. check for changes
         }
-        #endregion
 
         // TODO: catch main UI thread and extract into helper class
         private async Task ShowPopUpMessage(string message)
