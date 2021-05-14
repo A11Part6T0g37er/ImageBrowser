@@ -649,8 +649,8 @@
 			  RelativePanel.Below="leftControlPanel"
 			  Visibility="{Binding IsAnyObservableItem,Converter={StaticResource bool2visInverse},Mode=TwoWay}"
 			  Margin="20,0,0,0">
-			 
 			
+		
 			<TextBlock TextWrapping="Wrap"
 					   Text="Nothig here" />
 			<Image Source="/Assets/Square150x150Logo.scale-200.png"
