@@ -501,7 +501,7 @@ namespace ImageBrowser.ViewModels
               queryOptions.FileTypeFilter.Add(".jpeg");
               queryOptions.FileTypeFilter.Add(".png");*/
             queryOptions.FileTypeFilter.Add("*");
-            queryOptions.FolderDepth = FolderDepth.Deep;
+            queryOptions.FolderDepth = FolderDepth.Shallow;
             queryOptions.IndexerOption = IndexerOption.UseIndexerWhenAvailable;
             var queryResult = folder?.CreateFileQueryWithOptions(queryOptions);
             queryResult.ContentsChanged += OnContentsChanged;
@@ -601,7 +601,7 @@ namespace ImageBrowser.ViewModels
             }
             IsAnyObservableItem = HaveAnyItems();
             this.InitializeGroupingOfViewModel();
-            FoldersItem.AddPicts(observableCollection);
+           
            
             return null;
         }
