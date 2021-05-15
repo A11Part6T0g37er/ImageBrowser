@@ -42,6 +42,20 @@
         <uap:InitialRotationPreference>
           <uap:Rotation Preference="landscape"/></uap:InitialRotationPreference>
       </uap:VisualElements>
+      <Extensions>
+        <uap:Extension Category="windows.fileTypeAssociation">
+          <uap:FileTypeAssociation Name="image-browser" DesiredView="default">
+            <uap:SupportedFileTypes>
+              <uap:FileType ContentType="image/png">.png</uap:FileType>
+              <uap:FileType ContentType="image/jpeg">.jpeg</uap:FileType>
+              <uap:FileType ContentType="image/jpg">.jpg</uap:FileType>
+            </uap:SupportedFileTypes>
+            <uap:Logo>Assets\Placeholder.png</uap:Logo>
+            <uap:DisplayName>image-browser</uap:DisplayName>
+            <uap:InfoTip>Preview picts.</uap:InfoTip>
+          </uap:FileTypeAssociation>
+        </uap:Extension>
+      </Extensions>
     </Application>
   </Applications>
 

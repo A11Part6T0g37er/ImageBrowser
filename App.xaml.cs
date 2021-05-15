@@ -130,5 +130,21 @@ namespace ImageBrowser
                 e.Handled = TryGoBack();
             }
         }
+
+        /// <summary>
+        /// Associate with image file extensions.
+        /// </summary>
+        /// <param name="args"></param>
+        protected override void OnFileActivated(FileActivatedEventArgs args)
+        {
+            base.OnFileActivated(args);
+
+
+            var rootFrame = new Frame();
+            rootFrame.Navigate(typeof(DetailPage), args);
+            Window.Current.Content = rootFrame;
+            Window.Current.Activate();
+        }
+
     }
 }
