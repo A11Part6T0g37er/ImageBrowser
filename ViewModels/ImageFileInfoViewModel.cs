@@ -527,11 +527,11 @@ namespace ImageBrowser.ViewModels
             queryResult.ContentsChanged += OnContentsChanged;
             if (folder != null)
             {
+                Windows.Storage.AccessCache.StorageApplicationPermissions.MostRecentlyUsedList.AddOrReplace("PickedFolderToken", folder);
                 
                 var Resultsubfolders = folder.CreateFolderQueryWithOptions(queryOptions);
                 var subFolders = await Resultsubfolders.GetFoldersAsync();
 
-                Windows.Storage.AccessCache.StorageApplicationPermissions.MostRecentlyUsedList.AddOrReplace("PickedFolderToken", folder);
                 FoldersItem.foldersPath.Add(new FolderInfoModel() { FolderPath = folder.Path, FolderDisplayName = folder.DisplayName, FolderList = subFolders });
                 FoldersItem.CurentFolder = folder;
 
@@ -617,8 +617,8 @@ namespace ImageBrowser.ViewModels
         {
             if (files.Count <= 0)
             { return null; }
-            else
-            {
+            /*else
+            {*/
 
                 ObservableCollection.Clear();
                 GroupedImagesInfos.Clear();
@@ -628,12 +628,12 @@ namespace ImageBrowser.ViewModels
 
                     ObservableCollection.Add(item);
                 }
-            }
+            /*}*/
             IsAnyObservableItem = HaveAnyItems();
             InitializeGroupingOfViewModel();
 
 
-            return null;
+             return observableCollection;
         }
 
         public void FlushObservableCollectionOfImages()

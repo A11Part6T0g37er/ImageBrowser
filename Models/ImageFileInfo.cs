@@ -19,7 +19,10 @@ namespace ImageBrowser
 
         public StorageFile ImageFile { get; }
 
-        public string ImagePath { get { return ImageFile.Path.ToString(); } }
+        private string imagePath;
+        public string ImagePath { get /*{ return ImageFile.Path.ToString()  }*/; set; }
+       public StorageItemThumbnail thumbnail { get; set; }
+
 
         public string ImageFileType { get; private set; }
 
@@ -53,11 +56,11 @@ namespace ImageBrowser
         {
         }
 
-        public ImageFileInfo(string imageName, StorageFile storageFile, ImageProperties imageProperties, string type)
+        public ImageFileInfo(string imageName, StorageFile storageFile, ImageProperties imageProperties, string type, StorageItemThumbnail thumbnail)
         {
             ImageName = imageName;
             ImageProperties = imageProperties;
-
+            this.thumbnail = thumbnail;
             ImageFileType = type;
             ImageFile = storageFile;
         }
@@ -67,7 +70,7 @@ namespace ImageBrowser
             using (IRandomAccessStream fileStream = await ImageFile.OpenReadAsync())
             {
                 // Create a bitmap to be the image source.
-                this.imageSource = new BitmapImage();
+                var imageSource = new BitmapImage();
                 imageSource.SetSource(fileStream);
 
                 return imageSource;

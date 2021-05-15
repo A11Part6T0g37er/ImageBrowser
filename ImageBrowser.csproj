@@ -130,6 +130,7 @@
     </Compile>
     <Compile Include="AppSettings.cs" />
     <Compile Include="Common\Converters\BooleanToVisibilityConverter.cs" />
+    <Compile Include="Common\Converters\ThumbnailToImageConverter.cs" />
     <Compile Include="Common\DefaultRedirectUri.cs" />
     <Compile Include="Common\MyBackgroundTask.cs" />
     <Compile Include="Common\RelayCommand.cs" />
