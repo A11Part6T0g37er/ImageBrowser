@@ -417,7 +417,7 @@
 									<TextBlock Text="{x:Bind ImageDimensions, Mode=OneWay}"
 											   Grid.Row="1" />
 									<Image Source="{x:Bind thumbnail,Mode=OneWay, Converter={StaticResource ThumbnailToPict}}"
-										   Stretch="UniformToFill"
+										   Stretch="Uniform"
 										   Height="250"
 										   Grid.Row="2"
 										   Margin="0,5,0,10" />
