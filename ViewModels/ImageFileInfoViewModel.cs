@@ -533,11 +533,7 @@ namespace ImageBrowser.ViewModels
                 var subFolders = await Resultsubfolders.GetFoldersAsync();
 
                 FoldersItem.foldersPath.Add(new FolderInfoModel() { FolderPath = folder.Path, FolderDisplayName = folder.DisplayName, FolderList = subFolders });
-                FoldersItem.CurentFolder = folder;
-
-                // testing purpose only
-                var s = subFolders.Last().Path;
-                int a = subFolders.Count();
+                FoldersItem.CurentFolder = folder;               
 
                 queryOptions.FolderDepth = FolderDepth.Deep;
                
