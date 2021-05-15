@@ -299,7 +299,7 @@
 											   HorizontalAlignment="Center"
 											   Grid.Row="0"
 											   Margin="2"
-											   Source="{Binding thumbnail,Converter={StaticResource ThumbnailToPict}, Mode=OneWay}"
+											   Source="{x:Bind thumbnail,Converter={StaticResource ThumbnailToPict}, Mode=OneWay}"
 											   >
 											   <!--Source="{x:Bind ImagePath, Mode=OneWay}"-->
 											<!--<Image.Source>
@@ -416,9 +416,9 @@
 											   HorizontalAlignment="Center" />
 									<TextBlock Text="{x:Bind ImageDimensions, Mode=OneWay}"
 											   Grid.Row="1" />
-									<Image Source="{x:Bind ImageSource,Mode=OneWay}"
+									<Image Source="{x:Bind thumbnail,Mode=OneWay, Converter={StaticResource ThumbnailToPict}}"
 										   Stretch="UniformToFill"
-										   Height="{Binding ItemSize,ElementName=page}"
+										   Height="250"
 										   Grid.Row="2"
 										   Margin="0,5,0,10" />
 
@@ -616,9 +616,9 @@
 							</Interactivity:Interaction.Behaviors>
 							<GridView.ItemTemplate>
 								<DataTemplate>
-									<Image Source="{Binding ImageSource,Mode=OneWay}"
+									<Image Source="{Binding thumbnail,Mode=OneWay, Converter={StaticResource ThumbnailToPict}}"
 										   Stretch="Uniform"
-										   Margin="5" Height="100"/>
+										   Margin="5" Height="100" />
 								</DataTemplate>
 							</GridView.ItemTemplate>
 						</GridView>
