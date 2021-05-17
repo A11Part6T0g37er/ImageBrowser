@@ -446,186 +446,189 @@
 			</PivotItem>
 			
 			<PivotItem Header="Folders">
-				<Grid>
-					<Grid.RowDefinitions>
-						<RowDefinition Height="Auto" />
-						<RowDefinition Height="Auto" />
-						<RowDefinition Height="*" />
-						
-					</Grid.RowDefinitions>
-					<Grid.ColumnDefinitions>
-						<ColumnDefinition />
-						<ColumnDefinition Width="Auto" />
-					</Grid.ColumnDefinitions>
-					<TextBlock Text="Folders opened"
-							   Margin="20"
-							   Grid.Row="0" />
-					<Button x:Name="openFolders"
-							Grid.Row="1"
-							HorizontalAlignment="Left"
-							Height="120"
-							Width="270"
-							Background="#00adef"
-							Style="{StaticResource FolderAddButton}"
-							Command="{Binding OpenFoldersCommand}"><!--OpenFoldersCommand-->
+				<ScrollViewer>
+					<Grid>
+						<Grid.RowDefinitions>
+							<RowDefinition Height="Auto" />
+							<RowDefinition Height="Auto" />
+							<RowDefinition Height="*" />
+
+						</Grid.RowDefinitions>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition />
+							<ColumnDefinition Width="Auto" />
+						</Grid.ColumnDefinitions>
+						<TextBlock Text="Folders opened"
+								   Margin="20"
+								   Grid.Row="0" />
+						<Button x:Name="openFolders"
+								Grid.Row="1"
+								HorizontalAlignment="Left"
+								Height="120"
+								Width="270"
+								Background="#00adef"
+								Style="{StaticResource FolderAddButton}"
+								Command="{Binding OpenFoldersCommand}">
+							<!--OpenFoldersCommand-->
 							<!--DataContext="{Binding viewModels:ImageFileInfoViewModel}"-->
-						<Grid>
-							<Grid.RowDefinitions>
-								<RowDefinition Height="Auto" />
-								<RowDefinition Height="*" />
-								
-							</Grid.RowDefinitions>
-							<Grid.ColumnDefinitions>
-								<ColumnDefinition Width="Auto" />
-								<ColumnDefinition Width="*" />
-							</Grid.ColumnDefinitions>
+							<Grid>
+								<Grid.RowDefinitions>
+									<RowDefinition Height="Auto" />
+									<RowDefinition Height="*" />
 
-							<StackPanel Orientation="Vertical"
-										Margin="0,0,30,0"
-										Grid.Row="1">
-								<TextBlock Text=""
-										   x:Uid="addFolder"/>
-								<TextBlock Text=""
-										   x:Uid="addFolderMore"
-										   FontSize="12"
-										   HorizontalAlignment="Stretch" />
-							</StackPanel>
-							<Viewbox MaxHeight="35"
-									 MaxWidth="35"
-									 Grid.Column="1"
-									 Grid.Row="1">
-								<SymbolIcon Symbol="NewFolder" />
-							</Viewbox>
-						</Grid>
-					</Button>
+								</Grid.RowDefinitions>
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="Auto" />
+									<ColumnDefinition Width="*" />
+								</Grid.ColumnDefinitions>
 
-					<RelativePanel Grid.Row="2">
+								<StackPanel Orientation="Vertical"
+											Margin="0,0,30,0"
+											Grid.Row="1">
+									<TextBlock Text=""
+											   x:Uid="addFolder" />
+									<TextBlock Text=""
+											   x:Uid="addFolderMore"
+											   FontSize="12"
+											   HorizontalAlignment="Stretch" />
+								</StackPanel>
+								<Viewbox MaxHeight="35"
+										 MaxWidth="35"
+										 Grid.Column="1"
+										 Grid.Row="1">
+									<SymbolIcon Symbol="NewFolder" />
+								</Viewbox>
+							</Grid>
+						</Button>
 
-						<HyperlinkButton x:Name="GetBack"
-										 Margin="0,15,0,0"
-										 Content="GET back"
-										 MinHeight="10"
-										 ClickMode="Release"
-										 Visibility="{Binding IsFolderDived, Converter={StaticResource bool2Visibility}}">
-							<Interactivity:Interaction.Behaviors>
-								<Interactions:EventTriggerBehavior EventName="Click">
-									<Interactions:CallMethodAction MethodName="RestoreFoldersInGrid"
-																   TargetObject="{Binding Mode=OneWay}" />
-								</Interactions:EventTriggerBehavior>
-							</Interactivity:Interaction.Behaviors>
-						</HyperlinkButton>
-						<TextBlock Text=""
-								   x:Name="NoPhotos"
-								   x:Uid="NoPhotosFound"
-								   RelativePanel.Below="GetBack"
-								   Visibility="{Binding IsNoItemsToShow, Converter={StaticResource bool2Visibility}}"/>
-						<GridView Name="FoldersToShowOriginal"
-								  RelativePanel.Below="NoPhotos"
-								  SelectionMode="Single"
-								  MinWidth="180"
-								  MinHeight="5"
-								  Margin="15"
-								  IsItemClickEnabled="True"
-								  ItemsSource="{Binding Source={StaticResource PathCollections}}"
-								  >
-							<!--ItemTemplate="{StaticResource FolderStyle}"-->
-							<Interactivity:Interaction.Behaviors>
+						<RelativePanel Grid.Row="2">
 
-								<Interactions:EventTriggerBehavior EventName="ItemClick">
+							<HyperlinkButton x:Name="GetBack"
+											 Margin="0,15,0,0"
+											 Content="GET back"
+											 MinHeight="10"
+											 ClickMode="Release"
+											 Visibility="{Binding IsFolderDived, Converter={StaticResource bool2Visibility}}">
+								<Interactivity:Interaction.Behaviors>
+									<Interactions:EventTriggerBehavior EventName="Click">
+										<Interactions:CallMethodAction MethodName="RestoreFoldersInGrid"
+																	   TargetObject="{Binding Mode=OneWay}" />
+									</Interactions:EventTriggerBehavior>
+								</Interactivity:Interaction.Behaviors>
+							</HyperlinkButton>
+							<TextBlock Text=""
+									   x:Name="NoPhotos"
+									   x:Uid="NoPhotosFound"
+									   RelativePanel.Below="GetBack"
+									   Visibility="{Binding IsNoItemsToShow, Converter={StaticResource bool2Visibility}}" />
+							<GridView Name="FoldersToShowOriginal"
+									  RelativePanel.Below="NoPhotos"
+									  SelectionMode="Single"
+									  MinWidth="180"
+									  MinHeight="5"
+									  Margin="15"
+									  IsItemClickEnabled="True"
+									  ItemsSource="{Binding Source={StaticResource PathCollections}}">
+								<!--ItemTemplate="{StaticResource FolderStyle}"-->
+								<Interactivity:Interaction.Behaviors>
 
-									<Interactions:CallMethodAction MethodName="ClickFoldersInGrid"
-																   TargetObject="{Binding Mode=OneWay}" />
+									<Interactions:EventTriggerBehavior EventName="ItemClick">
 
-								</Interactions:EventTriggerBehavior>
-							</Interactivity:Interaction.Behaviors>
+										<Interactions:CallMethodAction MethodName="ClickFoldersInGrid"
+																	   TargetObject="{Binding Mode=OneWay}" />
 
-							<GridView.ItemTemplate>
-								<DataTemplate>
-									<Grid Height="120"
-			  Width="320">
-									<Image Source="/Assets/Square150x150Logo.scale-200.png"
-										   Stretch="UniformToFill"
-										   VerticalAlignment="Center" />
-										<!--TODO: add picts-->
-										<Border Grid.Row="0">
-										<Border.Background>
-											<media:BackdropBlurBrush Amount="9" />
+									</Interactions:EventTriggerBehavior>
+								</Interactivity:Interaction.Behaviors>
 
+								<GridView.ItemTemplate>
+									<DataTemplate>
+										<Grid Height="120"
+											  Width="320">
+											<Image Source="/Assets/Square150x150Logo.scale-200.png"
+												   Stretch="UniformToFill"
+												   VerticalAlignment="Center" />
+											<!--TODO: add picts-->
+											<Border Grid.Row="0">
+												<Border.Background>
+													<media:BackdropBlurBrush Amount="9" />
 
 
-										</Border.Background>
-									</Border>
 
-									<Grid>
-										<Grid.RowDefinitions>
-											<RowDefinition Height="*" />
-											<RowDefinition Height="Auto" />
+												</Border.Background>
+											</Border>
 
-										</Grid.RowDefinitions>
+											<Grid>
+												<Grid.RowDefinitions>
+													<RowDefinition Height="*" />
+													<RowDefinition Height="Auto" />
+
+												</Grid.RowDefinitions>
 
 
-										<Grid Background="{ThemeResource SystemControlAcrylicElementBrush}"
-											  Grid.Row="1">
-											<Grid.RowDefinitions>
-												<RowDefinition Height="*" />
-												<RowDefinition Height="Auto" />
+												<Grid Background="{ThemeResource SystemControlAcrylicElementBrush}"
+													  Grid.Row="1">
+													<Grid.RowDefinitions>
+														<RowDefinition Height="*" />
+														<RowDefinition Height="Auto" />
 
-											</Grid.RowDefinitions>
-											<Grid.ColumnDefinitions>
-												<ColumnDefinition Width="250" />
-												<ColumnDefinition Width="*" />
-											</Grid.ColumnDefinitions>
-											<StackPanel x:Name="DescriptionPlace"
-														Orientation="Vertical"
-														Margin="10,10,30,10"
-														Grid.Row="1">
-												<TextBlock Text="{Binding FolderDisplayName}"
-														   Style="{ThemeResource BaseTextBlockStyle}" />
-												<TextBlock Text="{Binding FolderPath}"
-														   FontSize="12"
-														   HorizontalAlignment="Left"
-														   Style="{ThemeResource BodyTextBlockStyle}"
-														   TextWrapping="NoWrap"
-														   Width="{Binding Width,ElementName=DescriptionPlace}"
-														   TextTrimming="WordEllipsis" />
-											</StackPanel>
-											<Viewbox MaxHeight="25"
-													 MaxWidth="25"
-													 Grid.Column="1"
-													 Grid.Row="1">
+													</Grid.RowDefinitions>
+													<Grid.ColumnDefinitions>
+														<ColumnDefinition Width="250" />
+														<ColumnDefinition Width="*" />
+													</Grid.ColumnDefinitions>
+													<StackPanel x:Name="DescriptionPlace"
+																Orientation="Vertical"
+																Margin="10,10,30,10"
+																Grid.Row="1">
+														<TextBlock Text="{Binding FolderDisplayName}"
+																   Style="{ThemeResource BaseTextBlockStyle}" />
+														<TextBlock Text="{Binding FolderPath}"
+																   FontSize="12"
+																   HorizontalAlignment="Left"
+																   Style="{ThemeResource BodyTextBlockStyle}"
+																   TextWrapping="NoWrap"
+																   Width="{Binding Width,ElementName=DescriptionPlace}"
+																   TextTrimming="WordEllipsis" />
+													</StackPanel>
+													<Viewbox MaxHeight="25"
+															 MaxWidth="25"
+															 Grid.Column="1"
+															 Grid.Row="1">
 
-												<FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}"
-														  Glyph="&#xE838;" />
-											</Viewbox>
+														<FontIcon FontFamily="{StaticResource SymbolThemeFontFamily}"
+																  Glyph="&#xE838;" />
+													</Viewbox>
+												</Grid>
+											</Grid>
 										</Grid>
-									</Grid>
-				</Grid>
-				</DataTemplate>
-							</GridView.ItemTemplate>
-						</GridView>
-						<GridView x:Name="FolderPhotos"
-								  IsItemClickEnabled="True"
-								  RelativePanel.Below="FoldersToShowOriginal"
-								  Margin="15"
-								  ItemsSource="{Binding Source={StaticResource PIctsInFolder}}">
-							<Interactivity:Interaction.Behaviors>
-								<Interactions:EventTriggerBehavior EventName="ItemClick">
+									</DataTemplate>
+								</GridView.ItemTemplate>
+							</GridView>
+							<GridView x:Name="FolderPhotos"
+									  IsItemClickEnabled="True"
+									  RelativePanel.Below="FoldersToShowOriginal"
+									  Margin="15"
+									  ItemsSource="{Binding Source={StaticResource PIctsInFolder}}">
+								<Interactivity:Interaction.Behaviors>
+									<Interactions:EventTriggerBehavior EventName="ItemClick">
 
-									<Interactions:CallMethodAction MethodName="ClickPictInGrid"
-																   TargetObject="{Binding Mode=OneWay}" />
+										<Interactions:CallMethodAction MethodName="ClickPictInGrid"
+																	   TargetObject="{Binding Mode=OneWay}" />
 
-								</Interactions:EventTriggerBehavior>
-							</Interactivity:Interaction.Behaviors>
-							<GridView.ItemTemplate>
-								<DataTemplate>
-									<Image Source="{Binding thumbnail,Mode=OneWay, Converter={StaticResource ThumbnailToPict}}"
-										   Stretch="Uniform"
-										   Margin="5" Height="100" />
-								</DataTemplate>
-							</GridView.ItemTemplate>
-						</GridView>
-					</RelativePanel>
-				</Grid>
+									</Interactions:EventTriggerBehavior>
+								</Interactivity:Interaction.Behaviors>
+								<GridView.ItemTemplate>
+									<DataTemplate>
+										<Image Source="{Binding thumbnail,Mode=OneWay, Converter={StaticResource ThumbnailToPict}}"
+											   Stretch="Uniform"
+											   Margin="5"
+											   Height="100" />
+									</DataTemplate>
+								</GridView.ItemTemplate>
+							</GridView>
+						</RelativePanel>
+					</Grid>
+				</ScrollViewer>
 			</PivotItem>
 		</Pivot>
 

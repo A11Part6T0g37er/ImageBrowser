@@ -272,6 +272,12 @@
   <ItemGroup>
     <PRIResource Include="Strings\uk-UA\Resources.resw" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="BackgroundTaskApp\BackgroundTaskApp.csproj">
+      <Project>{4122962c-58d3-40b3-a37c-997cb31c78a0}</Project>
+      <Name>BackgroundTaskApp</Name>
+    </ProjectReference>
+  </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
   </PropertyGroup>
