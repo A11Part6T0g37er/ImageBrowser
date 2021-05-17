@@ -47,7 +47,7 @@
 								</Storyboard>-->
 							</VisualState>
 							<VisualState x:Name="Pressed">
-								<Storyboard>
+								<!--<Storyboard>
 									<ObjectAnimationUsingKeyFrames Storyboard.TargetName="Border"
 																   Storyboard.TargetProperty="Background">
 										<DiscreteObjectKeyFrame KeyTime="0"
@@ -58,7 +58,7 @@
 										<DiscreteObjectKeyFrame KeyTime="0"
 																Value="{ThemeResource ButtonPressedForegroundThemeBrush}" />
 									</ObjectAnimationUsingKeyFrames>
-								</Storyboard>
+								</Storyboard>-->
 							</VisualState>
 							<VisualState x:Name="Disabled">
 								<Storyboard>
@@ -101,7 +101,7 @@
 							Background="{TemplateBinding Background}"
 							BorderBrush="{TemplateBinding BorderBrush}"
 							BorderThickness="{TemplateBinding BorderThickness}"
-							Margin="3">
+							Margin="0">
 						<ContentPresenter x:Name="ContentPresenter"
 										  Content="{TemplateBinding Content}"
 										  ContentTransitions="{TemplateBinding ContentTransitions}"

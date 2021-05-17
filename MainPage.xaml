@@ -466,6 +466,7 @@
 								HorizontalAlignment="Left"
 								Height="120"
 								Width="270"
+								
 								Background="#00adef"
 								Style="{StaticResource FolderAddButton}"
 								Command="{Binding OpenFoldersCommand}">
@@ -486,7 +487,7 @@
 											Margin="0,0,30,0"
 											Grid.Row="1">
 									<TextBlock Text=""
-											   x:Uid="addFolder" />
+											   x:Uid="addFolder"/>
 									<TextBlock Text=""
 											   x:Uid="addFolderMore"
 											   FontSize="12"
@@ -526,7 +527,7 @@
 									  SelectionMode="Single"
 									  MinWidth="180"
 									  MinHeight="5"
-									  Margin="15"
+									  Margin="0,15,0,0"
 									  IsItemClickEnabled="True"
 									  ItemsSource="{Binding Source={StaticResource PathCollections}}">
 								<!--ItemTemplate="{StaticResource FolderStyle}"-->

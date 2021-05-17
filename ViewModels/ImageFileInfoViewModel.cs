@@ -322,7 +322,7 @@ namespace ImageBrowser.ViewModels
 
             var arg = parameter as Windows.UI.Xaml.Controls.ItemClickEventArgs;
             var item = arg.ClickedItem as FolderInfoModel;
-
+            IsNoItemsToShow = false;
             IsFolderDived = true;
             FoldersItem.foldersPath.Clear();
 
@@ -347,8 +347,11 @@ namespace ImageBrowser.ViewModels
                 }
                     return;
             }
-            IsNoItemsToShow = true;
-
+            else
+            {
+                if(FoldersItem.foldersPath.Count<=0)
+                IsNoItemsToShow = true; 
+            }
 
         }
 
