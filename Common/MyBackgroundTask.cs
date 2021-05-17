@@ -10,6 +10,7 @@ namespace ImageBrowser.Common
 {
    public sealed class MyBackgroundTask : IBackgroundTask
     {
+        // TODO: Support your app with background tasks
         public void Run(IBackgroundTaskInstance taskInstance)
         {
             SendToast("Hi this is background Task");

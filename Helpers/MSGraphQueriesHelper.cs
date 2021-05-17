@@ -105,7 +105,7 @@ namespace ImageBrowser.Helpers
                 {
                     await Task.Run(async () => requestMessage.Headers.Authorization = new AuthenticationHeaderValue("bearer", await SignInUserAndGetTokenUsingMSAL(Scopes)));
                 }));
-            SetProperty(ref UserSignedOut, true);
+           // SetProperty(ref UserSignedOut, true);
             return await Task.FromResult(graphClient).ConfigureAwait(false);
         }
 
@@ -136,6 +136,7 @@ namespace ImageBrowser.Helpers
             {
                 authResult = await publicClientApp.AcquireTokenSilent(scopes, firstAccount)
                                                   .ExecuteAsync();
+               
             }
             catch (MsalUiRequiredException ex)
             {
@@ -145,8 +146,10 @@ namespace ImageBrowser.Helpers
                 authResult = await publicClientApp.AcquireTokenInteractive(scopes)
                                                   .ExecuteAsync()
                                                   .ConfigureAwait(false);
+                
             }
 
+            
             return authResult.AccessToken;
         }
 

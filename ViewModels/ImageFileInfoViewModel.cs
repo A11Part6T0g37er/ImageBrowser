@@ -151,7 +151,8 @@ namespace ImageBrowser.ViewModels
             set
             {
 
-                SetValue(StatusProperty, MSGraphQueriesHelper.UserSignedOut);
+              //  SetValue(StatusProperty, MSGraphQueriesHelper.UserSignedOut);
+                SetValue(StatusProperty, value);
             }
         }
 
@@ -417,18 +418,20 @@ namespace ImageBrowser.ViewModels
                     GraphServiceClient graphClient = await MSGraphQueriesHelper.SignInAndInitializeGraphServiceClient();
                     // Call the /me endpoint of Graph
                     User graphUser = await graphClient.Me.Request().GetAsync();
-
                     ResultText = "Display Name: " + graphUser.UserPrincipalName + "\nid: " + graphUser.Id;
+                    IsUserSignedOut = true; // TODO: delete
                 }
                 catch (MsalException msalEx)
                 {
                     Trace.WriteLine($"Error Acquiring Token:{System.Environment.NewLine}{msalEx}");
                     ResultText = $"Error Acquiring Token:{System.Environment.NewLine}{msalEx}";
+                    
                 }
                 catch (Exception ex)
                 {
                     Trace.WriteLine($"Error Acquiring Token Silently:{System.Environment.NewLine}{ex}");
                     ResultText = $"Error Acquiring Token Silently:{System.Environment.NewLine}{ex}";
+                    IsUserSignedOut = false; // TODO: delete
                     return;
                 }
             };
@@ -447,7 +450,7 @@ namespace ImageBrowser.ViewModels
                 {
                     await MSGraphQueriesHelper.SingOutMSGraphAccount(firstAccount).ConfigureAwait(false);
                     string message = LocalizationHelper.GetLocalizedStrings("normalSignOut");
-
+                    IsUserSignedOut = false;
                     ResultText = UserSignedOutNormal;
                     Trace.WriteLine("From ImageViewModel");
 
