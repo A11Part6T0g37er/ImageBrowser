@@ -30,5 +30,27 @@ namespace ImageBrowser.Helpers
                 return info;
             }
         }
+        public static async Task<BitmapImage> GetImageSourceAsync(StorageFile ImageFile)
+        {
+            using (IRandomAccessStream fileStream = await ImageFile.OpenReadAsync())
+            {
+                // Create a bitmap to be the image source.
+                var imageSource = new BitmapImage();
+                imageSource.SetSource(fileStream);
+
+                return imageSource;
+            }
+        }
+
+        public static async Task<BitmapImage> GetImageThumbnailAsync(StorageFile ImageFile)
+        {
+            var thumbnail = await ImageFile.GetThumbnailAsync(ThumbnailMode.PicturesView);
+            // Create a bitmap to be the image source.
+            BitmapImage bitmapImage = new BitmapImage();
+            bitmapImage.SetSource(thumbnail);
+            thumbnail.Dispose();
+
+            return bitmapImage;
+        }
     }
 }

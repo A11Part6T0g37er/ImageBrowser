@@ -9,8 +9,23 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto"/>
+			
+			<RowDefinition Height="*"/>
+		</Grid.RowDefinitions>
+		
+		<StackPanel Orientation="Horizontal">
+			<Button VerticalAlignment="Top"
+					HorizontalAlignment="Left"
+					Style="{StaticResource NavigationBackButtonNormalStyle}"
+					Click="GoHome_Click" />
+			<TextBlock x:Name="TargetName"
+					   Grid.Row="0"
+					   
+					   TextWrapping="Wrap" />
+		</StackPanel>
 		<Image x:Name="targetImage"
-			   Stretch="Uniform" />
-		<TextBlock x:Name="TargetName"/>
+			   Stretch="Uniform"  Grid.Row="1" />
 	</Grid>
 </Page>

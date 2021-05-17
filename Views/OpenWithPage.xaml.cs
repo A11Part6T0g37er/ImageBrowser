@@ -1,17 +1,22 @@
-﻿using System;
+﻿using ImageBrowser.Helpers;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
 using Windows.ApplicationModel.Activation;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Storage;
+using Windows.Storage.Streams;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI.Xaml.Navigation;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
@@ -19,7 +24,7 @@ using Windows.UI.Xaml.Navigation;
 namespace ImageBrowser.Views
 {
     /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
+    /// Page to render file with picture extensions is clicked from file Explorer.
     /// </summary>
     public sealed partial class OpenWithPage : Page
     {
@@ -28,29 +33,36 @@ namespace ImageBrowser.Views
             this.InitializeComponent();
         }
 
-        protected override void OnNavigatedTo(NavigationEventArgs e)
+        protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
-            //----------------< OnNavigatedTo() >----------------
-            //* when opened by file-extension with arguments
+         
+            // when opened by file-extension with arguments
             base.OnNavigatedTo(e);
-            var args = e.Parameter as Windows.ApplicationModel.Activation.IActivatedEventArgs;
-            if (args != null)
-            {
-                if (args.Kind == Windows.ApplicationModel.Activation.ActivationKind.File)
-                {
-                    //--< IsOpened by File >--
-                    //-< get FilePath >-
-                    var fileArgs = args as Windows.ApplicationModel.Activation.FileActivatedEventArgs;
-                    string strFilePath = fileArgs.Files[0].Path;
-                    //-< get FilePath >-
+            var args = e?.Parameter as Windows.ApplicationModel.Activation.IActivatedEventArgs;
 
-                    //< show >
-                    TargetName.Text = strFilePath;
-                    //</ show >
-                    //--</ IsOpened by File >
+            if (args?.Kind == Windows.ApplicationModel.Activation.ActivationKind.File)
+            {
+
+                var fileArgs = args as Windows.ApplicationModel.Activation.FileActivatedEventArgs;
+                string strFilePath = fileArgs.Files[0].Path;
+                StorageFile firstFile = (StorageFile)fileArgs.Files[0];
+
+                using (IRandomAccessStream fileStream = await firstFile.OpenReadAsync())
+                {
+                    // Create a bitmap to be the image source.
+                    var imageSource = new BitmapImage();
+                    imageSource.SetSource(fileStream);
+
+                    targetImage.Source = imageSource;
                 }
+
+                TargetName.Text = strFilePath;
             }
-            //----------------</ OnNavigatedTo() >----------------
+        }      
+
+        private void GoHome_Click(object sender, RoutedEventArgs e)
+        {
+            this.Frame.Navigate(typeof(MainPage), null);
         }
     }
 }

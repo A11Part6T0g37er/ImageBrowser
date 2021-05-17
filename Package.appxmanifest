@@ -53,6 +53,7 @@
             <uap:Logo>Assets\Placeholder.png</uap:Logo>
             <uap:DisplayName>image-browser</uap:DisplayName>
             <uap:InfoTip>Preview picts.</uap:InfoTip>
+            <uap:EditFlags OpenIsSafe="true"/>
           </uap:FileTypeAssociation>
         </uap:Extension>
       </Extensions>

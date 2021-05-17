@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ImageBrowser.Views;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -141,7 +142,7 @@ namespace ImageBrowser
 
 
             var rootFrame = new Frame();
-            rootFrame.Navigate(typeof(DetailPage), args);
+            rootFrame.Navigate(typeof(OpenWithPage), args);
             Window.Current.Content = rootFrame;
             Window.Current.Activate();
         }
