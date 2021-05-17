@@ -417,7 +417,9 @@
 									<TextBlock Text="{x:Bind ImageDimensions, Mode=OneWay}"
 											   Grid.Row="1" />
 									<Image Source="{x:Bind thumbnail,Mode=OneWay, Converter={StaticResource ThumbnailToPict}}"
-										   Stretch="UniformToFill"
+
+										   Stretch="Uniform"
+
 										   Height="250"
 										   Grid.Row="2"
 										   Margin="0,5,0,10" />
@@ -669,11 +671,12 @@
 					Orientation="Horizontal"
 					RelativePanel.RightOf="TopButtons"
 					RelativePanel.AlignTopWith="TopButtons"
+					RelativePanel.AlignRightWith="TopButtons"
 					HorizontalAlignment="Center"
 					RelativePanel.AlignRightWithPanel="True"
-					Margin="40,0,0,0">
+					Margin="10,0,0,0">
 			<CommandBar DefaultLabelPosition="Right"
-						IsOpen="True">
+						IsOpen="True" >
 
 				<AppBarButton Icon="Download"
 							  x:Name="signingOneDrive"
@@ -701,7 +704,7 @@
 				<CommandBar.Content>
 					<StackPanel>
 						<TextBlock x:Name="ResultText"
-								   Text="{Binding ResultText,Mode=TwoWay}" />
+								   Text="{Binding ResultText,Mode=TwoWay}" MaxLines="2"/>
 								   
 					</StackPanel>
 				</CommandBar.Content>
