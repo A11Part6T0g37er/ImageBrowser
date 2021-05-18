@@ -35,7 +35,7 @@ namespace ImageBrowser.ViewModels
         private FoldersItemsCollection foldersItem = new FoldersItemsCollection();
         public FoldersItemsCollection FoldersItem { get => foldersItem; }
 
-        public FoldersItemsCollection VaultStorageOfFolders;
+
         public List<FolderInfoModel> MirorData;
 
 
@@ -151,7 +151,7 @@ namespace ImageBrowser.ViewModels
             set
             {
 
-              //  SetValue(StatusProperty, MSGraphQueriesHelper.UserSignedOut);
+                //  SetValue(StatusProperty, MSGraphQueriesHelper.UserSignedOut);
                 SetValue(StatusProperty, value);
             }
         }
@@ -345,12 +345,12 @@ namespace ImageBrowser.ViewModels
                 {
                     FoldersItem.PictsFromFolders.Add(await ImageFileHelper.LoadImageInfo(pictOfFolder));
                 }
-                    return;
+                return;
             }
             else
             {
-                if(FoldersItem.foldersPath.Count<=0)
-                IsNoItemsToShow = true; 
+                if (FoldersItem.foldersPath.Count <= 0)
+                    IsNoItemsToShow = true;
             }
 
         }
@@ -428,7 +428,7 @@ namespace ImageBrowser.ViewModels
                 {
                     Trace.WriteLine($"Error Acquiring Token:{System.Environment.NewLine}{msalEx}");
                     ResultText = $"Error Acquiring Token:{System.Environment.NewLine}{msalEx}";
-                    
+
                 }
                 catch (Exception ex)
                 {
@@ -481,7 +481,7 @@ namespace ImageBrowser.ViewModels
                     OneDriveInfoText = resourceLoader.GetString("CountFiles/Text").ToString() + MSGraphQueriesHelper.CountFiles();
                 }
 
-                await PopulateObservableCollectionOfImages(downloadedFiles);
+                await PopulateObservableCollectionOfImages(downloadedFiles).ConfigureAwait(false);
             };
         }
 
@@ -500,7 +500,7 @@ namespace ImageBrowser.ViewModels
             picker.FileTypeFilter.Add(".jpeg");
             picker.FileTypeFilter.Add(".png");
             IReadOnlyCollection<StorageFile> files = await picker.PickMultipleFilesAsync();
-            return await PopulateObservableCollectionOfImages(files);
+            return await PopulateObservableCollectionOfImages(files).ConfigureAwait(false);
         }
 
         private Action OpenFoldersAsync()
@@ -534,15 +534,15 @@ namespace ImageBrowser.ViewModels
             if (folder != null)
             {
                 Windows.Storage.AccessCache.StorageApplicationPermissions.MostRecentlyUsedList.AddOrReplace("PickedFolderToken", folder);
-                
+
                 var Resultsubfolders = folder.CreateFolderQueryWithOptions(queryOptions);
                 var subFolders = await Resultsubfolders.GetFoldersAsync();
 
                 FoldersItem.foldersPath.Add(new FolderInfoModel() { FolderPath = folder.Path, FolderDisplayName = folder.DisplayName, FolderList = subFolders });
-                FoldersItem.CurentFolder = folder;               
+                FoldersItem.CurentFolder = folder;
 
                 queryOptions.FolderDepth = FolderDepth.Deep;
-               
+
 
                 queryResult = folder.CreateFileQueryWithOptions(queryOptions);
 
@@ -619,23 +619,22 @@ namespace ImageBrowser.ViewModels
         {
             if (files.Count <= 0)
             { return null; }
-            /*else
-            {*/
 
-                ObservableCollection.Clear();
-                GroupedImagesInfos.Clear();
-                foreach (var file in files)
-                {
-                    ImageFileInfo item = await ImageFileHelper.LoadImageInfo(file);
 
-                    ObservableCollection.Add(item);
-                }
-            /*}*/
+            ObservableCollection.Clear();
+            GroupedImagesInfos.Clear();
+            foreach (var file in files)
+            {
+                ImageFileInfo item = await ImageFileHelper.LoadImageInfo(file);
+
+                ObservableCollection.Add(item);
+            }
+
             IsAnyObservableItem = HaveAnyItems();
             InitializeGroupingOfViewModel();
 
 
-             return observableCollection;
+            return observableCollection;
         }
 
         public void FlushObservableCollectionOfImages()

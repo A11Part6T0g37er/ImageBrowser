@@ -132,7 +132,6 @@
     <Compile Include="Common\Converters\BooleanToVisibilityConverter.cs" />
     <Compile Include="Common\Converters\ThumbnailToImageConverter.cs" />
     <Compile Include="Common\DefaultRedirectUri.cs" />
-    <Compile Include="Common\MyBackgroundTask.cs" />
     <Compile Include="Common\RelayCommand.cs" />
     <Compile Include="DetailPage.xaml.cs">
       <DependentUpon>DetailPage.xaml</DependentUpon>
@@ -163,7 +162,6 @@
     </Compile>
     <Compile Include="ViewModels\BindableBase.cs" />
     <Compile Include="ViewModels\FoldersItemsCollection.cs" />
-    <Compile Include="ViewModels\FoldersViewModel.cs" />
     <Compile Include="ViewModels\ImageFileInfoViewModel.cs" />
     <Compile Include="ViewModels\LanguageViewModel.cs" />
     <Compile Include="ViewModels\RelayMultipleCommand.cs" />
@@ -200,10 +198,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Resources\FolderAddButton.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Resources\FolderViewTemplate.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
