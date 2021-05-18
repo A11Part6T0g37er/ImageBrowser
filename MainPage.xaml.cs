@@ -44,6 +44,10 @@ namespace ImageBrowser
 
             // Required for go to previous page without loosing its state
             NavigationCacheMode = NavigationCacheMode.Enabled;
+
+
+
+            RegisterTask();
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -54,12 +58,16 @@ namespace ImageBrowser
 
         private async void Start_Click(object sender, RoutedEventArgs e)
         {
-            
-           
+            RegisterTask();
+
+        }
+
+        private void RegisterTask()
+        {
             ApplicationData.Current.LocalSettings.Values["number"] = 3; // число для подсчета факториала
             var taskList = BackgroundTaskRegistration.AllTasks.Values;
             List<object> sht = new List<object>();
-           
+
             var task = taskList.FirstOrDefault(i => i.Name == taskName);
             task?.Unregister(true); // must to clear, Bg task lives throught life-cycle
             if (task == null)
@@ -67,22 +75,21 @@ namespace ImageBrowser
                 var taskBuilder = new BackgroundTaskBuilder();
                 taskBuilder.Name = taskName;
                 taskBuilder.TaskEntryPoint = typeof(BackgroundTaskApp.MyBackgroundTask).ToString();
-            //    taskBuilder.SetTrigger(new TimeTrigger(5, false));
-              //  taskBuilder.AddCondition(new SystemCondition(SystemConditionType.InternetNotAvailable));
+                taskBuilder.SetTrigger(new TimeTrigger(5, false)); // TODO: wrong values
+                taskBuilder.AddCondition(new SystemCondition(SystemConditionType.InternetNotAvailable));
                 ApplicationTrigger appTrigger = new ApplicationTrigger();
-                taskBuilder.SetTrigger(appTrigger);
+                //taskBuilder.SetTrigger(appTrigger);
 
                 task = taskBuilder.Register();
 
                 task.Progress += Task_Progress;
                 task.Completed += Task_Completed;
 
-                await appTrigger.RequestAsync();
+                //  await appTrigger.RequestAsync();
 
                 startButton.IsEnabled = false;
                 stopButton.IsEnabled = true;
             }
-           
         }
 
         private void StopButton_Click(object sender, RoutedEventArgs e)
