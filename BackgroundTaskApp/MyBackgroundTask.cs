@@ -38,8 +38,8 @@ namespace BackgroundTaskApp
         private async Task DoWork(IBackgroundTaskInstance taskInstance)
         {
             // получаем локальные настройки приложения
+            
             var settings = ApplicationData.Current.LocalSettings;
-
             int number = (int)settings.Values["number"];
              long result = 1;
             for (uint progress = 1; progress <= number; progress++)
@@ -50,7 +50,7 @@ namespace BackgroundTaskApp
                 }
 
                 result *= progress;
-                await Task.Delay(800); // имитация долгого выполнения
+                await Task.Delay(1500); // имитация долгого выполнения
                                         // рассчет процентов выполнения
                 taskInstance.Progress = (uint)(progress * 100 / number); // 1 * 100 / 6
             }

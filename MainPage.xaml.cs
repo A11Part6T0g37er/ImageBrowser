@@ -3,6 +3,7 @@ using ImageBrowser.Helpers;
 using ImageBrowser.ViewModels;
 using Microsoft.Graph;
 using Microsoft.Identity.Client;
+using Microsoft.Toolkit.Uwp.Notifications;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -53,16 +54,21 @@ namespace ImageBrowser
 
         private async void Start_Click(object sender, RoutedEventArgs e)
         {
-            ApplicationData.Current.LocalSettings.Values["number"] = 16; // число для подсчета факториала
+            
+           
+            ApplicationData.Current.LocalSettings.Values["number"] = 3; // число для подсчета факториала
             var taskList = BackgroundTaskRegistration.AllTasks.Values;
+            List<object> sht = new List<object>();
+           
             var task = taskList.FirstOrDefault(i => i.Name == taskName);
+            task?.Unregister(true); // must to clear, Bg task lives throught life-cycle
             if (task == null)
             {
                 var taskBuilder = new BackgroundTaskBuilder();
                 taskBuilder.Name = taskName;
                 taskBuilder.TaskEntryPoint = typeof(BackgroundTaskApp.MyBackgroundTask).ToString();
-                taskBuilder.SetTrigger(new TimeTrigger(5, false));
-                taskBuilder.AddCondition(new SystemCondition(SystemConditionType.InternetNotAvailable));
+            //    taskBuilder.SetTrigger(new TimeTrigger(5, false));
+              //  taskBuilder.AddCondition(new SystemCondition(SystemConditionType.InternetNotAvailable));
                 ApplicationTrigger appTrigger = new ApplicationTrigger();
                 taskBuilder.SetTrigger(appTrigger);
 
@@ -76,11 +82,18 @@ namespace ImageBrowser
                 startButton.IsEnabled = false;
                 stopButton.IsEnabled = true;
             }
+           
         }
 
         private void StopButton_Click(object sender, RoutedEventArgs e)
         {
             Stop();
+    //        new ToastContentBuilder()
+    //.AddArgument("action", "viewConversation")
+    //.AddArgument("conversationId", 9813)
+    //.AddText("Andrew sent you a picture")
+    //.AddText("Check this out, The Enchantments in Washington!")
+    //.Show();
         }
 
         private void Task_Completed(BackgroundTaskRegistration sender, BackgroundTaskCompletedEventArgs args)
