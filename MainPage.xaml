@@ -662,14 +662,29 @@
 			  RelativePanel.Below="leftControlPanel"
 			  Visibility="{Binding IsAnyObservableItem,Converter={StaticResource bool2visInverse},Mode=TwoWay}"
 			  Margin="20,0,0,0">
-			
-		
+
 			<TextBlock TextWrapping="Wrap"
 					   Text="Nothig here" />
 			<Image Source="/Assets/Square150x150Logo.scale-200.png"
 				   Margin="0,25,0,0"
 				   HorizontalAlignment="Right" />
 		</Grid>
+		<StackPanel Orientation="Vertical"
+					RelativePanel.Above="startingGreetingScreen"
+					RelativePanel.AlignHorizontalCenterWithPanel="True">
+				<TextBlock x:Name="outputBlock" />
+				<StackPanel Grid.Row="1"
+							Orientation="Horizontal"
+							HorizontalAlignment="Center">
+					<Button Name="startButton"
+							Content="Start"
+							Click="Start_Click" />
+					<Button Name="stopButton"
+							IsEnabled="False"
+							Content="Stop"
+							Click="StopButton_Click" />
+				</StackPanel>
+			</StackPanel>
 
 		<StackPanel x:Name="OneDrivePanel"
 					Orientation="Horizontal"
