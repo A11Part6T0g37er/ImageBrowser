@@ -94,7 +94,7 @@ namespace ImageBrowser.Common
             if (defineClickedTheme != null)
             {
                 var p = parameter as Windows.UI.Xaml.FrameworkElement;
-                defineClickedTheme(parameter, p.Tag.ToString());
+                defineClickedTheme(parameter, p?.Tag.ToString());
             }
         }
 

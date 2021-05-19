@@ -422,7 +422,7 @@ namespace ImageBrowser.ViewModels
                     // Call the /me endpoint of Graph
                     User graphUser = await graphClient.Me.Request().GetAsync();
                     ResultText = "Display Name: " + graphUser.UserPrincipalName + "\nid: " + graphUser.Id;
-                    IsUserSignedOut = true; // TODO: delete
+                    IsUserSignedOut = true; 
                 }
                 catch (MsalException msalEx)
                 {
@@ -434,7 +434,7 @@ namespace ImageBrowser.ViewModels
                 {
                     Trace.WriteLine($"Error Acquiring Token Silently:{System.Environment.NewLine}{ex}");
                     ResultText = $"Error Acquiring Token Silently:{System.Environment.NewLine}{ex}";
-                    IsUserSignedOut = false; // TODO: delete
+                    IsUserSignedOut = false; 
                     return;
                 }
             };
@@ -505,7 +505,7 @@ namespace ImageBrowser.ViewModels
 
         private Action OpenFoldersAsync()
         {
-            return async () => OpenFoldersButtonHandler();
+            return async () => await OpenFoldersButtonHandler().ConfigureAwait(false);
         }
 
         #endregion

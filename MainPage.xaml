@@ -299,8 +299,11 @@
 											   HorizontalAlignment="Center"
 											   Grid.Row="0"
 											   Margin="2"
-											   Source="{x:Bind thumbnail,Converter={StaticResource ThumbnailToPict}, Mode=OneWay}"
+											   Source="{x:Bind Thumbnail, Mode=OneWay}"
 											   >
+											<!--Converter={StaticResource ThumbnailToPict},-->
+											
+											
 											   <!--Source="{x:Bind ImagePath, Mode=OneWay}"-->
 											<!--<Image.Source>
 												<BitmapImage UriSource="{x:Bind thumbnail}"
@@ -416,14 +419,14 @@
 											   HorizontalAlignment="Center" />
 									<TextBlock Text="{x:Bind ImageDimensions, Mode=OneWay}"
 											   Grid.Row="1" />
-									<Image Source="{x:Bind thumbnail,Mode=OneWay, Converter={StaticResource ThumbnailToPict}}"
+									<Image Source="{x:Bind Thumbnail,Mode=OneWay}"
 
 										   Stretch="Uniform"
 
 										   Height="250"
 										   Grid.Row="2"
 										   Margin="0,5,0,10" />
-
+<!--, Converter={StaticResource ThumbnailToPict}}-->
 								</Grid>
 							</DataTemplate>
 						</ListView.ItemTemplate>

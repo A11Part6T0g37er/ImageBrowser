@@ -1,28 +1,12 @@
-﻿using ImageBrowser.Common;
-using ImageBrowser.Helpers;
-using ImageBrowser.ViewModels;
-using Microsoft.Graph;
-using Microsoft.Identity.Client;
+﻿using ImageBrowser.Helpers;
 using Microsoft.Toolkit.Uwp.Notifications;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.IO;
 using System.Linq;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Reflection;
-using System.Threading;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.Background;
-using Windows.Foundation;
 using Windows.Storage;
-using Windows.Storage.Pickers;
-using Windows.Storage.Search;
 using Windows.UI.Core;
-using Windows.UI.Popups;
-using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
@@ -47,7 +31,8 @@ namespace ImageBrowser
 
 
 
-            Task.Run(async () => await RegisterTaskAsync().ConfigureAwait(false) );;
+            Task.Run(async () => await RegisterTaskAsync().ConfigureAwait(false));
+            ;
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -58,7 +43,7 @@ namespace ImageBrowser
 
         private async void Start_Click(object sender, RoutedEventArgs e)
         {
-          await  RegisterTaskAsync().ConfigureAwait(false);
+            await RegisterTaskAsync().ConfigureAwait(false);
         }
 
         private async Task RegisterTaskAsync()
@@ -74,8 +59,7 @@ namespace ImageBrowser
                 var taskBuilder = new BackgroundTaskBuilder();
                 taskBuilder.Name = taskName;
                 taskBuilder.TaskEntryPoint = typeof(BackgroundTaskApp.MyBackgroundTask).ToString();
-                //   taskBuilder.SetTrigger(new TimeTrigger(15, false)); 
-                // taskBuilder.SetTrigger(new SystemTrigger(triggerType: SystemTriggerType.InternetAvailable,false));
+
                 ApplicationTrigger appTrigger = new ApplicationTrigger();
                 taskBuilder.SetTrigger(appTrigger);
                 taskBuilder.AddCondition(new SystemCondition(SystemConditionType.InternetAvailable));
@@ -95,6 +79,7 @@ namespace ImageBrowser
         private void StopButton_Click(object sender, RoutedEventArgs e)
         {
             Stop();
+
             new ToastContentBuilder()
     .AddArgument("action", "viewConversation")
     .AddArgument("conversationId", 9813)
@@ -105,14 +90,25 @@ namespace ImageBrowser
 
         private void Task_Completed(BackgroundTaskRegistration sender, BackgroundTaskCompletedEventArgs args)
         {
+
+            CallUIThreadHelper.CallOnUiThreadAsync(() => signingOneDrive.IsEnabled = true);
             var result = ApplicationData.Current.LocalSettings.Values["factorial"];
             var progress = $"Результат: {result}";
             UpdateUI(progress);
             Stop();
+
+            new ToastContentBuilder()
+    .AddArgument("action", "viewConversation")
+    .AddArgument("conversationId", 9813)
+    .AddText("No Internet connection!")
+    .AddText("In order to use OneDrive you need stable connection.")
+    .Show();
         }
 
         private void Task_Progress(BackgroundTaskRegistration sender, BackgroundTaskProgressEventArgs args)
         {
+            CallUIThreadHelper.CallOnUiThreadAsync(() => signingOneDrive.IsEnabled = false);
+
             var progress = $"Progress: {args.Progress} %";
             UpdateUI(progress);
         }

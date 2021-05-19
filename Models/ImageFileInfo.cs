@@ -23,17 +23,18 @@ namespace ImageBrowser
         public string ImagePath { get /*{ return ImageFile.Path.ToString()  }*/; set; }
 
 
-        private StorageItemThumbnail _thumbnail = null;
+        /* private StorageItemThumbnail _thumbnail = null;
 
-        public StorageItemThumbnail thumbnail
-        {
-            get { return _thumbnail; }
-            set
-            {
-                SetProperty(ref _thumbnail, value);
-            }
-        }
-
+         public StorageItemThumbnail Thumbnail
+         {
+             get { return _thumbnail; }
+             set
+             {
+                 SetProperty(ref _thumbnail, value);
+             }
+         }*/
+        private BitmapImage thumbnail;
+        public BitmapImage Thumbnail { get { return thumbnail; }set { SetProperty(ref thumbnail, value); } }
 
         public string ImageFileType { get; private set; }
 
@@ -67,11 +68,11 @@ namespace ImageBrowser
         {
         }
 
-        public ImageFileInfo(string imageName, StorageFile storageFile, ImageProperties imageProperties, string type, StorageItemThumbnail thumbnail)
+        public ImageFileInfo(string imageName, StorageFile storageFile, ImageProperties imageProperties, string type, /*StorageItemThumbnail thumbnail*/ BitmapImage thumbnail)
         {
             ImageName = imageName;
             ImageProperties = imageProperties;
-            this.thumbnail = thumbnail;
+            this.Thumbnail = thumbnail;
             ImageFileType = type;
             ImageFile = storageFile;
         }

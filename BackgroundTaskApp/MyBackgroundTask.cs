@@ -53,7 +53,7 @@ namespace BackgroundTaskApp
                 }
 
                 result *= progress;
-                await Task.Delay(1500); // имитация долгого выполнения
+                await Task.Delay(400); // имитация долгого выполнения
                                         // рассчет процентов выполнения
                 taskInstance.Progress = (uint)(progress * 100 / number); // 1 * 100 / 6
             }

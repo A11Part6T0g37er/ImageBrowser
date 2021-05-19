@@ -44,9 +44,9 @@ namespace ImageBrowser.Helpers
         /// <returns>Returnsl List of files.</returns>
         public static async Task<List<StorageFile>> DownloadAllFilesFromOneDrive()
         {
-            GraphServiceClient grSC = await SignInAndInitializeGraphServiceClient();
+            GraphServiceClient grSC = await SignInAndInitializeGraphServiceClient().ConfigureAwait(false);
 
-            search = await GetFilesByQuery(grSC);
+            search = await GetFilesByQuery(grSC).ConfigureAwait(false);
 
             List<DriveItem> oneDriveItems = search.CurrentPage.Select(x => x).ToList();
             StorageFile storageFile;
@@ -59,7 +59,7 @@ namespace ImageBrowser.Helpers
                 var itemName = item.Name;
                 newPath = await ImageDownloadHelper.DownloadImage(
                     itemUrl,
-                    itemName);
+                    itemName).ConfigureAwait(false);
                 storageFile = await StorageFile.GetFileFromApplicationUriAsync(new Uri(newPath));
                 downloadedFiles.Add(storageFile);
             }
@@ -103,7 +103,7 @@ namespace ImageBrowser.Helpers
             GraphServiceClient graphClient = new GraphServiceClient(MSGraphURL,
                 new DelegateAuthenticationProvider(async (requestMessage) =>
                 {
-                    await Task.Run(async () => requestMessage.Headers.Authorization = new AuthenticationHeaderValue("bearer", await SignInUserAndGetTokenUsingMSAL(Scopes)));
+                    await Task.Run(async () => requestMessage.Headers.Authorization = new AuthenticationHeaderValue("bearer", await SignInUserAndGetTokenUsingMSAL(Scopes).ConfigureAwait(false))).ConfigureAwait(false);
                 }));
            // SetProperty(ref UserSignedOut, true);
             return await Task.FromResult(graphClient).ConfigureAwait(false);
@@ -135,7 +135,7 @@ namespace ImageBrowser.Helpers
             try
             {
                 authResult = await publicClientApp.AcquireTokenSilent(scopes, firstAccount)
-                                                  .ExecuteAsync();
+                                                  .ExecuteAsync().ConfigureAwait(false);
                
             }
             catch (MsalUiRequiredException ex)
@@ -163,7 +163,7 @@ namespace ImageBrowser.Helpers
             var search = await grSC.Me.Drive.Root.ItemWithPath("/Pictures")
                 .Search("jpg")
                 .Request(queryOptions)
-                .GetAsync();
+                .GetAsync().ConfigureAwait(false);
             return search;
         }
 
