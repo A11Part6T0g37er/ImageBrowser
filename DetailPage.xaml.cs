@@ -23,10 +23,11 @@ namespace ImageBrowser
 
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
-            item = e.Parameter as ImageFileInfo;
+            item = e?.Parameter as ImageFileInfo;
 
-            ImageSource = await item.GetImageSourceAsync().ConfigureAwait(true);
+          //  ImageSource = await item.GetImageSourceAsync().ConfigureAwait(true);
 
+            ImageSource = await Helpers.ImageFileHelper.GetImageSourceAsync(item?.ImageFile).ConfigureAwait(true);
             targetImage.Source = ImageSource;
 
             if (this.Frame.CanGoBack)

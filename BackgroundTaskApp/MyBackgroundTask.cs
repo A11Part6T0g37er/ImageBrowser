@@ -1,18 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using Microsoft.Toolkit.Uwp.Notifications;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.Background;
+using Windows.ApplicationModel.Core;
 using Windows.Storage;
+using Windows.UI.Core;
 
 namespace BackgroundTaskApp
 {
     public sealed class MyBackgroundTask : IBackgroundTask
     {
         volatile bool _cancelRequested = false; // прервана ли задача
-
+        BackgroundTaskDeferral _deferral;  // Note: defined at class scope so that we can mark it complete inside the OnCancel() callback if we choose to support cancellation
         public async void Run(IBackgroundTaskInstance taskInstance)
         {
             // оценка стоимости выполнения задачи для приложения
@@ -37,14 +37,25 @@ namespace BackgroundTaskApp
         }
         private async Task DoWork(IBackgroundTaskInstance taskInstance)
         {
-           
+            await
+             CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+             {
+                 new ToastContentBuilder()
+                    .AddArgument("action", "viewConversation")
+                    .AddArgument("conversationId", 9813)
+                    .AddText("You background task!")
+                    .AddText("Background task has been waorked.")
+                    .Show();
+             }
+             );
+
 
 
             // получаем локальные настройки приложения
 
             var settings = ApplicationData.Current.LocalSettings;
             int number = (int)settings.Values["number"];
-             long result = 1;
+            long result = 1;
             for (uint progress = 1; progress <= number; progress++)
             {
                 if (_cancelRequested) // если задача прервана, выходим из цикла
@@ -54,7 +65,7 @@ namespace BackgroundTaskApp
 
                 result *= progress;
                 await Task.Delay(400); // имитация долгого выполнения
-                                        // рассчет процентов выполнения
+                                       // рассчет процентов выполнения
                 taskInstance.Progress = (uint)(progress * 100 / number); // 1 * 100 / 6
             }
 

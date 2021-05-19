@@ -29,10 +29,10 @@ namespace ImageBrowser
             // Required for go to previous page without loosing its state
             NavigationCacheMode = NavigationCacheMode.Enabled;
 
+            signingOneDrive.IsEnabled = false;
 
+            Task.Run(async () => await RegisterTaskAsync().ConfigureAwait(true));
 
-            Task.Run(async () => await RegisterTaskAsync().ConfigureAwait(false));
-            ;
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -43,14 +43,14 @@ namespace ImageBrowser
 
         private async void Start_Click(object sender, RoutedEventArgs e)
         {
-            await RegisterTaskAsync().ConfigureAwait(false);
+            await RegisterTaskAsync();
         }
 
         private async Task RegisterTaskAsync()
         {
             ApplicationData.Current.LocalSettings.Values["number"] = 6; // число для подсчета факториала
             var taskList = BackgroundTaskRegistration.AllTasks.Values;
-            List<object> sht = new List<object>();
+
 
             var task = taskList.FirstOrDefault(i => i.Name == taskName);
             task?.Unregister(true); // must to clear, Bg task lives throught life-cycle
@@ -61,8 +61,10 @@ namespace ImageBrowser
                 taskBuilder.TaskEntryPoint = typeof(BackgroundTaskApp.MyBackgroundTask).ToString();
 
                 ApplicationTrigger appTrigger = new ApplicationTrigger();
-                taskBuilder.SetTrigger(appTrigger);
-                taskBuilder.AddCondition(new SystemCondition(SystemConditionType.InternetAvailable));
+                   taskBuilder.SetTrigger(appTrigger);
+          //     taskBuilder.SetTrigger(new SystemTrigger(SystemTriggerType.NetworkStateChange, false));
+                taskBuilder.AddCondition(new SystemCondition(SystemConditionType.InternetNotAvailable));
+               //TODO: nake it work again
 
                 task = taskBuilder.Register();
 
@@ -70,16 +72,20 @@ namespace ImageBrowser
                 task.Completed += Task_Completed;
 
                 await appTrigger.RequestAsync();
+                await BackgroundExecutionManager.RequestAccessAsync();
+
+                //get network connectivity
+                var temp = Windows.Networking.Connectivity.NetworkInformation.GetInternetConnectionProfile();
 
                 startButton.IsEnabled = false;
                 stopButton.IsEnabled = true;
             }
         }
 
-        private void StopButton_Click(object sender, RoutedEventArgs e)
+        private async void StopButton_Click(object sender, RoutedEventArgs e)
         {
             Stop();
-
+            await CallUIThreadHelper.CallOnUiThreadAsync(() => signingOneDrive.IsEnabled = true).ConfigureAwait(true);
             new ToastContentBuilder()
     .AddArgument("action", "viewConversation")
     .AddArgument("conversationId", 9813)
@@ -88,26 +94,21 @@ namespace ImageBrowser
     .Show();
         }
 
-        private void Task_Completed(BackgroundTaskRegistration sender, BackgroundTaskCompletedEventArgs args)
+        private async void Task_Completed(BackgroundTaskRegistration sender, BackgroundTaskCompletedEventArgs args)
         {
 
-            CallUIThreadHelper.CallOnUiThreadAsync(() => signingOneDrive.IsEnabled = true);
+            await CallUIThreadHelper.CallOnUiThreadAsync(() => signingOneDrive.IsEnabled = false).ConfigureAwait(true);
             var result = ApplicationData.Current.LocalSettings.Values["factorial"];
             var progress = $"Результат: {result}";
             UpdateUI(progress);
             Stop();
 
-            new ToastContentBuilder()
-    .AddArgument("action", "viewConversation")
-    .AddArgument("conversationId", 9813)
-    .AddText("No Internet connection!")
-    .AddText("In order to use OneDrive you need stable connection.")
-    .Show();
+
         }
 
-        private void Task_Progress(BackgroundTaskRegistration sender, BackgroundTaskProgressEventArgs args)
+        private async void Task_Progress(BackgroundTaskRegistration sender, BackgroundTaskProgressEventArgs args)
         {
-            CallUIThreadHelper.CallOnUiThreadAsync(() => signingOneDrive.IsEnabled = false);
+            await CallUIThreadHelper.CallOnUiThreadAsync(() => signingOneDrive.IsEnabled = true).ConfigureAwait(true);
 
             var progress = $"Progress: {args.Progress} %";
             UpdateUI(progress);
