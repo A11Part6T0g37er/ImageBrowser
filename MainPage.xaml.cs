@@ -47,7 +47,7 @@ namespace ImageBrowser
 
 
 
-            RegisterTask();
+            Task.Run(async () => await RegisterTaskAsync().ConfigureAwait(false) );;
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -58,13 +58,12 @@ namespace ImageBrowser
 
         private async void Start_Click(object sender, RoutedEventArgs e)
         {
-            RegisterTask();
-
+          await  RegisterTaskAsync().ConfigureAwait(false);
         }
 
-        private void RegisterTask()
+        private async Task RegisterTaskAsync()
         {
-            ApplicationData.Current.LocalSettings.Values["number"] = 3; // число для подсчета факториала
+            ApplicationData.Current.LocalSettings.Values["number"] = 6; // число для подсчета факториала
             var taskList = BackgroundTaskRegistration.AllTasks.Values;
             List<object> sht = new List<object>();
 
@@ -75,17 +74,18 @@ namespace ImageBrowser
                 var taskBuilder = new BackgroundTaskBuilder();
                 taskBuilder.Name = taskName;
                 taskBuilder.TaskEntryPoint = typeof(BackgroundTaskApp.MyBackgroundTask).ToString();
-                taskBuilder.SetTrigger(new TimeTrigger(5, false)); // TODO: wrong values
-                taskBuilder.AddCondition(new SystemCondition(SystemConditionType.InternetNotAvailable));
+                //   taskBuilder.SetTrigger(new TimeTrigger(15, false)); 
+                // taskBuilder.SetTrigger(new SystemTrigger(triggerType: SystemTriggerType.InternetAvailable,false));
                 ApplicationTrigger appTrigger = new ApplicationTrigger();
-                //taskBuilder.SetTrigger(appTrigger);
+                taskBuilder.SetTrigger(appTrigger);
+                taskBuilder.AddCondition(new SystemCondition(SystemConditionType.InternetAvailable));
 
                 task = taskBuilder.Register();
 
                 task.Progress += Task_Progress;
                 task.Completed += Task_Completed;
 
-                //  await appTrigger.RequestAsync();
+                await appTrigger.RequestAsync();
 
                 startButton.IsEnabled = false;
                 stopButton.IsEnabled = true;
@@ -95,12 +95,12 @@ namespace ImageBrowser
         private void StopButton_Click(object sender, RoutedEventArgs e)
         {
             Stop();
-    //        new ToastContentBuilder()
-    //.AddArgument("action", "viewConversation")
-    //.AddArgument("conversationId", 9813)
-    //.AddText("Andrew sent you a picture")
-    //.AddText("Check this out, The Enchantments in Washington!")
-    //.Show();
+            new ToastContentBuilder()
+    .AddArgument("action", "viewConversation")
+    .AddArgument("conversationId", 9813)
+    .AddText("You have clicked stop!")
+    .AddText("Background task has been aborted.")
+    .Show();
         }
 
         private void Task_Completed(BackgroundTaskRegistration sender, BackgroundTaskCompletedEventArgs args)
