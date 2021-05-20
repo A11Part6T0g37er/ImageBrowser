@@ -534,8 +534,9 @@ namespace ImageBrowser.ViewModels
 			var queryResult = folder?.CreateFileQueryWithOptions(queryOptions);
 			if (folder != null)
 			{
-				//queryResult.ContentsChanged += OnContentsChanged;
-				Windows.Storage.AccessCache.StorageApplicationPermissions.MostRecentlyUsedList.AddOrReplace("PickedFolderToken", folder);
+				
+		   //queryResult.ContentsChanged += OnContentsChanged;
+		   var mru = Windows.Storage.AccessCache.StorageApplicationPermissions.MostRecentlyUsedList.Add(folder,"PickedFolderToken" );
 
 				var Resultsubfolders = folder.CreateFolderQueryWithOptions(queryOptions);
 				var subFolders = await Resultsubfolders.GetFoldersAsync();
