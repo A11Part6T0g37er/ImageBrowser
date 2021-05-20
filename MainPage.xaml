@@ -38,7 +38,7 @@
 							  Source="{Binding GroupedImagesInfos}"
 							  IsSourceGrouped="True" />
 		<CollectionViewSource x:Name="PathCollections"
-							  Source="{Binding FoldersItem.foldersPath}">
+							  Source="{Binding FoldersItem.FoldersPath}">
 			
 		</CollectionViewSource>
 		<CollectionViewSource x:Name="PIctsInFolder"
