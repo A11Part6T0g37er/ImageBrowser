@@ -68,8 +68,9 @@
 				  Height="60">
 				<Image x:Name="ItemImage"
 					   Stretch="UniformToFill"
-					   Source="{Binding ImageFile.Path, Mode=OneWay}"
+					   Source="{Binding ImagePath, Mode=OneWay}"
 					   HorizontalAlignment="Center" />
+				<!--ImageFile.Path-->
 				<ToolTipService.ToolTip>
 					<ToolTip x:Name="toolTipImage">
 						<StackPanel Orientation="Vertical">
@@ -99,7 +100,7 @@
 
 				<Image x:Name="ItemImage"
 					   Stretch="UniformToFill"
-					   Source="{x:Bind ImageSource, Mode=OneWay}"
+					   Source="{x:Bind Thumbnail, Mode=OneWay}"
 					   Width="{Binding ItemSize,ElementName=app}"
 					   HorizontalAlignment="Center"
 					   Grid.Row="0"
@@ -127,7 +128,7 @@
 							</ListView.ItemTemplate>
 						</ListView>
 						<ListView>
-							<TextBlock Text="{x:Bind ImageFile.Path}" />
+							<TextBlock Text="{x:Bind ImagePath}" /><!--ImageFile.Path-->
 							<TextBlock TextWrapping="WrapWholeWords"
 									   Text="{x:Bind ImageProperties.Height}" />
 						</ListView>
@@ -299,19 +300,15 @@
 											   HorizontalAlignment="Center"
 											   Grid.Row="0"
 											   Margin="2"
-											   Source="{x:Bind Thumbnail, Mode=OneWay}"
+											   Source="{Binding Thumbnail, Mode=OneWay}"
 											   >
 											<!--Converter={StaticResource ThumbnailToPict},-->
 											
 											
 											   <!--Source="{x:Bind ImagePath, Mode=OneWay}"-->
-											<!--<Image.Source>
-												<BitmapImage UriSource="{x:Bind thumbnail}"
-															 DecodePixelWidth="200"
-															 DecodePixelHeight="133" />
-											</Image.Source>-->
+											
 										</Image>
-										<!--ImageSource-->
+										
 										<Grid Grid.Row="1"
 													Margin="0,10,0,15">
 											<TextBlock Text="{x:Bind ImageName, Mode=OneWay}"
@@ -623,7 +620,7 @@
 								</Interactivity:Interaction.Behaviors>
 								<GridView.ItemTemplate>
 									<DataTemplate>
-										<Image Source="{Binding thumbnail,Mode=OneWay, Converter={StaticResource ThumbnailToPict}}"
+										<Image Source="{Binding Thumbnail,Mode=OneWay}"
 											   Stretch="Uniform"
 											   Margin="5"
 											   Height="100" />

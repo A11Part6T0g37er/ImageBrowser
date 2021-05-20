@@ -29,8 +29,8 @@ namespace ImageBrowser.ViewModels
         private ObservableCollection<ImageFileInfo> observableCollection = new ObservableCollection<ImageFileInfo>();
         public IList<ImageFileInfo> ObservableCollection { get => observableCollection; }
 
-        private ObservableCollection<GroupInfoList<object>> groupedImagesInfos = new ObservableCollection<GroupInfoList<object>>();
-        public ObservableCollection<GroupInfoList<object>> GroupedImagesInfos { get => groupedImagesInfos; }
+      //  private ObservableCollection<GroupInfoList<object>> groupedImagesInfos = new ObservableCollection<GroupInfoList<object>>();
+        public ObservableCollection<GroupInfoList<object>> GroupedImagesInfos { get /*=> groupedImagesInfos*/; } = new ObservableCollection<GroupInfoList<object>>();
 
         private FoldersItemsCollection foldersItem = new FoldersItemsCollection();
         public FoldersItemsCollection FoldersItem { get => foldersItem; }
@@ -315,6 +315,7 @@ namespace ImageBrowser.ViewModels
                 FoldersItem.foldersPath.Add(item);
             }
             IsNoItemsToShow = false;
+           
         }
 
         public async void ClickFoldersInGrid(object sender, object parameter)
@@ -352,7 +353,8 @@ namespace ImageBrowser.ViewModels
                 if (FoldersItem.foldersPath.Count <= 0)
                     IsNoItemsToShow = true;
             }
-
+            System.Runtime.GCSettings.LargeObjectHeapCompactionMode = System.Runtime.GCLargeObjectHeapCompactionMode.CompactOnce;
+            GC.Collect();
         }
 
         #region Actions for commands in ctor
@@ -404,6 +406,7 @@ namespace ImageBrowser.ViewModels
             }
 
             IReadOnlyCollection<StorageFile> filesReadOnly = (IReadOnlyCollection<StorageFile>)files;
+            GC.Collect();
             return async () =>
             {
                 Trace.WriteLine("REFRESHED by button in command");
@@ -510,7 +513,7 @@ namespace ImageBrowser.ViewModels
 
         #endregion
 
-        private async Task<ObservableCollection<ImageFileInfo>> OpenFoldersButtonHandler()
+        private async Task/*<ObservableCollection<ImageFileInfo>>*/ OpenFoldersButtonHandler()
         {
 
             FolderPicker folderPicker = new FolderPicker();
@@ -530,9 +533,9 @@ namespace ImageBrowser.ViewModels
             queryOptions.FolderDepth = FolderDepth.Shallow;
             queryOptions.IndexerOption = IndexerOption.UseIndexerWhenAvailable;
             var queryResult = folder?.CreateFileQueryWithOptions(queryOptions);
-            queryResult.ContentsChanged += OnContentsChanged;
             if (folder != null)
             {
+            //queryResult.ContentsChanged += OnContentsChanged;
                 Windows.Storage.AccessCache.StorageApplicationPermissions.MostRecentlyUsedList.AddOrReplace("PickedFolderToken", folder);
 
                 var Resultsubfolders = folder.CreateFolderQueryWithOptions(queryOptions);
@@ -550,10 +553,11 @@ namespace ImageBrowser.ViewModels
 
                 // create savePoint
                 MirorData = FoldersItem.foldersPath.ToList();
-
-                return await PopulateObservableCollectionOfImages(storageFiles).ConfigureAwait(false);
+                System.Runtime.GCSettings.LargeObjectHeapCompactionMode = System.Runtime.GCLargeObjectHeapCompactionMode.CompactOnce;
+                GC.Collect();
+               /* return*/ await PopulateObservableCollectionOfImages(storageFiles).ConfigureAwait(false);
             }
-            return null;
+            return;
         }
         // StorageFileQueryResult 
         async void OnContentsChanged(IStorageQueryResultBase sender, object args)
@@ -633,7 +637,7 @@ namespace ImageBrowser.ViewModels
             IsAnyObservableItem = HaveAnyItems();
             InitializeGroupingOfViewModel();
 
-
+            GC.Collect();
             return observableCollection;
         }
 

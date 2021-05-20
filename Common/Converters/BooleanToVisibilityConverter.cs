@@ -22,14 +22,15 @@ namespace ImageBrowser.Common.Converters
 
         public object Convert(object value, Type targetType, object parameter, string language)
         {
+            bool? visibile = null;
             if (value is bool)
             {
 
-                var v = (bool)value;
+                visibile = (bool)value;
 
-                return v ? OnTrue : OnFalse;
+              
             }
-            return null;
+            return (bool)visibile ? OnTrue : OnFalse;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, string language)
@@ -39,14 +40,9 @@ namespace ImageBrowser.Common.Converters
                 return DependencyProperty.UnsetValue;
             }
 
-            if ((Visibility)value == OnTrue)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            
+                return ((Visibility)value == OnTrue);
+            
         }
     }
 }

@@ -20,32 +20,45 @@ namespace ImageBrowser
         public StorageFile ImageFile { get; }
 
         private string imagePath;
-        public string ImagePath { get /*{ return ImageFile.Path.ToString()  }*/; set; }
+        public string ImagePath
+        {
+            get
+            {
+                return imagePath;
+            }
+            set
+            {
+                SetProperty(ref imagePath, value);
+            }
+        }
 
 
-        /* private StorageItemThumbnail _thumbnail = null;
+        /*  private StorageItemThumbnail _thumbnail;
 
-         public StorageItemThumbnail Thumbnail
-         {
-             get { return _thumbnail; }
-             set
-             {
-                 SetProperty(ref _thumbnail, value);
-             }
-         }*/
+          public StorageItemThumbnail ThumbnailImage
+          {
+              get
+              {
+                  return _thumbnail;
+              }
+              set
+              {
+                  SetProperty(ref _thumbnail, value);
+              }
+          }*/
         private BitmapImage thumbnail;
-        public BitmapImage Thumbnail { get { return thumbnail; }set { SetProperty(ref thumbnail, value); } }
+        public BitmapImage Thumbnail { get { return thumbnail; } set { SetProperty(ref thumbnail, value); } }
 
         public string ImageFileType { get; private set; }
 
-        private BitmapImage imageSource = null;
+        /* private BitmapImage imageSource = null;
 
-        public BitmapImage ImageSource
-        {
-            get => imageSource;
-            set => SetProperty(ref imageSource, value);
-        }
-
+         public BitmapImage ImageSource
+         {
+             get => imageSource;
+             set => SetProperty(ref imageSource, value);
+         }
+ */
         public string ImageDimensions => $"{ImageProperties.Width} x {ImageProperties.Height}";
 
         private string imageTitle;
@@ -75,6 +88,8 @@ namespace ImageBrowser
             this.Thumbnail = thumbnail;
             ImageFileType = type;
             ImageFile = storageFile;
+
+            ImagePath = ImageFile.Path.ToString();
         }
 
         public async Task<BitmapImage> GetImageSourceAsync()
