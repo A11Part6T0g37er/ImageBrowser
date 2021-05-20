@@ -37,18 +37,7 @@ namespace BackgroundTaskApp
         }
         private async Task DoWork(IBackgroundTaskInstance taskInstance)
         {
-            await
-             CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-             {
-                 new ToastContentBuilder()
-                    .AddArgument("action", "viewConversation")
-                    .AddArgument("conversationId", 9813)
-                    .AddText("You background task!")
-                    .AddText("Background task has been waorked.")
-                    .Show();
-             }
-             );
-
+            
 
 
             // получаем локальные настройки приложения

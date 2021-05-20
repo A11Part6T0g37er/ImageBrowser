@@ -53,7 +53,7 @@ namespace ImageBrowser
 
 
             var task = taskList.FirstOrDefault(i => i.Name == taskName);
-            task?.Unregister(true); // must to clear, Bg task lives throught life-cycle
+           // task?.Unregister(true); // must to clear, Bg task lives throught life-cycle
             if (task == null)
             {
                 var taskBuilder = new BackgroundTaskBuilder();
@@ -61,18 +61,19 @@ namespace ImageBrowser
                 taskBuilder.TaskEntryPoint = typeof(BackgroundTaskApp.MyBackgroundTask).ToString();
 
                 ApplicationTrigger appTrigger = new ApplicationTrigger();
-                   taskBuilder.SetTrigger(appTrigger);
-          //     taskBuilder.SetTrigger(new SystemTrigger(SystemTriggerType.NetworkStateChange, false));
-                taskBuilder.AddCondition(new SystemCondition(SystemConditionType.InternetNotAvailable));
+                      taskBuilder.SetTrigger(appTrigger);
+                SystemTrigger internet = new SystemTrigger(SystemTriggerType.NetworkStateChange, false);
+               //taskBuilder.SetTrigger(internet);
+               taskBuilder.AddCondition(new SystemCondition(SystemConditionType.InternetNotAvailable));
                //TODO: nake it work again
 
+                await BackgroundExecutionManager.RequestAccessAsync();
                 task = taskBuilder.Register();
 
                 task.Progress += Task_Progress;
                 task.Completed += Task_Completed;
-
+                
                 await appTrigger.RequestAsync();
-                await BackgroundExecutionManager.RequestAccessAsync();
 
                 //get network connectivity
                 var temp = Windows.Networking.Connectivity.NetworkInformation.GetInternetConnectionProfile();
