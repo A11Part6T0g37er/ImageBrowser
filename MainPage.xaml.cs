@@ -64,10 +64,12 @@ namespace ImageBrowser
 				//taskBuilder.SetTrigger(appTrigger);
 				SystemTrigger internet = new SystemTrigger(SystemTriggerType.NetworkStateChange, false);
 				taskBuilder.SetTrigger(internet);
-				taskBuilder.AddCondition(new SystemCondition(SystemConditionType.InternetNotAvailable));
-               //TODO: nake it work after completed
 
-                await BackgroundExecutionManager.RequestAccessAsync();
+				taskBuilder.AddCondition(new SystemCondition(SystemConditionType.InternetNotAvailable));
+               // taskBuilder.CancelOnConditionLoss = true;
+				//TODO: nake it work after completed
+
+				await BackgroundExecutionManager.RequestAccessAsync();
                 task = taskBuilder.Register();
 
                 task.Progress += Task_Progress;
