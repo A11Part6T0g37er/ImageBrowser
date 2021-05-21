@@ -13,14 +13,14 @@ namespace ImageBrowser.Helpers
         public static async Task<StorageFolder> GetParentFolder(FolderInfoModel folderItem)
         {
             StorageFolder outerFolder;
-            if (folderItem.FolderList.Any())
+            if ((bool)(folderItem?.FolderList.Any()))
             {
 
                 outerFolder = await folderItem?.FolderList.First().GetParentAsync();
             }
             else
             {
-                var currentFolder = await StorageFolder.GetFolderFromPathAsync(folderItem.FolderPath);
+                var currentFolder = await StorageFolder.GetFolderFromPathAsync(folderItem?.FolderPath);
                 outerFolder = currentFolder;
             }
 

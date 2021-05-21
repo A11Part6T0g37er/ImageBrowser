@@ -17,7 +17,9 @@
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{A5A43C5B-DE2A-4C0C-9213-0A381AF9435A};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WindowsXamlEnableOverview>true</WindowsXamlEnableOverview>
-    <AppxPackageSigningEnabled>false</AppxPackageSigningEnabled>
+    <AppxPackageSigningEnabled>True</AppxPackageSigningEnabled>
+    <PackageCertificateThumbprint>7EF6D1C753230EB83F620FAE1896FD26D129157B</PackageCertificateThumbprint>
+    <PackageCertificateKeyFile />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
@@ -262,6 +264,7 @@
   <ItemGroup>
     <None Include="ImageBrowser.ruleset" />
     <None Include="ImageBrowserKey.pfx" />
+    <None Include="ImageBrowser_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
     <PRIResource Include="Strings\de-DE\Resources.resw" />
@@ -292,4 +295,7 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <PropertyGroup>
+<AppxBundlePlatforms>x86|x64</AppxBundlePlatforms>
+  </PropertyGroup>
 </Project>

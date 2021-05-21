@@ -36,7 +36,7 @@ namespace ImageBrowser.ViewModels
 		public FoldersItemsCollection FoldersItem { get => foldersItem; }
 
 
-		public List<FolderInfoModel> MirorData;
+		public List<FolderInfoModel> MirorData = new List<FolderInfoModel>();
 
 
 
@@ -316,6 +316,7 @@ namespace ImageBrowser.ViewModels
 			}
 			IsNoItemsToShow = false;
 
+			
 		}
 
 		public async void ClickFoldersInGrid(object sender, object parameter)
@@ -333,7 +334,7 @@ namespace ImageBrowser.ViewModels
 				folderNew = new FolderInfoModel() { FolderDisplayName = folder.DisplayName, FolderList = await folder.GetFoldersAsync(), FolderPath = folder.Path };
 				FoldersItem.FoldersPath.Add(folderNew);
 			}
-			StorageFolder parentFolder = await FileRetrieveHelper.GetParentFolder(item);
+			StorageFolder parentFolder = await FileRetrieveHelper.GetParentFolder(item).ConfigureAwait(true);
 			//string folderName = parentFolder.DisplayName;
 			if (parentFolder == null)
 				return;
@@ -375,14 +376,9 @@ namespace ImageBrowser.ViewModels
 		{
 			if (selectedTheme != null)
 			{
-				if (selectedTheme == "Default")
-				{
-					((sender as Button).XamlRoot.Content as Frame).RequestedTheme = EnumHelper.GetEnum<ElementTheme>(defaultWinTheme);
-				}
-				else
-				{
-					((sender as Button).XamlRoot.Content as Frame).RequestedTheme = EnumHelper.GetEnum<ElementTheme>(selectedTheme);
-				}
+				((sender as Button).XamlRoot.Content as Frame).RequestedTheme = selectedTheme == "Default"
+					? EnumHelper.GetEnum<ElementTheme>(defaultWinTheme)
+					: EnumHelper.GetEnum<ElementTheme>(selectedTheme);
 			}
 		}
 
@@ -541,7 +537,8 @@ namespace ImageBrowser.ViewModels
 				var Resultsubfolders = folder.CreateFolderQueryWithOptions(queryOptions);
 				var subFolders = await Resultsubfolders.GetFoldersAsync();
 
-				FoldersItem.FoldersPath.Add(new FolderInfoModel() { FolderPath = folder.Path, FolderDisplayName = folder.DisplayName, FolderList = subFolders });
+				FolderInfoModel folderAdded = new FolderInfoModel() { FolderPath = folder.Path, FolderDisplayName = folder.DisplayName, FolderList = subFolders };
+				FoldersItem.FoldersPath.Add(folderAdded);
 				FoldersItem.CurentFolder = folder;
 
 				queryOptions.FolderDepth = FolderDepth.Deep;
@@ -552,12 +549,20 @@ namespace ImageBrowser.ViewModels
 				IReadOnlyCollection<StorageFile> storageFiles = await queryResult.GetFilesAsync();
 
 				// create savePoint
-				MirorData = FoldersItem.FoldersPath.ToList();
-				
-				/* return*/
+				// MirorData = FoldersItem.FoldersPath.ToList();
+				MirorData.Add(folderAdded);
+				//if(MirorData is null)
+				//{
+				//	MirorData = new List<FolderInfoModel>();
+				//MirorData.AddRange(FoldersItem.FoldersPath.ToList());
+
+				//}
+				//else{
+				//	MirorData.AddRange(FoldersItem.FoldersPath.ToList()); }
+
 				await PopulateObservableCollectionOfImages(storageFiles).ConfigureAwait(false);
 			}
-			return;
+			
 		}
 		// StorageFileQueryResult 
 		async void OnContentsChanged(IStorageQueryResultBase sender, object args)

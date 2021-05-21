@@ -466,7 +466,7 @@
 								HorizontalAlignment="Left"
 								Height="120"
 								Width="270"
-								
+								Visibility="{Binding IsFolderDived, Converter={StaticResource bool2visInverse}}"
 								Background="#00adef"
 								Style="{StaticResource FolderAddButton}"
 								Command="{Binding OpenFoldersCommand}">
