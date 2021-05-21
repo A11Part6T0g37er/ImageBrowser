@@ -135,6 +135,7 @@
     <Compile Include="Common\Converters\ThumbnailToImageConverter.cs" />
     <Compile Include="Common\DefaultRedirectUri.cs" />
     <Compile Include="Common\RelayCommand.cs" />
+    <Compile Include="Common\RelayCommandGeneric.cs" />
     <Compile Include="DetailPage.xaml.cs">
       <DependentUpon>DetailPage.xaml</DependentUpon>
     </Compile>
@@ -296,6 +297,6 @@
   </Target>
   -->
   <PropertyGroup>
-<AppxBundlePlatforms>x86|x64</AppxBundlePlatforms>
+    <AppxBundlePlatforms>x86|x64</AppxBundlePlatforms>
   </PropertyGroup>
 </Project>

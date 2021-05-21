@@ -90,7 +90,7 @@ namespace ImageBrowser.ViewModels
 		public ImageFileInfoViewModel()
 		{
 			OneDriveOpenCommand = new RelayCommand(OneDriveOpenAction());
-
+			
 			SignOutCommand = new RelayCommand(SigningOutAsync());
 			SignInCommand = new RelayCommand(SigningInAsync());
 			OpenCLickCommand = new RelayCommand(OpenClickAsync());

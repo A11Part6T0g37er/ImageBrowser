@@ -29,9 +29,9 @@ namespace BackgroundTaskApp
                 _cancelRequested = true;
             };
 
-            BackgroundTaskDeferral _deferral = taskInstance.GetDeferral();
+			BackgroundTaskDeferral _deferral = taskInstance.GetDeferral();
 
-            await DoWork(taskInstance);
+           // await DoWork(taskInstance);
 
             _deferral.Complete();
         }

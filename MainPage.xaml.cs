@@ -1,6 +1,7 @@
 ﻿using ImageBrowser.Helpers;
 using Microsoft.Toolkit.Uwp.Notifications;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -50,33 +51,32 @@ namespace ImageBrowser
         {
             ApplicationData.Current.LocalSettings.Values["number"] = 6; // число для подсчета факториала
             var taskList = BackgroundTaskRegistration.AllTasks.Values;
-
-
+           
             var task = taskList.FirstOrDefault(i => i.Name == taskName);
-           // task?.Unregister(true); // must to clear, Bg task lives throught life-cycle
+            task?.Unregister(true); // must to clear, Bg task lives throught life-cycle
             if (task == null)
             {
                 var taskBuilder = new BackgroundTaskBuilder();
                 taskBuilder.Name = taskName;
                 taskBuilder.TaskEntryPoint = typeof(BackgroundTaskApp.MyBackgroundTask).ToString();
 
-                ApplicationTrigger appTrigger = new ApplicationTrigger();
-                      taskBuilder.SetTrigger(appTrigger);
-                SystemTrigger internet = new SystemTrigger(SystemTriggerType.NetworkStateChange, false);
-               //taskBuilder.SetTrigger(internet);
-               taskBuilder.AddCondition(new SystemCondition(SystemConditionType.InternetNotAvailable));
-               //TODO: nake it work again
+				//ApplicationTrigger appTrigger = new ApplicationTrigger();
+				//taskBuilder.SetTrigger(appTrigger);
+				SystemTrigger internet = new SystemTrigger(SystemTriggerType.NetworkStateChange, false);
+				taskBuilder.SetTrigger(internet);
+				taskBuilder.AddCondition(new SystemCondition(SystemConditionType.InternetNotAvailable));
+               //TODO: nake it work after completed
 
                 await BackgroundExecutionManager.RequestAccessAsync();
                 task = taskBuilder.Register();
 
                 task.Progress += Task_Progress;
                 task.Completed += Task_Completed;
-                
-                await appTrigger.RequestAsync();
 
-                //get network connectivity
-                var temp = Windows.Networking.Connectivity.NetworkInformation.GetInternetConnectionProfile();
+				//await appTrigger.RequestAsync();
+
+				//get network connectivity
+				var temp = Windows.Networking.Connectivity.NetworkInformation.GetInternetConnectionProfile();
 
                 startButton.IsEnabled = false;
                 stopButton.IsEnabled = true;
@@ -104,7 +104,11 @@ namespace ImageBrowser
             UpdateUI(progress);
             Stop();
 
-
+            await CallUIThreadHelper.CallOnUiThreadAsync(() => new ToastContentBuilder().AddArgument("action", "viewConversation")
+    .AddArgument("conversationId", 9813)
+    .AddText("You have no internet!")
+    .AddText("App may not operate normally.")
+    .Show());
         }
 
         private async void Task_Progress(BackgroundTaskRegistration sender, BackgroundTaskProgressEventArgs args)
@@ -133,7 +137,7 @@ namespace ImageBrowser
                 var task = taskList.FirstOrDefault(i => i.Name == taskName);
                 if (task != null)
                 {
-                    task.Unregister(true);
+                  //  task.Unregister(true);
 
                     stopButton.IsEnabled = false;
                     startButton.IsEnabled = true;
