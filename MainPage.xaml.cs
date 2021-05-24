@@ -31,7 +31,7 @@ namespace ImageBrowser
 
           //  signingOneDrive.IsEnabled = false;
 
-            Task.Run(async () => await RegisterTaskAsync().ConfigureAwait(true));
+        //    Task.Run(async () => await RegisterTaskAsync().ConfigureAwait(true));
 
         }
 

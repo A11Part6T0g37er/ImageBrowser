@@ -117,8 +117,8 @@ namespace ImageBrowser.ViewModels
 				defaultWinTheme = "Light";
 			}
 
-			//Task.Run(async () => await RegisterTaskAsync().ConfigureAwait(true));
-
+			Task.Run(async () => await RegisterTaskAsync().ConfigureAwait(true));
+			
 		}
 
 		#region XamlListningProperties
@@ -446,39 +446,14 @@ namespace ImageBrowser.ViewModels
 		private async Task RegisterTaskAsync()
 		{
 			string taskName = "factorial";
-			ApplicationData.Current.LocalSettings.Values["number"] = 6; // число для подсчета факториала
-			var taskList = BackgroundTaskRegistration.AllTasks.Values;
+			SystemTrigger internet = new SystemTrigger(SystemTriggerType.NetworkStateChange, false);
+			SystemCondition conditionNOInternet = new SystemCondition(SystemConditionType.InternetNotAvailable);
 
-			var task = taskList.FirstOrDefault(i => i.Name == taskName);
-			Stop(taskName);	/*task.Unregister(true);*/ // must to clear, Bg task lives throught life-cycle
-			if (task == null)
-			{
-				var taskBuilder = new BackgroundTaskBuilder();
-				taskBuilder.Name = taskName;
-				taskBuilder.TaskEntryPoint = typeof(BackgroundTaskApp.MyBackgroundTask).ToString();
+			string taskEntryPoint = typeof(BackgroundTaskApp.MyBackgroundTask).ToString();
+			var taska = await BackgroundTaskHelper.RegisterBackgroundTaskAsync(taskEntryPoint, taskName, internet, conditionNOInternet);
 
-				//ApplicationTrigger appTrigger = new ApplicationTrigger();
-				//taskBuilder.SetTrigger(appTrigger);
-				SystemTrigger internet = new SystemTrigger(SystemTriggerType.NetworkStateChange, false);
-				taskBuilder.SetTrigger(internet);
 
-				taskBuilder.AddCondition(new SystemCondition(SystemConditionType.InternetNotAvailable));
-				// taskBuilder.CancelOnConditionLoss = true;
-				//TODO: nake it work after completed
-
-				await BackgroundExecutionManager.RequestAccessAsync();
-				task = taskBuilder.Register();
-
-			//	task.Progress += Task_Progress;
-				task.Completed += Task_Completed;
-
-				//await appTrigger.RequestAsync();
-
-				//get network connectivity
-				var temp = Windows.Networking.Connectivity.NetworkInformation.GetInternetConnectionProfile();
-
-			
-			}
+		
 		}
 		private async void Task_Completed(BackgroundTaskRegistration sender, BackgroundTaskCompletedEventArgs args)
 		{
