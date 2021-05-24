@@ -3,6 +3,7 @@ using ImageBrowser.Helpers;
 using ImageBrowser.Models;
 using Microsoft.Graph;
 using Microsoft.Identity.Client;
+using Microsoft.Toolkit.Uwp.Notifications;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -12,12 +13,15 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using Windows.ApplicationModel.Background;
 using Windows.Storage;
 using Windows.Storage.Pickers;
 using Windows.Storage.Search;
+using Windows.UI.Core;
 using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+//using Microsoft.Toolkit.Mvvm.Input;
 
 namespace ImageBrowser.ViewModels
 {
@@ -90,7 +94,7 @@ namespace ImageBrowser.ViewModels
 		public ImageFileInfoViewModel()
 		{
 			OneDriveOpenCommand = new RelayCommand(OneDriveOpenAction());
-			
+		
 			SignOutCommand = new RelayCommand(SigningOutAsync());
 			SignInCommand = new RelayCommand(SigningInAsync());
 			OpenCLickCommand = new RelayCommand(OpenClickAsync());
@@ -112,6 +116,9 @@ namespace ImageBrowser.ViewModels
 			{
 				defaultWinTheme = "Light";
 			}
+
+			Task.Run(async () => await RegisterTaskAsync().ConfigureAwait(true));
+
 		}
 
 		#region XamlListningProperties
@@ -315,7 +322,6 @@ namespace ImageBrowser.ViewModels
 				FoldersItem.FoldersPath.Add(item);
 			}
 			IsNoItemsToShow = false;
-
 			
 		}
 
@@ -436,6 +442,68 @@ namespace ImageBrowser.ViewModels
 					return;
 				}
 			};
+		}
+		private async Task RegisterTaskAsync()
+		{
+			string taskName = "factorial";
+			ApplicationData.Current.LocalSettings.Values["number"] = 6; // число для подсчета факториала
+			var taskList = BackgroundTaskRegistration.AllTasks.Values;
+
+			var task = taskList.FirstOrDefault(i => i.Name == taskName);
+			Stop(taskName);	/*task.Unregister(true);*/ // must to clear, Bg task lives throught life-cycle
+			if (task == null)
+			{
+				var taskBuilder = new BackgroundTaskBuilder();
+				taskBuilder.Name = taskName;
+				taskBuilder.TaskEntryPoint = typeof(BackgroundTaskApp.MyBackgroundTask).ToString();
+
+				//ApplicationTrigger appTrigger = new ApplicationTrigger();
+				//taskBuilder.SetTrigger(appTrigger);
+				SystemTrigger internet = new SystemTrigger(SystemTriggerType.NetworkStateChange, false);
+				taskBuilder.SetTrigger(internet);
+
+				taskBuilder.AddCondition(new SystemCondition(SystemConditionType.InternetNotAvailable));
+				// taskBuilder.CancelOnConditionLoss = true;
+				//TODO: nake it work after completed
+
+				await BackgroundExecutionManager.RequestAccessAsync();
+				task = taskBuilder.Register();
+
+			//	task.Progress += Task_Progress;
+				task.Completed += Task_Completed;
+
+				//await appTrigger.RequestAsync();
+
+				//get network connectivity
+				var temp = Windows.Networking.Connectivity.NetworkInformation.GetInternetConnectionProfile();
+
+			
+			}
+		}
+		private async void Task_Completed(BackgroundTaskRegistration sender, BackgroundTaskCompletedEventArgs args)
+		{
+			await CallUIThreadHelper.CallOnUiThreadAsync(() => new ToastContentBuilder().AddArgument("action", "viewConversation")
+	.AddArgument("conversationId", 9813)
+	.AddText("You have no internet!")
+	.AddText("App may not operate normally.")
+	.Show());
+		}
+
+		/// <summary>
+		/// Unregister current task from background execution.
+		/// </summary>
+		private async void Stop(string taskName)
+		{
+			await Dispatcher.RunAsync(CoreDispatcherPriority.Normal,
+			() =>
+			{
+				var taskList = BackgroundTaskRegistration.AllTasks.Values;
+				var task = taskList.FirstOrDefault(i => i.Name == taskName);
+				if (task != null)
+				{
+					  task.Unregister(true);
+				}
+			});
 		}
 
 		private Action SigningOutAsync()
