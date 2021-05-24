@@ -117,7 +117,7 @@ namespace ImageBrowser.ViewModels
 				defaultWinTheme = "Light";
 			}
 
-			Task.Run(async () => await RegisterTaskAsync().ConfigureAwait(true));
+			//Task.Run(async () => await RegisterTaskAsync().ConfigureAwait(true));
 
 		}
 

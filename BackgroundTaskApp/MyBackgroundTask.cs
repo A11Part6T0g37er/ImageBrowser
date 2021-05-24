@@ -6,7 +6,7 @@ using Windows.ApplicationModel.Background;
 using Windows.ApplicationModel.Core;
 using Windows.Storage;
 using Windows.UI.Core;
-
+ 
 namespace BackgroundTaskApp
 {
     public sealed class MyBackgroundTask : IBackgroundTask
@@ -28,16 +28,16 @@ namespace BackgroundTaskApp
                 cancel.Dispose();
                 _cancelRequested = true;
             };
+           
+			 _deferral = taskInstance.GetDeferral();
 
-			BackgroundTaskDeferral _deferral = taskInstance.GetDeferral();
-
-           // await DoWork(taskInstance);
-
+            // await DoWork(taskInstance);
+            Thread.Sleep(1500);
             _deferral.Complete();
+            
         }
         private async Task DoWork(IBackgroundTaskInstance taskInstance)
-        {
-            
+        {       
 
 
             // получаем локальные настройки приложения
@@ -59,6 +59,6 @@ namespace BackgroundTaskApp
             }
 
             settings.Values["factorial"] = result;
-        }
+        }      
     }
 }

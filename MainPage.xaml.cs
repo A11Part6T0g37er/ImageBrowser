@@ -31,7 +31,7 @@ namespace ImageBrowser
 
           //  signingOneDrive.IsEnabled = false;
 
-         //   Task.Run(async () => await RegisterTaskAsync().ConfigureAwait(true));
+            Task.Run(async () => await RegisterTaskAsync().ConfigureAwait(true));
 
         }
 
@@ -48,7 +48,14 @@ namespace ImageBrowser
 
 		private async Task RegisterTaskAsync()
 		{
-			ApplicationData.Current.LocalSettings.Values["number"] = 6; // число для подсчета факториала
+				SystemTrigger internet = new SystemTrigger(SystemTriggerType.NetworkStateChange, false);
+				SystemCondition conditionNOInternet = new SystemCondition(SystemConditionType.InternetNotAvailable);
+
+			string taskEntryPoint = typeof(BackgroundTaskApp.MyBackgroundTask).ToString();
+			var taska = await BackgroundTaskHelper.RegisterBackgroundTaskAsync(taskEntryPoint, taskName, internet, conditionNOInternet);
+			
+			//taska.Completed += Taska_Completed;
+			/*ApplicationData.Current.LocalSettings.Values["number"] = 6; // число для подсчета факториала
 			var taskList = BackgroundTaskRegistration.AllTasks.Values;
 
 			var task = taskList.FirstOrDefault(i => i.Name == taskName);
@@ -61,10 +68,9 @@ namespace ImageBrowser
 
 				//ApplicationTrigger appTrigger = new ApplicationTrigger();
 				//taskBuilder.SetTrigger(appTrigger);
-				SystemTrigger internet = new SystemTrigger(SystemTriggerType.NetworkStateChange, false);
 				taskBuilder.SetTrigger(internet);
 
-				taskBuilder.AddCondition(new SystemCondition(SystemConditionType.InternetNotAvailable));
+				taskBuilder.AddCondition(conditionNOInternet);
 				// taskBuilder.CancelOnConditionLoss = true;
 				//TODO: nake it work after completed
 
@@ -82,6 +88,15 @@ namespace ImageBrowser
 			//	startButton.IsEnabled = false;
 			//	stopButton.IsEnabled = true;
 			}
+	*/	}
+
+		private async void Taska_Completed(BackgroundTaskRegistration sender, BackgroundTaskCompletedEventArgs args)
+		{
+			await CallUIThreadHelper.CallOnUiThreadAsync(() => new ToastContentBuilder().AddArgument("action", "viewConversation")
+	.AddArgument("conversationId", 9813)
+	.AddText("You have nNONONOo internet!")
+	.AddText("App may not operate normally.")
+	.Show());
 		}
 
 		private async void StopButton_Click(object sender, RoutedEventArgs e)
