@@ -29,7 +29,7 @@ namespace ImageBrowser
 
             ImageSource = await Helpers.ImageFileHelper.GetImageSourceAsync(item?.ImageFile).ConfigureAwait(true);
             targetImage.Source = ImageSource;
-
+            targetImage.MaxWidth = ImageSource.PixelWidth;
             if (this.Frame.CanGoBack)
             {
                 SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Visible;
