@@ -136,6 +136,7 @@
     <Compile Include="Common\DefaultRedirectUri.cs" />
     <Compile Include="Common\RelayCommand.cs" />
     <Compile Include="Common\RelayCommandGeneric.cs" />
+    <Compile Include="Common\RelaySenderCommand.cs" />
     <Compile Include="DetailPage.xaml.cs">
       <DependentUpon>DetailPage.xaml</DependentUpon>
     </Compile>
@@ -168,7 +169,7 @@
     <Compile Include="ViewModels\FoldersItemsCollection.cs" />
     <Compile Include="ViewModels\ImageFileInfoViewModel.cs" />
     <Compile Include="ViewModels\LanguageViewModel.cs" />
-    <Compile Include="ViewModels\RelayMultipleCommand.cs" />
+    <Compile Include="Common\RelayMultipleCommand.cs" />
     <Compile Include="Views\OpenWithPage.xaml.cs">
       <DependentUpon>OpenWithPage.xaml</DependentUpon>
     </Compile>

@@ -21,7 +21,8 @@ using Windows.UI.Core;
 using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-//using Microsoft.Toolkit.Mvvm.Input;
+using Microsoft.Toolkit.Mvvm.Input;
+using RelayCommand = Microsoft.Toolkit.Mvvm.Input.RelayCommand;
 
 namespace ImageBrowser.ViewModels
 {
@@ -92,7 +93,7 @@ namespace ImageBrowser.ViewModels
 		/// signup event and initializes commands.
 		/// </summary>
 		public ImageFileInfoViewModel()
-		{
+		{ 
 			OneDriveOpenCommand = new RelayCommand(OneDriveOpenAsyncExecute);
 
 			SignOutCommand = new RelayCommand(SigningOutAsyncExecute);
@@ -100,7 +101,7 @@ namespace ImageBrowser.ViewModels
 			OpenCLickCommand = new RelayCommand(OpenClickAsyncExecute);
 			OpenFoldersCommand = new RelayCommand(OpenFoldersAsyncExecute);
 			RefreshCommand = new RelayCommand(RefreshAreaItemsAsyncExecute);
-			ThemeChangeCommand = new RelayCommand(DefineClickedThemeExecute);
+			ThemeChangeCommand = new RelaySenderCommand(DefineClickedThemeExecute);
 			SettingsNavigateCommand = new RelayCommand(() => { Services.NavigationService.Instance.Navigate(typeof(Settings)); });
 			GridViewSizeChangeCommand = new RelayMultipleCommand(GroupedGrid_SizeChanged);
 
