@@ -39,7 +39,6 @@ namespace BackgroundTaskApp
         private async Task DoWork(IBackgroundTaskInstance taskInstance)
         {       
 
-
             // получаем локальные настройки приложения
 
             var settings = ApplicationData.Current.LocalSettings;

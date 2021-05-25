@@ -30,7 +30,7 @@ namespace ImageBrowser.Helpers
 				cur.Value.Unregister(true);
 			//	return (BackgroundTaskRegistration)(cur.Value);
 			}
-
+			
 			BackgroundTaskRegistration task = await RegisterTaskBuilderAsync(taskEntryPoint, taskName, trigger, condition);
 
 			return task;
@@ -52,7 +52,7 @@ namespace ImageBrowser.Helpers
 				builder.AddCondition(condition);
 			}
 
-		//	builder.AddCondition(new SystemCondition(SystemConditionType.BackgroundWorkCostNotHigh));
+			builder.AddCondition(new SystemCondition(SystemConditionType.BackgroundWorkCostNotHigh));
 			
 			await BackgroundExecutionManager.RequestAccessAsync();
 			BackgroundTaskRegistration task = builder.Register();

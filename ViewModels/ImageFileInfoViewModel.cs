@@ -445,14 +445,12 @@ namespace ImageBrowser.ViewModels
 		}
 		private async Task RegisterTaskAsync()
 		{
-			string taskName = "factorial";
+			string taskName = "NoInternet";
 			SystemTrigger internet = new SystemTrigger(SystemTriggerType.NetworkStateChange, false);
-			SystemCondition conditionNOInternet = new SystemCondition(SystemConditionType.InternetNotAvailable);
+			SystemCondition conditionNOInternet = new SystemCondition(SystemConditionType.InternetNotAvailable);			
 
 			string taskEntryPoint = typeof(BackgroundTaskApp.MyBackgroundTask).ToString();
 			var taska = await BackgroundTaskHelper.RegisterBackgroundTaskAsync(taskEntryPoint, taskName, internet, conditionNOInternet);
-
-
 		
 		}
 		private async void Task_Completed(BackgroundTaskRegistration sender, BackgroundTaskCompletedEventArgs args)
