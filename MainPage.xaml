@@ -466,7 +466,7 @@ MaxWidth="200"
 								Grid.Row="1"
 								HorizontalAlignment="Left"
 								Height="120"
-								Width="270"
+								Width="320"
 								Visibility="{Binding IsFolderDived, Converter={StaticResource bool2visInverse}}"
 								Background="#00adef"
 								Style="{StaticResource FolderAddButton}"
@@ -485,7 +485,7 @@ MaxWidth="200"
 								</Grid.ColumnDefinitions>
 
 								<StackPanel Orientation="Vertical"
-											Margin="0,0,30,0"
+											Margin="0,0,60,0"
 											Grid.Row="1">
 									<TextBlock Text=""
 											   x:Uid="addFolder"/>
@@ -677,13 +677,14 @@ MaxWidth="200"
 					RelativePanel.RightOf="TopButtons"
 					RelativePanel.AlignTopWith="TopButtons"
 					RelativePanel.AlignRightWith="TopButtons"
-					HorizontalAlignment="Center"
+					HorizontalAlignment="Right"
 					RelativePanel.AlignRightWithPanel="True"
 					Margin="10,0,0,0">
 			<CommandBar DefaultLabelPosition="Right"
-						IsOpen="True" >
+						IsOpen="False" >
 
 				<AppBarButton Icon="Download"
+							  
 							  x:Name="signingOneDrive"
 							  Label=""
 							  x:Uid="signIn"
@@ -700,7 +701,7 @@ MaxWidth="200"
 							  Visibility="{Binding  IsUserSignedOut,  Converter={StaticResource bool2Visibility},Mode=TwoWay}"
 							  FontFamily="Segoe Ui" />
 							
-				<AppBarButton x:Name="OpenOneDrive"
+				<AppBarButton x:Name="OpenOneDrive"							
 							  Content=""
 							  x:Uid="oneDriveOpen"
 							  Command="{Binding OneDriveOpenCommand}"

@@ -12,7 +12,7 @@
 	<Setter Property="BorderBrush"
 			Value="{ThemeResource ButtonBorderThemeBrush}" />
 	<Setter Property="BorderThickness"
-			Value="{ThemeResource ButtonBorderThemeThickness}" />
+			Value="0" />
 	<Setter Property="Padding"
 			Value="12,4,12,4" />
 	<Setter Property="HorizontalAlignment"
@@ -111,12 +111,12 @@
 										  VerticalAlignment="Bottom"
 										  AutomationProperties.AccessibilityView="Raw" />
 					</Border>
-					<Rectangle x:Name="FocusVisualWhite"
+					<!--<Rectangle x:Name="FocusVisualWhite"
 							   IsHitTestVisible="False"
 							   Stroke="{ThemeResource FocusVisualWhiteStrokeThemeBrush}"
-							   StrokeEndLineCap="Square"
+							   StrokeEndLineCap="Triangle"
 							   StrokeDashArray="1,1"
-							   Opacity="0"
+							   Opacity="1"
 							   StrokeDashOffset="1.5" />
 					<Rectangle x:Name="FocusVisualBlack"
 							   IsHitTestVisible="False"
@@ -124,7 +124,7 @@
 							   StrokeEndLineCap="Square"
 							   StrokeDashArray="1,1"
 							   Opacity="0"
-							   StrokeDashOffset="0.5" />
+							   StrokeDashOffset="0.5" />-->
 				</Grid>
 			</ControlTemplate>
 		</Setter.Value>
