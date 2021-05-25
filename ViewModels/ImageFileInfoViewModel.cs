@@ -93,7 +93,10 @@ namespace ImageBrowser.ViewModels
 		/// signup event and initializes commands.
 		/// </summary>
 		public ImageFileInfoViewModel()
+
 		{ 
+
+
 			OneDriveOpenCommand = new RelayCommand(OneDriveOpenAsyncExecute);
 
 			SignOutCommand = new RelayCommand(SigningOutAsyncExecute);
@@ -101,7 +104,10 @@ namespace ImageBrowser.ViewModels
 			OpenCLickCommand = new RelayCommand(OpenClickAsyncExecute);
 			OpenFoldersCommand = new RelayCommand(OpenFoldersAsyncExecute);
 			RefreshCommand = new RelayCommand(RefreshAreaItemsAsyncExecute);
+
 			ThemeChangeCommand = new RelaySenderCommand(DefineClickedThemeExecute);
+
+
 			SettingsNavigateCommand = new RelayCommand(() => { Services.NavigationService.Instance.Navigate(typeof(Settings)); });
 			GridViewSizeChangeCommand = new RelayMultipleCommand(GroupedGrid_SizeChanged);
 
