@@ -10,12 +10,14 @@ namespace ImageBrowser.Helpers
     {
         public static string GetLocalizedStrings(string resourceName)
         {
+            Windows.ApplicationModel.Resources.ResourceLoader resourceLoader = null;
             if (Windows.UI.Core.CoreWindow.GetForCurrentThread() != null)
             {
-                var resourceLoader = Windows.ApplicationModel.Resources.ResourceLoader.GetForCurrentView();
-                return resourceLoader.GetString(resourceName).ToString();
+               resourceLoader = Windows.ApplicationModel.Resources.ResourceLoader.GetForCurrentView();
+              
             }
-            return "";
+            return resourceLoader?.GetString(resourceName).ToString();
+           
         }
     }
 }

@@ -9,110 +9,126 @@ using Windows.UI.Xaml.Media.Imaging;
 
 namespace ImageBrowser
 {
-    public class ImageFileInfo : INotifyPropertyChanged
-    {
-        public event PropertyChangedEventHandler PropertyChanged;
+	public class ImageFileInfo : INotifyPropertyChanged
+	{
+		public event PropertyChangedEventHandler PropertyChanged;
 
-        public string ImageName { get; }
+		public string ImageName { get; }
 
-        public ImageProperties ImageProperties { get; }
+		public ImageProperties ImageProperties { get; }
 
-        public StorageFile ImageFile { get; }
+		public StorageFile ImageFile { get; }
 
-        private string imagePath;
-        public string ImagePath { get /*{ return ImageFile.Path.ToString()  }*/; set; }
-
-
-        private StorageItemThumbnail _thumbnail = null;
-
-        public StorageItemThumbnail thumbnail
-        {
-            get { return _thumbnail; }
-            set
-            {
-                SetProperty(ref _thumbnail, value);
-            }
-        }
+		private string imagePath;
+		public string ImagePath
+		{
+			get
+			{
+				return imagePath;
+			}
+			set
+			{
+				SetProperty(ref imagePath, value);
+			}
+		}
 
 
-        public string ImageFileType { get; private set; }
+		/*  private StorageItemThumbnail thumbnail;
 
-        private BitmapImage imageSource = null;
+		  public StorageItemThumbnail ThumbnailImage
+		  {
+			  get
+			  {
+				  return thumbnail;
+			  }
+			  set
+			  {
+				  SetProperty(ref thumbnail, value);
+			  }
+		  }*/
+		private BitmapImage thumbnail;
+		public BitmapImage Thumbnail { get { return thumbnail; } set { SetProperty(ref thumbnail, value); } }
 
-        public BitmapImage ImageSource
-        {
-            get => imageSource;
-            set => SetProperty(ref imageSource, value);
-        }
+		public string ImageFileType { get; private set; }
 
-        public string ImageDimensions => $"{ImageProperties.Width} x {ImageProperties.Height}";
+		/* private BitmapImage imageSource = null;
 
-        private string imageTitle;
+		 public BitmapImage ImageSource
+		 {
+			 get => imageSource;
+			 set => SetProperty(ref imageSource, value);
+		 }
+ */
+		public string ImageDimensions => $"{ImageProperties.Width} x {ImageProperties.Height}";
 
-        public string ImageTitle
-        {
-            get => string.IsNullOrEmpty(imageTitle) ? ImageName : ImageProperties.Title;
-            set
-            {
-                if (ImageProperties.Title != value)
-                {
-                    ImageProperties.Title = value;
+		private string imageTitle;
 
-                    SetProperty(ref imageTitle, value);
-                }
-            }
-        }
+		public string ImageTitle
+		{
+			get => string.IsNullOrEmpty(imageTitle) ? ImageName : ImageProperties.Title;
+			set
+			{
+				if (ImageProperties.Title != value)
+				{
+					ImageProperties.Title = value;
 
-        public ImageFileInfo()
-        {
-        }
+					SetProperty(ref imageTitle, value);
+				}
+			}
+		}
 
-        public ImageFileInfo(string imageName, StorageFile storageFile, ImageProperties imageProperties, string type, StorageItemThumbnail thumbnail)
-        {
-            ImageName = imageName;
-            ImageProperties = imageProperties;
-            this.thumbnail = thumbnail;
-            ImageFileType = type;
-            ImageFile = storageFile;
-        }
+		public ImageFileInfo()
+		{
+		}
 
-        public async Task<BitmapImage> GetImageSourceAsync()
-        {
-            using (IRandomAccessStream fileStream = await ImageFile.OpenReadAsync())
-            {
-                // Create a bitmap to be the image source.
-                var imageSource = new BitmapImage();
-                imageSource.SetSource(fileStream);
+		public ImageFileInfo(string imageName, StorageFile storageFile, ImageProperties imageProperties, string type, /*StorageItemThumbnail thumbnail*/ BitmapImage thumbnail)
+		{
+			ImageName = imageName;
+			ImageProperties = imageProperties;
+			this.Thumbnail = thumbnail;
+			ImageFileType = type;
+			ImageFile = storageFile;
 
-                return imageSource;
-            }
-        }
-        public async Task<BitmapImage> GetImageThumbnailAsync()
-        {
-            var thumbnail = await ImageFile.GetThumbnailAsync(ThumbnailMode.PicturesView);
-            // Create a bitmap to be the image source.
-            BitmapImage bitmapImage = new BitmapImage();
-            bitmapImage.SetSource(thumbnail);
-            thumbnail.Dispose();
+			ImagePath = ImageFile.Path.ToString();
+		}
 
-            return bitmapImage;
-        }
+		public async Task<BitmapImage> GetImageSourceAsync()
+		{
+			using (IRandomAccessStream fileStream = await ImageFile.OpenReadAsync())
+			{
+				// Create a bitmap to be the image source.
+				var imageSource = new BitmapImage();
+				imageSource.SetSource(fileStream);
 
-        protected void OnPropertyChanged([CallerMemberName] string propertyName = null) =>
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+				return imageSource;
+			}
+		}
+		public async Task<BitmapImage> GetImageThumbnailAsync()
+		{
+			var thumbnail = await ImageFile.GetThumbnailAsync(ThumbnailMode.PicturesView);
+			// Create a bitmap to be the image source.
+			BitmapImage bitmapImage = new BitmapImage();
+			bitmapImage.SetSource(thumbnail);
+			thumbnail.Dispose();
 
-        protected bool SetProperty<T>(ref T storage, T value, [CallerMemberName] string propertyName = null)
-        {
-            if (object.Equals(storage, value))
-            {
-                return false;
-            }
-            else
-            {
-                storage = value;
-                OnPropertyChanged(propertyName);
-                return true;
-            }
-        }
-    }
+			return bitmapImage;
+		}
+
+		protected void OnPropertyChanged([CallerMemberName] string propertyName = null) =>
+			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+
+		protected bool SetProperty<T>(ref T storage, T value, [CallerMemberName] string propertyName = null)
+		{
+			if (object.Equals(storage, value))
+			{
+				return false;
+			}
+			else
+			{
+				storage = value;
+				OnPropertyChanged(propertyName);
+				return true;
+			}
+		}
+	}
 }

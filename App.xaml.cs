@@ -53,7 +53,7 @@ namespace ImageBrowser
                 rootFrame.NavigationFailed += OnNavigationFailed;
                 rootFrame.Navigated += OnNavigated;
 
-                if (e.PreviousExecutionState == ApplicationExecutionState.Terminated)
+                if (e?.PreviousExecutionState == ApplicationExecutionState.Terminated)
                 {
                     //TODO: Load state from previously suspended application
                 }

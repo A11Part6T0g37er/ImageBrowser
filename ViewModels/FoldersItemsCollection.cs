@@ -13,12 +13,12 @@ namespace ImageBrowser.ViewModels
     {
         public StorageFolder CurentFolder { get; set; }
 
-        private ObservableCollection<FolderInfoModel> _foldersPath = new ObservableCollection<FolderInfoModel>();
-        public ObservableCollection<FolderInfoModel> foldersPath { get { return _foldersPath; } set { _foldersPath = value; } }
+        private ObservableCollection<FolderInfoModel> foldersPath = new ObservableCollection<FolderInfoModel>();
+        public ObservableCollection<FolderInfoModel> FoldersPath { get  { return foldersPath; } /*set { foldersPath = value; }*/ } 
 
         private ObservableCollection<ImageFileInfo> pictCollection = new ObservableCollection<ImageFileInfo>();
 
-        public ObservableCollection<ImageFileInfo> PictsFromFolders { get => pictCollection; set => pictCollection = (ObservableCollection<ImageFileInfo>)value; }
+        public ObservableCollection<ImageFileInfo> PictsFromFolders { get => pictCollection; }
 
         public void AddPicts(ObservableCollection<ImageFileInfo> images)
         {
@@ -26,7 +26,7 @@ namespace ImageBrowser.ViewModels
         }
         public void ResetCollection()
         {
-            this.foldersPath.Clear();
+            this.FoldersPath.Clear();
             this.PictsFromFolders.Clear();
         }
     }

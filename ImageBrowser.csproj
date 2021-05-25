@@ -17,7 +17,9 @@
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{A5A43C5B-DE2A-4C0C-9213-0A381AF9435A};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WindowsXamlEnableOverview>true</WindowsXamlEnableOverview>
-    <AppxPackageSigningEnabled>false</AppxPackageSigningEnabled>
+    <AppxPackageSigningEnabled>True</AppxPackageSigningEnabled>
+    <PackageCertificateThumbprint>7EF6D1C753230EB83F620FAE1896FD26D129157B</PackageCertificateThumbprint>
+    <PackageCertificateKeyFile />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
@@ -132,12 +134,13 @@
     <Compile Include="Common\Converters\BooleanToVisibilityConverter.cs" />
     <Compile Include="Common\Converters\ThumbnailToImageConverter.cs" />
     <Compile Include="Common\DefaultRedirectUri.cs" />
-    <Compile Include="Common\MyBackgroundTask.cs" />
     <Compile Include="Common\RelayCommand.cs" />
+    <Compile Include="Common\RelayCommandGeneric.cs" />
     <Compile Include="DetailPage.xaml.cs">
       <DependentUpon>DetailPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="Helpers\BackgroundTaskHelper.cs" />
     <Compile Include="Helpers\CallUIThreadHelper.cs" />
     <Compile Include="Helpers\DisplayUIHelper.cs" />
     <Compile Include="Helpers\EnumHelper.cs" />
@@ -163,7 +166,6 @@
     </Compile>
     <Compile Include="ViewModels\BindableBase.cs" />
     <Compile Include="ViewModels\FoldersItemsCollection.cs" />
-    <Compile Include="ViewModels\FoldersViewModel.cs" />
     <Compile Include="ViewModels\ImageFileInfoViewModel.cs" />
     <Compile Include="ViewModels\LanguageViewModel.cs" />
     <Compile Include="ViewModels\RelayMultipleCommand.cs" />
@@ -200,10 +202,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Resources\FolderAddButton.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Resources\FolderViewTemplate.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -252,6 +250,12 @@
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
       <Version>6.2.12</Version>
     </PackageReference>
+    <PackageReference Include="Microsoft.Toolkit.Mvvm">
+      <Version>7.0.2</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Toolkit.Uwp.Notifications">
+      <Version>7.0.2</Version>
+    </PackageReference>
     <PackageReference Include="Microsoft.Toolkit.Uwp.UI.Media">
       <Version>7.0.1</Version>
     </PackageReference>
@@ -265,12 +269,19 @@
   <ItemGroup>
     <None Include="ImageBrowser.ruleset" />
     <None Include="ImageBrowserKey.pfx" />
+    <None Include="ImageBrowser_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
     <PRIResource Include="Strings\de-DE\Resources.resw" />
   </ItemGroup>
   <ItemGroup>
     <PRIResource Include="Strings\uk-UA\Resources.resw" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="BackgroundTaskApp\BackgroundTaskApp.csproj">
+      <Project>{4122962c-58d3-40b3-a37c-997cb31c78a0}</Project>
+      <Name>BackgroundTaskApp</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
@@ -289,4 +300,7 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <PropertyGroup>
+    <AppxBundlePlatforms>x86|x64</AppxBundlePlatforms>
+  </PropertyGroup>
 </Project>

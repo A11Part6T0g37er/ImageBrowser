@@ -56,6 +56,13 @@
             <uap:EditFlags OpenIsSafe="true"/>
           </uap:FileTypeAssociation>
         </uap:Extension>
+        <Extension Category="windows.backgroundTasks" EntryPoint="BackgroundTaskApp.MyBackgroundTask">
+          <BackgroundTasks>
+            <Task Type="general"/>
+            <Task Type="systemEvent"/>
+            <Task Type="timer"/>
+          </BackgroundTasks>
+        </Extension>
       </Extensions>
     </Application>
   </Applications>
