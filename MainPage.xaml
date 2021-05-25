@@ -32,7 +32,7 @@
 		<ItemsPanelTemplate x:Key="ImageGridView_ItemsPanelTemplate">
 			<ItemsWrapGrid Orientation="Horizontal"
 						   ScrollViewer.VerticalScrollMode="Auto"
-						   MaximumRowsOrColumns="3"  ItemWidth="380"/>
+						   MaximumRowsOrColumns="7"  ItemWidth="228"/>
 		</ItemsPanelTemplate>
 
 		<CollectionViewSource x:Name="ImagesCollection"
@@ -284,7 +284,7 @@
 							</GridView.GroupStyle>
 							<GridView.ItemTemplate>
 								<DataTemplate x:DataType="local:ImageFileInfo">
-									<Grid Margin="{StaticResource LargeItemMargin}" MaxWidth="500">
+									<Grid Margin="{StaticResource LargeItemMargin}" MaxWidth="230">
 										<!--Width="{Binding ItemSize,ElementName=page}"
 										
 										  Height="{Binding ItemSize,ElementName=page}"-->
@@ -302,7 +302,7 @@
 											   Grid.Row="0"
 											   Margin="2"
 											   Source="{Binding Thumbnail, Mode=OneWay}"
-											   >
+											   MaxWidth="210">
 											<!--Converter={StaticResource ThumbnailToPict},-->
 											
 											
@@ -418,7 +418,7 @@
 									<TextBlock Text="{x:Bind ImageDimensions, Mode=OneWay}"
 											   Grid.Row="1" />
 									<Image Source="{x:Bind Thumbnail,Mode=OneWay}"
-
+MaxWidth="200"
 										   Stretch="Uniform"
 
 										   Height="250"
@@ -670,22 +670,7 @@
 				   Margin="0,25,0,0"
 				   HorizontalAlignment="Right" />
 		</Grid>
-		<!--<StackPanel Orientation="Vertical"
-					RelativePanel.Above="startingGreetingScreen"
-					RelativePanel.AlignHorizontalCenterWithPanel="True">
-				<TextBlock x:Name="outputBlock" />
-				<StackPanel Grid.Row="1"
-							Orientation="Horizontal"
-							HorizontalAlignment="Center">
-					<Button Name="startButton"
-							Content="Start"
-							Click="Start_Click" />
-					<Button Name="stopButton"
-							IsEnabled="False"
-							Content="Stop"
-							Click="StopButton_Click" />
-				</StackPanel>
-			</StackPanel>-->
+		
 
 		<StackPanel x:Name="OneDrivePanel"
 					Orientation="Horizontal"

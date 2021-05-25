@@ -94,13 +94,13 @@ namespace ImageBrowser.ViewModels
 		public ImageFileInfoViewModel()
 		{
 			OneDriveOpenCommand = new RelayCommand(OneDriveOpenAction());
-		
+
 			SignOutCommand = new RelayCommand(SigningOutAsync());
 			SignInCommand = new RelayCommand(SigningInAsync());
 			OpenCLickCommand = new RelayCommand(OpenClickAsync());
 			OpenFoldersCommand = new RelayCommand(OpenFoldersAsync());
-			RefreshCommand = new RelayCommand(RefreshAreaItemsAsync());
-			ThemeChangeCommand = new RelayCommand(DefineClickedTheme);
+			RefreshCommand = new RelayCommand(RefreshAreaItemsAsyncExecute);
+			ThemeChangeCommand = new RelayCommand(DefineClickedThemeExecute);
 			SettingsNavigateCommand = new RelayCommand(() => { Services.NavigationService.Instance.Navigate(typeof(Settings)); });
 			GridViewSizeChangeCommand = new RelayMultipleCommand(GroupedGrid_SizeChanged);
 
@@ -118,7 +118,7 @@ namespace ImageBrowser.ViewModels
 			}
 
 			Task.Run(async () => await RegisterTaskAsync().ConfigureAwait(true));
-			
+
 		}
 
 		#region XamlListningProperties
@@ -322,7 +322,7 @@ namespace ImageBrowser.ViewModels
 				FoldersItem.FoldersPath.Add(item);
 			}
 			IsNoItemsToShow = false;
-			
+
 		}
 
 		public async void ClickFoldersInGrid(object sender, object parameter)
@@ -360,7 +360,7 @@ namespace ImageBrowser.ViewModels
 				if (FoldersItem.FoldersPath.Count <= 0)
 					IsNoItemsToShow = true;
 			}
-			
+
 		}
 
 		#region Actions for commands in ctor
@@ -368,8 +368,28 @@ namespace ImageBrowser.ViewModels
 		{
 			var panel = (ItemsWrapGrid)((sender as GridView).ItemsPanelRoot);
 
-			panel.ItemWidth = e / 3;
-
+			panel.ItemWidth = e / 6;
+			
+			if (panel.ItemWidth >= 212)
+			{
+				panel.ItemWidth = e / 7;
+			}
+			if (panel.ItemWidth < 200 && (panel.ItemWidth > 185))
+			{
+				panel.ItemWidth = e / 6;
+			}
+			if (panel.ItemWidth < 175 && panel.ItemWidth >= 158)
+			{
+				panel.ItemWidth = e / 5;
+			}
+			if(panel.ItemWidth < 148 && panel.ItemWidth >= 120)
+			{
+				panel.ItemWidth = e / 4;
+			}
+			if (panel.ItemWidth < 120)
+			{
+				panel.ItemWidth = e / 3;
+			}
 			// Trace.WriteLine("From RElay multiple command");
 		}
 
@@ -378,7 +398,7 @@ namespace ImageBrowser.ViewModels
 		/// </summary>
 		/// <param name="sender">Button that is clicked.</param>
 		/// <param name="selectedTheme">Button`s <see cref="string"/> tag property.</param>
-		private void DefineClickedTheme(object sender, string selectedTheme)
+		private void DefineClickedThemeExecute(object sender, string selectedTheme)
 		{
 			if (selectedTheme != null)
 			{
@@ -391,7 +411,7 @@ namespace ImageBrowser.ViewModels
 		/// <summary>
 		/// Reload collections of user added files.
 		/// </summary>
-		private Action RefreshAreaItemsAsync()
+		private async void RefreshAreaItemsAsyncExecute()
 		{
 			ICollection<StorageFile> files = new Collection<StorageFile>();
 			ICollection<StorageFile> filesReal = new Collection<StorageFile>();
@@ -408,11 +428,10 @@ namespace ImageBrowser.ViewModels
 
 			IReadOnlyCollection<StorageFile> filesReadOnly = (IReadOnlyCollection<StorageFile>)files;
 			GC.Collect();
-			return async () =>
-			{
-				Trace.WriteLine("REFRESHED by button in command");
-				await PopulateObservableCollectionOfImages(filesReadOnly);
-			};
+
+			Trace.WriteLine("REFRESHED by button in command");
+			await PopulateObservableCollectionOfImages(filesReadOnly);
+
 		}
 
 		private Action SigningInAsync()
@@ -447,11 +466,11 @@ namespace ImageBrowser.ViewModels
 		{
 			string taskName = "NoInternet";
 			SystemTrigger internet = new SystemTrigger(SystemTriggerType.NetworkStateChange, false);
-			SystemCondition conditionNOInternet = new SystemCondition(SystemConditionType.InternetNotAvailable);			
+			SystemCondition conditionNOInternet = new SystemCondition(SystemConditionType.InternetNotAvailable);
 
 			string taskEntryPoint = typeof(BackgroundTaskApp.MyBackgroundTask).ToString();
 			var taska = await BackgroundTaskHelper.RegisterBackgroundTaskAsync(taskEntryPoint, taskName, internet, conditionNOInternet);
-		
+
 		}
 		private async void Task_Completed(BackgroundTaskRegistration sender, BackgroundTaskCompletedEventArgs args)
 		{
@@ -474,7 +493,7 @@ namespace ImageBrowser.ViewModels
 				var task = taskList.FirstOrDefault(i => i.Name == taskName);
 				if (task != null)
 				{
-					  task.Unregister(true);
+					task.Unregister(true);
 				}
 			});
 		}
@@ -571,9 +590,9 @@ namespace ImageBrowser.ViewModels
 			var queryResult = folder?.CreateFileQueryWithOptions(queryOptions);
 			if (folder != null)
 			{
-				
-		   //queryResult.ContentsChanged += OnContentsChanged;
-		   var mru = Windows.Storage.AccessCache.StorageApplicationPermissions.MostRecentlyUsedList.Add(folder,"PickedFolderToken" );
+
+				//queryResult.ContentsChanged += OnContentsChanged;
+				var mru = Windows.Storage.AccessCache.StorageApplicationPermissions.MostRecentlyUsedList.Add(folder, "PickedFolderToken");
 
 				var Resultsubfolders = folder.CreateFolderQueryWithOptions(queryOptions);
 				var subFolders = await Resultsubfolders.GetFoldersAsync();
@@ -603,7 +622,7 @@ namespace ImageBrowser.ViewModels
 
 				await PopulateObservableCollectionOfImages(storageFiles).ConfigureAwait(false);
 			}
-			
+
 		}
 		// StorageFileQueryResult 
 		async void OnContentsChanged(IStorageQueryResultBase sender, object args)
