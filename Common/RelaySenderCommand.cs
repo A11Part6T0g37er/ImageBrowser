@@ -2,13 +2,13 @@
 using System.Windows.Input;
 using Windows.UI.Xaml;
 
-namespace ImageBrowser.ViewModels
+namespace ImageBrowser.Common
 {
-	internal class RelayMultipleCommand : ICommand
+	internal class RelaySenderCommand : ICommand
 	{
 		private readonly Func<bool> canExecute;
 		private Action execute;
-		public Action<object, double> GroupedGrid_SizeChanged { get; }
+		public Action<object, string> DefineTheme { get; }
 
 
 		/// <summary>
@@ -17,7 +17,7 @@ namespace ImageBrowser.ViewModels
 		/// </summary>
 		/// <param name="execute">The execution logic.</param>
 		/// <param name="canExecute">The execution status logic.</param>
-		public RelayMultipleCommand(Action execute, Func<bool> canExecute)
+		public RelaySenderCommand(Action execute, Func<bool> canExecute)
 		{
 			if (execute == null)
 				throw new ArgumentNullException("execute");
@@ -25,9 +25,9 @@ namespace ImageBrowser.ViewModels
 			this.canExecute = canExecute;
 		}
 
-		public RelayMultipleCommand(Action<object, double> groupedGrid_SizeChanged)
+		public RelaySenderCommand(Action<object, string> defineTheme)
 		{
-			GroupedGrid_SizeChanged = groupedGrid_SizeChanged;
+			DefineTheme = defineTheme;
 		}
 
 
@@ -41,16 +41,15 @@ namespace ImageBrowser.ViewModels
 		{
 			if (parameter != null)
 			{
-				var p = parameter as SizeChangedEventArgs;
-				var e = parameter as FrameworkElement;
-
-				GroupedGrid_SizeChanged(e, e.ActualWidth);
+				var p = parameter as Windows.UI.Xaml.FrameworkElement;
+				DefineTheme(parameter, p?.Tag.ToString());
 			}
 		}
-		public void Execute(object sender, object parameter)
+		public void Execute(object sender, string parameter)
 		{
-			var p = parameter as SizeChangedEventArgs;
-			var e = sender as FrameworkElement;
+			var p = parameter;
+			//var e = sender as UIElement;
+			DefineTheme(sender, p);
 		}
 	}
 }
