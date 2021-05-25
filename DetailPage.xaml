@@ -10,6 +10,6 @@
 
     <Grid>
         <Image x:Name="targetImage"
-                       Stretch="Uniform" />
+                       Stretch="Uniform"/>
     </Grid>
 </Page>
