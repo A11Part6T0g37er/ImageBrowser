@@ -93,12 +93,12 @@ namespace ImageBrowser.ViewModels
 		/// </summary>
 		public ImageFileInfoViewModel()
 		{
-			OneDriveOpenCommand = new RelayCommand(OneDriveOpenAction());
+			OneDriveOpenCommand = new RelayCommand(OneDriveOpenAsyncExecute);
 
-			SignOutCommand = new RelayCommand(SigningOutAsync());
-			SignInCommand = new RelayCommand(SigningInAsync);
-			OpenCLickCommand = new RelayCommand(OpenClickAsync);
-			OpenFoldersCommand = new RelayCommand(OpenFoldersAsync());
+			SignOutCommand = new RelayCommand(SigningOutAsyncExecute);
+			SignInCommand = new RelayCommand(SigningInAsyncExecute);
+			OpenCLickCommand = new RelayCommand(OpenClickAsyncExecute);
+			OpenFoldersCommand = new RelayCommand(OpenFoldersAsyncExecute);
 			RefreshCommand = new RelayCommand(RefreshAreaItemsAsyncExecute);
 			ThemeChangeCommand = new RelayCommand(DefineClickedThemeExecute);
 			SettingsNavigateCommand = new RelayCommand(() => { Services.NavigationService.Instance.Navigate(typeof(Settings)); });
@@ -353,7 +353,7 @@ namespace ImageBrowser.ViewModels
 				{
 					FoldersItem.PictsFromFolders.Add(await ImageFileHelper.LoadImageInfo(pictOfFolder));
 				}
-				return;
+				//return;
 			}
 			else
 			{
@@ -369,7 +369,30 @@ namespace ImageBrowser.ViewModels
 			var panel = (ItemsWrapGrid)((sender as GridView).ItemsPanelRoot);
 			var images = (ImageFileInfoViewModel)((sender as GridView).DataContext);
 			panel.ItemWidth = e / 6;
-			if(images.ObservableCollection.Count < 7)
+			if (images.ObservableCollection.Count >= 7)
+			{
+				if (panel.ItemWidth >= 212)
+				{
+					panel.ItemWidth = e / 7;
+				}
+				if (panel.ItemWidth < 200 && (panel.ItemWidth > 185))
+				{
+					panel.ItemWidth = e / 6;
+				}
+				if (panel.ItemWidth < 175 && panel.ItemWidth >= 158)
+				{
+					panel.ItemWidth = e / 5;
+				}
+				if (panel.ItemWidth < 148 && panel.ItemWidth >= 120)
+				{
+					panel.ItemWidth = e / 4;
+				}
+				if (panel.ItemWidth < 120)
+				{
+					panel.ItemWidth = e / 3;
+				}
+			}
+			else
 			{
 				if (images.ObservableCollection.Count < 6)
 				{
@@ -391,28 +414,9 @@ namespace ImageBrowser.ViewModels
 					panel.ItemWidth = e / 5;
 					return;
 				}
-				panel.ItemWidth = e / 6;
-				return;
-			}
-			if (panel.ItemWidth >= 212)
-			{
-				panel.ItemWidth = e / 7;
-			}
-			if (panel.ItemWidth < 200 && (panel.ItemWidth > 185))
-			{
-				panel.ItemWidth = e / 6;
-			}
-			if (panel.ItemWidth < 175 && panel.ItemWidth >= 158)
-			{
-				panel.ItemWidth = e / 5;
-			}
-			if(panel.ItemWidth < 148 && panel.ItemWidth >= 120)
-			{
-				panel.ItemWidth = e / 4;
-			}
-			if (panel.ItemWidth < 120)
-			{
-				panel.ItemWidth = e / 3;
+				else
+				{ panel.ItemWidth = e / 6; }
+				
 			}
 			// Trace.WriteLine("From RElay multiple command");
 		}
@@ -458,10 +462,9 @@ namespace ImageBrowser.ViewModels
 
 		}
 
-		private async void SigningInAsync()
+		private async void SigningInAsyncExecute()
 		{
-			/*return async () =>
-			{*/
+			
 				try
 				{
 					// Sign-in user using MSAL and obtain an access token for MS Graph
@@ -484,7 +487,7 @@ namespace ImageBrowser.ViewModels
 					IsUserSignedOut = false;
 					return;
 				}
-			/*};*/
+			
 		}
 		private async Task RegisterTaskAsync()
 		{
@@ -522,10 +525,10 @@ namespace ImageBrowser.ViewModels
 			});
 		}
 
-		private Action SigningOutAsync()
+		private async void SigningOutAsyncExecute()
 		{
-			return async () =>
-			{
+			/*return async () =>
+			{*/
 				IEnumerable<IAccount> accounts = await MSGraphQueriesHelper.GetMSGraphAccouts();
 				if (accounts == null)
 					return;
@@ -547,13 +550,13 @@ namespace ImageBrowser.ViewModels
 					Trace.WriteLine(ex.ToString());
 					ResultText = $"Error signing-out user: {ex.Message}";
 				}
-			};
+			/*};*/
 		}
 
-		private Action OneDriveOpenAction()
+		private async void OneDriveOpenAsyncExecute()
 		{
-			return async () =>
-			{
+			/*return async () =>
+			{*/
 				List<StorageFile> downloadedFiles = await MSGraphQueriesHelper.DownloadAllFilesFromOneDrive();
 
 				if (Windows.UI.Core.CoreWindow.GetForCurrentThread() != null)
@@ -564,12 +567,12 @@ namespace ImageBrowser.ViewModels
 				}
 
 				await PopulateObservableCollectionOfImages(downloadedFiles).ConfigureAwait(false);
-			};
+			/*};*/
 		}
 
-		private void OpenClickAsync()
+		private async void OpenClickAsyncExecute()
 		{
-			/*return async () =>*/ PickMultiplePictures();
+			await PickMultiplePictures();
 		}
 
 		private async Task<ObservableCollection<ImageFileInfo>> PickMultiplePictures()
@@ -585,9 +588,9 @@ namespace ImageBrowser.ViewModels
 			return await PopulateObservableCollectionOfImages(files).ConfigureAwait(false);
 		}
 
-		private Action OpenFoldersAsync()
+		private async void OpenFoldersAsyncExecute()
 		{
-			return async () => await OpenFoldersButtonHandler().ConfigureAwait(false);
+			/*return async () =>*/ await OpenFoldersButtonHandler().ConfigureAwait(false);
 		}
 
 		#endregion

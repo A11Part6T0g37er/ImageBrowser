@@ -79,14 +79,10 @@ namespace ImageBrowser.Helpers
 
         public static async Task<IEnumerable<IAccount>> GetMSGraphAccouts()
         {
-            if (publicClientApp != null)
-            {
-                return await publicClientApp.GetAccountsAsync().ConfigureAwait(false);
-            }
-            return null;
-        }
+			return publicClientApp != null ? await publicClientApp.GetAccountsAsync().ConfigureAwait(false) : null;
+		}
 
-        public static async Task SingOutMSGraphAccount(IAccount firstAccount)
+		public static async Task SingOutMSGraphAccount(IAccount firstAccount)
         {
             SetProperty(ref UserSignedOut, false);
 
