@@ -96,8 +96,8 @@ namespace ImageBrowser.ViewModels
 			OneDriveOpenCommand = new RelayCommand(OneDriveOpenAction());
 
 			SignOutCommand = new RelayCommand(SigningOutAsync());
-			SignInCommand = new RelayCommand(SigningInAsync());
-			OpenCLickCommand = new RelayCommand(OpenClickAsync());
+			SignInCommand = new RelayCommand(SigningInAsync);
+			OpenCLickCommand = new RelayCommand(OpenClickAsync);
 			OpenFoldersCommand = new RelayCommand(OpenFoldersAsync());
 			RefreshCommand = new RelayCommand(RefreshAreaItemsAsyncExecute);
 			ThemeChangeCommand = new RelayCommand(DefineClickedThemeExecute);
@@ -367,9 +367,33 @@ namespace ImageBrowser.ViewModels
 		private void GroupedGrid_SizeChanged(object sender, double e)
 		{
 			var panel = (ItemsWrapGrid)((sender as GridView).ItemsPanelRoot);
-
+			var images = (ImageFileInfoViewModel)((sender as GridView).DataContext);
 			panel.ItemWidth = e / 6;
-			
+			if(images.ObservableCollection.Count < 7)
+			{
+				if (images.ObservableCollection.Count < 6)
+				{
+					if (images.ObservableCollection.Count < 5)
+					{
+						if (images.ObservableCollection.Count < 4)
+						{
+							if (images.ObservableCollection.Count < 3)
+							{
+								panel.ItemWidth = e / 2;
+								return;
+							}
+							panel.ItemWidth = e / 3;
+							return;
+						}
+						panel.ItemWidth = e / 4;
+						return;
+					}
+					panel.ItemWidth = e / 5;
+					return;
+				}
+				panel.ItemWidth = e / 6;
+				return;
+			}
 			if (panel.ItemWidth >= 212)
 			{
 				panel.ItemWidth = e / 7;
@@ -434,10 +458,10 @@ namespace ImageBrowser.ViewModels
 
 		}
 
-		private Action SigningInAsync()
+		private async void SigningInAsync()
 		{
-			return async () =>
-			{
+			/*return async () =>
+			{*/
 				try
 				{
 					// Sign-in user using MSAL and obtain an access token for MS Graph
@@ -460,7 +484,7 @@ namespace ImageBrowser.ViewModels
 					IsUserSignedOut = false;
 					return;
 				}
-			};
+			/*};*/
 		}
 		private async Task RegisterTaskAsync()
 		{
@@ -543,9 +567,9 @@ namespace ImageBrowser.ViewModels
 			};
 		}
 
-		private Action OpenClickAsync()
+		private void OpenClickAsync()
 		{
-			return async () => PickMultiplePictures();
+			/*return async () =>*/ PickMultiplePictures();
 		}
 
 		private async Task<ObservableCollection<ImageFileInfo>> PickMultiplePictures()

@@ -289,9 +289,9 @@
 										
 										  Height="{Binding ItemSize,ElementName=page}"-->
 										<Grid.RowDefinitions>
-											<RowDefinition Height="*" />
-											<RowDefinition Height="Auto" />
-											<RowDefinition Height="Auto"/>
+											<RowDefinition Height="*" MinHeight="80"/>
+											<RowDefinition Height="Auto" MinHeight="10"/>
+											<RowDefinition Height="Auto" MinHeight="10"/>
 
 										</Grid.RowDefinitions>
 
@@ -311,7 +311,7 @@
 										</Image>
 										
 										<Grid Grid.Row="1"
-													Margin="0,10,0,15">
+													Margin="0,5,0,5">
 											<TextBlock Text="{x:Bind ImageName, Mode=OneWay}"
 													   TextWrapping="Wrap"
 													   Style="{StaticResource SubtitleTextBlockStyle}"
@@ -325,7 +325,7 @@
 													Grid.Row="2">
 											<TextBlock TextWrapping="Wrap"
 													   Text="{x:Bind ImageDimensions, Mode=OneWay}"
-													   Margin="0,3,10,5" />
+													   Margin="0,3,5,5" />
 
 											<ItemsControl ItemsSource="{x:Bind ImageProperties.Keywords, Mode=OneWay}" Margin="0,0,0,10">
 												<ItemsControl.ItemsPanel>
