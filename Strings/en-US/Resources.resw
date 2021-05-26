@@ -150,6 +150,10 @@
   <data name="errorSignOut" xml:space="preserve">
     <value>Error signing-out user:</value>
   </data>
+  <data name="GetBack.Content" xml:space="preserve">
+    <value>Go back to all folders</value>
+    <comment>Folders viewer dived into some level</comment>
+  </data>
   <data name="groupedGrid" xml:space="preserve">
     <value>Grouped Grid</value>
   </data>
