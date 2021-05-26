@@ -206,15 +206,26 @@
 		<VisualStateManager.VisualStateGroups>
 			<VisualStateGroup x:Name="WidthChange">
 				<VisualStateGroup.Transitions>
-					<VisualTransition To="Shrinks" GeneratedDuration="0:0:0.1"></VisualTransition>
+					<VisualTransition To="Shrinks" GeneratedDuration="0:0:0.1" ></VisualTransition>
 				</VisualStateGroup.Transitions>
 				<VisualState x:Name="Shrinks">
 					<VisualState.StateTriggers>
-						<AdaptiveTrigger MinWindowWidth="641" />
+						<AdaptiveTrigger MinWindowWidth="0" />
 					</VisualState.StateTriggers>
 					<VisualState.Setters>
 						<Setter Target="OneDriveCommandBar.DefaultLabelPosition"
 								Value="Collapsed"/>
+						<Setter Target="ResultText.Visibility"
+								Value="Collapsed" />
+					</VisualState.Setters>
+				</VisualState>
+				<VisualState x:Name="Enlarge">
+					<VisualState.StateTriggers>
+						<AdaptiveTrigger MinWindowWidth="750" />
+					</VisualState.StateTriggers>
+					<VisualState.Setters>
+						<Setter Target="OneDriveCommandBar.DefaultLabelPosition"
+								Value="Right" />
 					</VisualState.Setters>
 				</VisualState>
 			</VisualStateGroup>
