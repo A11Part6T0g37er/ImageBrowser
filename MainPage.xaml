@@ -210,7 +210,7 @@
 				</VisualStateGroup.Transitions>
 				<VisualState x:Name="Shrinks">
 					<VisualState.StateTriggers>
-						<AdaptiveTrigger MinWindowWidth="0" />
+						<AdaptiveTrigger MinWindowWidth="{StaticResource MinWindowBreakpoint}" />
 					</VisualState.StateTriggers>
 					<VisualState.Setters>
 						<Setter Target="OneDriveCommandBar.DefaultLabelPosition"
@@ -475,9 +475,9 @@ MaxWidth="200"
 			
 			<PivotItem Header="Folders">
 				<ScrollViewer>
-					<Grid>
+					<Grid Margin="20">
 						<Grid.RowDefinitions>
-							<RowDefinition Height="Auto" />
+							<RowDefinition Height="50" />
 							<RowDefinition Height="Auto" />
 							<RowDefinition Height="*" />
 
@@ -486,8 +486,8 @@ MaxWidth="200"
 							<ColumnDefinition />
 							<ColumnDefinition Width="Auto" />
 						</Grid.ColumnDefinitions>
-						<TextBlock Text="Folders opened"
-								   Margin="20"
+						<TextBlock Text=""
+								   Margin="1"
 								   Grid.Row="0" />
 						<Button x:Name="openFolders"
 								Grid.Row="1"
@@ -531,12 +531,16 @@ MaxWidth="200"
 						</Button>
 
 						<RelativePanel Grid.Row="2">
-
+							<TextBlock x:Name="FoldersPath" Text="{Binding CurrentFolderPath}"
+									   
+									   Visibility="{Binding IsFolderDived, Converter={StaticResource bool2Visibility}}" />
 							<HyperlinkButton x:Name="GetBack"
 											 Margin="0,15,0,0"
-											 Content="GET back"
+											 Content=""
+											 x:Uid="GetBack"
 											 MinHeight="10"
 											 ClickMode="Release"
+											 RelativePanel.Below="FoldersPath"
 											 Visibility="{Binding IsFolderDived, Converter={StaticResource bool2Visibility}}">
 								<Interactivity:Interaction.Behaviors>
 									<Interactions:EventTriggerBehavior EventName="Click">

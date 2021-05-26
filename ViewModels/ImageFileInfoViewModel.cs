@@ -45,7 +45,8 @@ namespace ImageBrowser.ViewModels
 
 		public List<FolderInfoModel> MirorData = new List<FolderInfoModel>();
 
-
+		public string CurrentFolderPath { get => currentFolderPath; set => SetProperty(ref currentFolderPath,value); }
+		private string currentFolderPath;
 
 		public event PropertyChangedEventHandler PropertyChanged;
 
@@ -90,13 +91,14 @@ namespace ImageBrowser.ViewModels
 
 		#endregion
 		string defaultWinTheme = string.Empty;
+
 		/// <summary>
 		/// Initializes a new instance of the <see cref="ImageFileInfoViewModel"/> class,
 		/// signup event and initializes commands.
 		/// </summary>
 		public ImageFileInfoViewModel()
 
-		{ 
+		{
 
 
 			OneDriveOpenCommand = new RelayCommand(OneDriveOpenAsyncExecute);
@@ -343,7 +345,7 @@ namespace ImageBrowser.ViewModels
 			IsNoItemsToShow = false;
 			IsFolderDived = true;
 			FoldersItem.FoldersPath.Clear();
-
+		CurrentFolderPath =	item.FolderPath;
 			FolderInfoModel folderNew;
 			foreach (var folder in item.FolderList)
 			{
@@ -434,7 +436,7 @@ namespace ImageBrowser.ViewModels
 				{ panel.ItemWidth = e / 6; }
 			}
 			var imagesToShow = images.ObservableCollection.Count;
-			 
+
 
 		}
 
@@ -481,30 +483,30 @@ namespace ImageBrowser.ViewModels
 
 		private async void SigningInAsyncExecute()
 		{
-			
-				try
-				{
-					// Sign-in user using MSAL and obtain an access token for MS Graph
-					GraphServiceClient graphClient = await MSGraphQueriesHelper.SignInAndInitializeGraphServiceClient();
-					// Call the /me endpoint of Graph
-					User graphUser = await graphClient.Me.Request().GetAsync();
-					ResultText = "Display Name: " + graphUser.UserPrincipalName + "\nid: " + graphUser.Id;
-					IsUserSignedOut = true;
-				}
-				catch (MsalException msalEx)
-				{
-					Trace.WriteLine($"Error Acquiring Token:{System.Environment.NewLine}{msalEx}");
-					ResultText = $"Error Acquiring Token:{System.Environment.NewLine}{msalEx}";
 
-				}
-				catch (Exception ex)
-				{
-					Trace.WriteLine($"Error Acquiring Token Silently:{System.Environment.NewLine}{ex}");
-					ResultText = $"Error Acquiring Token Silently:{System.Environment.NewLine}{ex}";
-					IsUserSignedOut = false;
-					return;
-				}
-			
+			try
+			{
+				// Sign-in user using MSAL and obtain an access token for MS Graph
+				GraphServiceClient graphClient = await MSGraphQueriesHelper.SignInAndInitializeGraphServiceClient();
+				// Call the /me endpoint of Graph
+				User graphUser = await graphClient.Me.Request().GetAsync();
+				ResultText = "Display Name: " + graphUser.UserPrincipalName + "\nid: " + graphUser.Id;
+				IsUserSignedOut = true;
+			}
+			catch (MsalException msalEx)
+			{
+				Trace.WriteLine($"Error Acquiring Token:{System.Environment.NewLine}{msalEx}");
+				ResultText = $"Error Acquiring Token:{System.Environment.NewLine}{msalEx}";
+
+			}
+			catch (Exception ex)
+			{
+				Trace.WriteLine($"Error Acquiring Token Silently:{System.Environment.NewLine}{ex}");
+				ResultText = $"Error Acquiring Token Silently:{System.Environment.NewLine}{ex}";
+				IsUserSignedOut = false;
+				return;
+			}
+
 		}
 		private async Task RegisterTaskAsync()
 		{
@@ -546,27 +548,27 @@ namespace ImageBrowser.ViewModels
 		{
 			/*return async () =>
 			{*/
-				IEnumerable<IAccount> accounts = await MSGraphQueriesHelper.GetMSGraphAccouts();
-				if (accounts == null)
-					return;
-				IAccount firstAccount = accounts.FirstOrDefault();
+			IEnumerable<IAccount> accounts = await MSGraphQueriesHelper.GetMSGraphAccouts();
+			if (accounts == null)
+				return;
+			IAccount firstAccount = accounts.FirstOrDefault();
 
-				try
-				{
-					await MSGraphQueriesHelper.SingOutMSGraphAccount(firstAccount).ConfigureAwait(false);
-					string message = LocalizationHelper.GetLocalizedStrings("normalSignOut");
-					IsUserSignedOut = false;
-					ResultText = UserSignedOutNormal;
-					Trace.WriteLine("From ImageViewModel");
+			try
+			{
+				await MSGraphQueriesHelper.SingOutMSGraphAccount(firstAccount).ConfigureAwait(false);
+				string message = LocalizationHelper.GetLocalizedStrings("normalSignOut");
+				IsUserSignedOut = false;
+				ResultText = UserSignedOutNormal;
+				Trace.WriteLine("From ImageViewModel");
 
-					OneDriveInfoText = EmptyOneDrive;
-					FlushObservableCollectionOfImages();
-				}
-				catch (MsalException ex)
-				{
-					Trace.WriteLine(ex.ToString());
-					ResultText = $"Error signing-out user: {ex.Message}";
-				}
+				OneDriveInfoText = EmptyOneDrive;
+				FlushObservableCollectionOfImages();
+			}
+			catch (MsalException ex)
+			{
+				Trace.WriteLine(ex.ToString());
+				ResultText = $"Error signing-out user: {ex.Message}";
+			}
 			/*};*/
 		}
 
@@ -574,16 +576,16 @@ namespace ImageBrowser.ViewModels
 		{
 			/*return async () =>
 			{*/
-				List<StorageFile> downloadedFiles = await MSGraphQueriesHelper.DownloadAllFilesFromOneDrive();
+			List<StorageFile> downloadedFiles = await MSGraphQueriesHelper.DownloadAllFilesFromOneDrive();
 
-				if (Windows.UI.Core.CoreWindow.GetForCurrentThread() != null)
-				{
-					var resourceLoader = Windows.ApplicationModel.Resources.ResourceLoader.GetForCurrentView();
+			if (Windows.UI.Core.CoreWindow.GetForCurrentThread() != null)
+			{
+				var resourceLoader = Windows.ApplicationModel.Resources.ResourceLoader.GetForCurrentView();
 
-					OneDriveInfoText = resourceLoader.GetString("CountFiles/Text").ToString() + MSGraphQueriesHelper.CountFiles();
-				}
+				OneDriveInfoText = resourceLoader.GetString("CountFiles/Text").ToString() + MSGraphQueriesHelper.CountFiles();
+			}
 
-				await PopulateObservableCollectionOfImages(downloadedFiles).ConfigureAwait(false);
+			await PopulateObservableCollectionOfImages(downloadedFiles).ConfigureAwait(false);
 			/*};*/
 		}
 
@@ -607,7 +609,8 @@ namespace ImageBrowser.ViewModels
 
 		private async void OpenFoldersAsyncExecute()
 		{
-			/*return async () =>*/ await OpenFoldersButtonHandler().ConfigureAwait(false);
+			/*return async () =>*/
+			await OpenFoldersButtonHandler().ConfigureAwait(false);
 		}
 
 		#endregion
