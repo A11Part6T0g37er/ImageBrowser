@@ -161,6 +161,8 @@
 		<viewModels:ImageFileInfoViewModel />
 	</Page.DataContext>
 
+
+	<RelativePanel>
 	<VisualStateManager.VisualStateGroups>
 		<VisualStateGroup>
 			
@@ -200,8 +202,6 @@
 			</VisualState>
 		</VisualStateGroup>
 	</VisualStateManager.VisualStateGroups>
-
-	<RelativePanel>
 
 		<Pivot x:Name="leftControlPanel"
 			   Title="Image Browser"
