@@ -162,7 +162,7 @@
 	</Page.DataContext>
 
 
-	<RelativePanel>
+	<RelativePanel >
 	<!--<VisualStateManager.VisualStateGroups>
 		<VisualStateGroup>
 			
@@ -230,14 +230,13 @@
 				</VisualState>
 			</VisualStateGroup>
 		</VisualStateManager.VisualStateGroups>
-		<Pivot x:Name="leftControlPanel"
-			   Title="Image Browser"
+		<Pivot x:Name="leftControlPanel"			   
 			   Margin="25,0,0,15"
-			   RelativePanel.Below="TopButtons">
+			   RelativePanel.Below="TopButtons" >
 			<PivotItem Name="All"
 					   x:Uid="all"
-					   Header="">
-				<Grid>
+					   Header="" >
+				<Grid Margin="30,50,20,0">
 					<Grid.RowDefinitions>
 						<RowDefinition Height="Auto" />
 						<RowDefinition MinHeight="5"
@@ -392,7 +391,7 @@
 			<PivotItem x:Name="GroupedList"
 					   x:Uid="groupedList"
 					   Header="">
-				<Grid  Margin="0,0,100,0">
+				<Grid  Margin="30,50,150,0">
 					<Grid.RowDefinitions>
 						<RowDefinition Height="Auto" />
 						<RowDefinition Height="*" />
@@ -475,9 +474,9 @@ MaxWidth="200"
 			
 			<PivotItem Header="Folders">
 				<ScrollViewer>
-					<Grid Margin="20">
+					<Grid Margin="30,50,20,0">
 						<Grid.RowDefinitions>
-							<RowDefinition Height="50" />
+							<RowDefinition Height="Auto" />
 							<RowDefinition Height="Auto" />
 							<RowDefinition Height="*" />
 
@@ -696,10 +695,12 @@ MaxWidth="200"
 			  Margin="20,0,0,0">
 
 			<TextBlock TextWrapping="Wrap"
-					   Text="Nothig here" />
+					   Text="" 
+					   x:Uid="NoPhotosGreetings"
+					 HorizontalAlignment="Center"  />
 			<Image Source="/Assets/Square150x150Logo.scale-200.png"
 				   Margin="0,25,0,0"
-				   HorizontalAlignment="Right" />
+				    />
 		</Grid>
 		
 
