@@ -23,6 +23,8 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Microsoft.Toolkit.Mvvm.Input;
 using RelayCommand = Microsoft.Toolkit.Mvvm.Input.RelayCommand;
+using ImageBrowser.Services;
+using Microsoft.Toolkit.Uwp.UI.Animations;
 
 namespace ImageBrowser.ViewModels
 {
@@ -316,6 +318,7 @@ namespace ImageBrowser.ViewModels
 		{
 			var arg = parameter as Windows.UI.Xaml.Controls.ItemClickEventArgs;
 			var item = arg.ClickedItem as ImageFileInfo;
+			NavigationServiceMain.Frame.SetListDataItemForNextConnectedAnimation(item);
 			Services.NavigationService.Instance.Navigate(typeof(DetailPage), item);
 		}
 
@@ -376,21 +379,27 @@ namespace ImageBrowser.ViewModels
 			var panel = (ItemsWrapGrid)((sender as GridView).ItemsPanelRoot);
 			var images = (ImageFileInfoViewModel)((sender as GridView).DataContext);
 			panel.ItemWidth = e / 6;
+			ResponsiveFit(e, panel, images);
+			// Trace.WriteLine("From RElay multiple command");
+		}
+
+		private static void ResponsiveFit(double e, ItemsWrapGrid panel, ImageFileInfoViewModel images)
+		{
 			if (images.ObservableCollection.Count >= 7)
 			{
-				if (panel.ItemWidth >= 212)
+				if (panel.ItemWidth >= 202)
 				{
 					panel.ItemWidth = e / 7;
 				}
-				if (panel.ItemWidth < 200 && (panel.ItemWidth > 185))
+				if (panel.ItemWidth < 200 && (panel.ItemWidth >= 185))
 				{
 					panel.ItemWidth = e / 6;
 				}
-				if (panel.ItemWidth < 175 && panel.ItemWidth >= 158)
+				if (panel.ItemWidth < 185 && panel.ItemWidth >= 158)
 				{
 					panel.ItemWidth = e / 5;
 				}
-				if (panel.ItemWidth < 148 && panel.ItemWidth >= 120)
+				if (panel.ItemWidth < 158 && panel.ItemWidth >= 120)
 				{
 					panel.ItemWidth = e / 4;
 				}
@@ -423,9 +432,10 @@ namespace ImageBrowser.ViewModels
 				}
 				else
 				{ panel.ItemWidth = e / 6; }
-				
 			}
-			// Trace.WriteLine("From RElay multiple command");
+			var imagesToShow = images.ObservableCollection.Count;
+			 
+
 		}
 
 		/// <summary>
