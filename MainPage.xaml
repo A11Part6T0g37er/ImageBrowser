@@ -683,15 +683,22 @@ MaxWidth="200"
 			<CommandBar DefaultLabelPosition="Right"
 						IsOpen="False" >
 
-				<AppBarButton Icon="Download"
-							  
+				<AppBarButton 
 							  x:Name="signingOneDrive"
 							  Label=""
 							  x:Uid="signIn"
 							  Visibility="{Binding IsUserSignedOut, Converter={StaticResource bool2visInverse},Mode=TwoWay}"
 							  Command="{Binding SignInCommand}"
-							  ToolTipService.ToolTip="OneDrive" />
-							  
+							  ToolTipService.ToolTip="OneDrive">
+					<Ellipse Width="24"
+							 Height="24">
+					<!--Icon="Download"-->	<Ellipse.Fill>
+							<ImageBrush ImageSource="/Assets/DefaultIcon.png"
+										Stretch="UniformToFill" />
+						</Ellipse.Fill>
+					</Ellipse>
+				</AppBarButton>
+
 
 				<AppBarButton Icon="Account"
 							  x:Name="SignOutButton"
@@ -701,8 +708,9 @@ MaxWidth="200"
 							  Visibility="{Binding  IsUserSignedOut,  Converter={StaticResource bool2Visibility},Mode=TwoWay}"
 							  FontFamily="Segoe Ui" />
 							
-				<AppBarButton x:Name="OpenOneDrive"							
-							  Content=""
+				<AppBarButton x:Name="OpenOneDrive"
+							  Icon="Download"
+							  Label=""
 							  x:Uid="oneDriveOpen"
 							  Command="{Binding OneDriveOpenCommand}"
 							  Visibility="{Binding IsUserSignedOut, Converter={StaticResource bool2Visibility}, Mode=TwoWay}" />

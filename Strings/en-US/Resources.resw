@@ -171,7 +171,7 @@
   <data name="oneDriveDownloadedInfoDefault" xml:space="preserve">
     <value>Nothing has been downloaded yet</value>
   </data>
-  <data name="oneDriveOpen.Content" xml:space="preserve">
+  <data name="oneDriveOpen.Label" xml:space="preserve">
     <value>Get all from OneDrive</value>
   </data>
   <data name="open.Label" xml:space="preserve">
