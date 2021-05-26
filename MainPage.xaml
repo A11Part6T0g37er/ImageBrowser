@@ -163,7 +163,7 @@
 
 
 	<RelativePanel>
-	<VisualStateManager.VisualStateGroups>
+	<!--<VisualStateManager.VisualStateGroups>
 		<VisualStateGroup>
 			
 			<VisualState x:Name="LargeWindowBreakpoint">
@@ -186,7 +186,7 @@
 			
 			<VisualState x:Name="MinWindowBreakpoint">
 				<VisualState.StateTriggers>
-					<AdaptiveTrigger MinWindowWidth="{StaticResource MinWindowBreakpoint}" />
+					<AdaptiveTrigger MinWindowWidth="641" />
 				</VisualState.StateTriggers>
 				<VisualState.Setters>
 					<Setter Target="PicturesInGrid.ItemPanel"
@@ -200,9 +200,25 @@
 				</VisualState.Setters>
 
 			</VisualState>
+			
 		</VisualStateGroup>
-	</VisualStateManager.VisualStateGroups>
-
+	</VisualStateManager.VisualStateGroups>-->
+		<VisualStateManager.VisualStateGroups>
+			<VisualStateGroup x:Name="WidthChange">
+				<VisualStateGroup.Transitions>
+					<VisualTransition To="Shrinks" GeneratedDuration="0:0:0.1"></VisualTransition>
+				</VisualStateGroup.Transitions>
+				<VisualState x:Name="Shrinks">
+					<VisualState.StateTriggers>
+						<AdaptiveTrigger MinWindowWidth="641" />
+					</VisualState.StateTriggers>
+					<VisualState.Setters>
+						<Setter Target="OneDriveCommandBar.DefaultLabelPosition"
+								Value="Collapsed"/>
+					</VisualState.Setters>
+				</VisualState>
+			</VisualStateGroup>
+		</VisualStateManager.VisualStateGroups>
 		<Pivot x:Name="leftControlPanel"
 			   Title="Image Browser"
 			   Margin="25,0,0,15"
@@ -681,7 +697,7 @@ MaxWidth="200"
 					RelativePanel.AlignRightWithPanel="True"
 					Margin="10,0,0,0">
 			<CommandBar DefaultLabelPosition="Right"
-						IsOpen="False" >
+						IsOpen="False" x:Name="OneDriveCommandBar">
 
 				<AppBarButton 
 							  x:Name="signingOneDrive"
