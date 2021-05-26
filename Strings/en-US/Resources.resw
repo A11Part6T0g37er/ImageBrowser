@@ -126,8 +126,8 @@
     <comment>additional text under button name</comment>
   </data>
   <data name="all.Header" xml:space="preserve">
-    <value>All</value>
-    <comment>everything</comment>
+    <value>Collection</value>
+    <comment>everything, mainPage</comment>
   </data>
   <data name="allPictures.Text" xml:space="preserve">
     <value>All pictures go here</value>
@@ -168,6 +168,10 @@
   </data>
   <data name="NoPhotosFound.Text" xml:space="preserve">
     <value>No photos, or folders found.</value>
+  </data>
+  <data name="NoPhotosGreetings.Text" xml:space="preserve">
+    <value>There is no photos to display yet. Try to open something.</value>
+    <comment>startingGreetingScreen area appears on first launch</comment>
   </data>
   <data name="normalSignOut" xml:space="preserve">
     <value>User has signed out.</value>

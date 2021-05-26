@@ -1,9 +1,11 @@
 ﻿using ImageBrowser.Common;
 using ImageBrowser.Helpers;
 using ImageBrowser.Models;
+using ImageBrowser.Services;
 using Microsoft.Graph;
 using Microsoft.Identity.Client;
 using Microsoft.Toolkit.Uwp.Notifications;
+using Microsoft.Toolkit.Uwp.UI.Animations;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -21,10 +23,7 @@ using Windows.UI.Core;
 using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Microsoft.Toolkit.Mvvm.Input;
 using RelayCommand = Microsoft.Toolkit.Mvvm.Input.RelayCommand;
-using ImageBrowser.Services;
-using Microsoft.Toolkit.Uwp.UI.Animations;
 
 namespace ImageBrowser.ViewModels
 {
@@ -45,7 +44,7 @@ namespace ImageBrowser.ViewModels
 
 		public List<FolderInfoModel> MirorData = new List<FolderInfoModel>();
 
-		public string CurrentFolderPath { get => currentFolderPath; set => SetProperty(ref currentFolderPath,value); }
+		public string CurrentFolderPath { get => currentFolderPath; set => SetProperty(ref currentFolderPath, value); }
 		private string currentFolderPath;
 
 		public event PropertyChangedEventHandler PropertyChanged;
@@ -345,7 +344,7 @@ namespace ImageBrowser.ViewModels
 			IsNoItemsToShow = false;
 			IsFolderDived = true;
 			FoldersItem.FoldersPath.Clear();
-		CurrentFolderPath =	item.FolderPath;
+			CurrentFolderPath = item.FolderPath;
 			FolderInfoModel folderNew;
 			foreach (var folder in item.FolderList)
 			{
@@ -387,57 +386,79 @@ namespace ImageBrowser.ViewModels
 
 		private static void ResponsiveFit(double e, ItemsWrapGrid panel, ImageFileInfoViewModel images)
 		{
-			if (images.ObservableCollection.Count >= 7)
+			var imagesToShow = images.ObservableCollection.Count;
+
+			AdjustLess7(e, panel, imagesToShow);
+
+
+			//else
+			//{
+		//	AdjustToNewWidth(e, panel);
+			//}
+
+
+		}
+
+		private static void AdjustLess7(double e, ItemsWrapGrid panel, int imagesToShow)
+		{
+			if (imagesToShow <= 6)
 			{
-				if (panel.ItemWidth >= 202)
-				{
-					panel.ItemWidth = e / 7;
-				}
-				if (panel.ItemWidth < 200 && (panel.ItemWidth >= 185))
-				{
-					panel.ItemWidth = e / 6;
-				}
-				if (panel.ItemWidth < 185 && panel.ItemWidth >= 158)
+				panel.ItemWidth = e / 6;
+				if (imagesToShow <= 5)
 				{
 					panel.ItemWidth = e / 5;
+					if (imagesToShow <= 4)
+					{
+						panel.ItemWidth = e / 4;
+						if (imagesToShow <= 3)
+						{
+							panel.ItemWidth = e / 3;
+							if (imagesToShow <= 2)
+							{
+								panel.ItemWidth = e / 2;
+								//AdjustToNewWidth(e, panel);
+								
+								
+							}
+						
+						}
+						//return;
+					}
+
+					//return;
 				}
-				if (panel.ItemWidth < 158 && panel.ItemWidth >= 120)
-				{
-					panel.ItemWidth = e / 4;
-				}
-				if (panel.ItemWidth < 120)
-				{
-					panel.ItemWidth = e / 3;
-				}
+				AdjustToNewWidth(e, panel);
+				return;
 			}
 			else
 			{
-				if (images.ObservableCollection.Count < 6)
-				{
-					if (images.ObservableCollection.Count < 5)
-					{
-						if (images.ObservableCollection.Count < 4)
-						{
-							if (images.ObservableCollection.Count < 3)
-							{
-								panel.ItemWidth = e / 2;
-								return;
-							}
-							panel.ItemWidth = e / 3;
-							return;
-						}
-						panel.ItemWidth = e / 4;
-						return;
-					}
-					panel.ItemWidth = e / 5;
-					return;
-				}
-				else
-				{ panel.ItemWidth = e / 6; }
+				AdjustToNewWidth(e, panel);
 			}
-			var imagesToShow = images.ObservableCollection.Count;
+		}
 
-
+		private static void AdjustToNewWidth(double e, ItemsWrapGrid panel,int maxColumns = 7)
+		{
+			//TODO: constrain to maxColumn if panel >200  ... = e/--max
+			if (panel.ItemWidth >= 202)
+			{
+				panel.ItemWidth = e / 7;
+			}
+			if (panel.ItemWidth < 200 && (panel.ItemWidth >= 185))
+			{
+				panel.ItemWidth = e / 6;
+			}
+			if (panel.ItemWidth < 185 && panel.ItemWidth >= 158)
+			{
+				panel.ItemWidth = e / 5;
+			}
+			if (panel.ItemWidth < 158 && panel.ItemWidth >= 120)
+			{
+				panel.ItemWidth = e / 4;
+			}
+			if (panel.ItemWidth < 120)
+			{
+				panel.ItemWidth = e / 3;
+			}
 		}
 
 		/// <summary>
