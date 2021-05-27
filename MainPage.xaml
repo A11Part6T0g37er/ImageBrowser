@@ -666,12 +666,9 @@ MaxWidth="200"
 						  x:Name="Refresh"
 						  Label=""
 						  x:Uid="refresh"
-						  ToolTipService.ToolTip="">
-				<Interactivity:Interaction.Behaviors>
-					<Interactions:EventTriggerBehavior EventName="Click">
-						<Interactions:InvokeCommandAction Command="{Binding RefreshCommand}" />
-					</Interactions:EventTriggerBehavior>
-				</Interactivity:Interaction.Behaviors>
+						  ToolTipService.ToolTip=""
+						  Command="{Binding RefreshCommand}">
+				
 			</AppBarButton>
 
 			<AppBarButton Icon="OpenFile"
@@ -753,12 +750,9 @@ MaxWidth="200"
 				<CommandBar.SecondaryCommands>
 					<AppBarButton Icon="Setting"
 								  Label=""
-								  x:Uid="settings">
-						<Interactivity:Interaction.Behaviors>
-							<Interactions:EventTriggerBehavior EventName="Click">
-								<Interactions:InvokeCommandAction Command="{Binding SettingsNavigateCommand}" />
-							</Interactions:EventTriggerBehavior>
-						</Interactivity:Interaction.Behaviors>
+								  x:Uid="settings"
+								  Command="{Binding SettingsNavigateCommand}">
+						
 					</AppBarButton>
 					<AppBarButton Tag="Dark"
 								  x:Name="Dark"
