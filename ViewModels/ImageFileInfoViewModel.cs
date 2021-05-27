@@ -57,7 +57,7 @@ namespace ImageBrowser.ViewModels
 		public ICommand RefreshCommand { get; set; }
 		public ICommand ThemeChangeCommand { get; set; }
 		public ICommand SettingsNavigateCommand { get; set; }
-		public ICommand GridViewSizeChangeCommand { get; set; }
+
 
 		#region DependecyProperties
 		public static readonly DependencyProperty ResultTextProperty = DependencyProperty.Register(
@@ -110,7 +110,7 @@ namespace ImageBrowser.ViewModels
 
 
 			SettingsNavigateCommand = new RelayCommand(() => { Services.NavigationService.Instance.Navigate(typeof(Settings)); });
-			GridViewSizeChangeCommand = new RelayMultipleCommand(GroupedGrid_SizeChanged);
+
 
 			MSGraphQueriesHelper.PropertyChanged += SigningStatusViewModel_OnStatusChanged;
 
@@ -373,88 +373,6 @@ namespace ImageBrowser.ViewModels
 		}
 
 		#region Actions for commands in ctor
-		private void GroupedGrid_SizeChanged(object sender, double e)
-		{
-			var panel = (ItemsWrapGrid)((sender as GridView).ItemsPanelRoot);
-			var images = (ImageFileInfoViewModel)((sender as GridView).DataContext);
-			panel.ItemWidth = e / 6;
-			ResponsiveFit(e, panel, images);
-			// Trace.WriteLine("From RElay multiple command");
-		}
-
-		private static void ResponsiveFit(double e, ItemsWrapGrid panel, ImageFileInfoViewModel images)
-		{
-			var imagesToShow = images.ObservableCollection.Count;
-
-			AdjustLess7(e, panel, imagesToShow);
-
-
-			//else
-			//{
-			//	AdjustToNewWidth(e, panel);
-			//}
-
-
-		}
-
-		private static void AdjustLess7(double e, ItemsWrapGrid panel, int imagesToShow)
-		{
-			if (imagesToShow <= 6)
-			{
-				panel.ItemWidth = e / 6;
-				if (imagesToShow <= 5)
-				{
-					panel.ItemWidth = e / 5;
-					if (imagesToShow <= 4)
-					{
-						panel.ItemWidth = e / 4;
-						if (imagesToShow <= 3)
-						{
-							panel.ItemWidth = e / 3;
-							if (imagesToShow <= 2)
-							{
-								panel.ItemWidth = e / 2;
-								//AdjustToNewWidth(e, panel);
-							}
-						}
-						//return;
-					}
-
-					//return;
-				}
-				AdjustToNewWidth(e, panel);
-				return;
-			}
-			else
-			{
-				AdjustToNewWidth(e, panel);
-			}
-		}
-
-		private static void AdjustToNewWidth(double e, ItemsWrapGrid panel, int maxColumns = 7)
-		{
-			//TODO: constrain to maxColumn if panel >200  ... = e/--max
-			if (panel.ItemWidth >= 202)
-			{
-				panel.ItemWidth = e / 7;
-			}
-			if (panel.ItemWidth < 200 && (panel.ItemWidth >= 185))
-			{
-				panel.ItemWidth = e / 6;
-			}
-			if (panel.ItemWidth < 185 && panel.ItemWidth >= 158)
-			{
-				panel.ItemWidth = e / 5;
-			}
-			if (panel.ItemWidth < 158 && panel.ItemWidth >= 120)
-			{
-				panel.ItemWidth = e / 4;
-			}
-			if (panel.ItemWidth < 120)
-			{
-				panel.ItemWidth = e / 3;
-			}
-		}
 
 		/// <summary>
 		/// Imlemented switching between <see cref="ElementTheme"/> .
@@ -768,8 +686,6 @@ namespace ImageBrowser.ViewModels
 
 			return ObservableCollection.Count > 0;
 		}
-
-
 
 		protected bool SetProperty<T>(ref T storage, T value, [CallerMemberName] string propertyName = null)
 		{

@@ -4,8 +4,10 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:ImageBrowser">
     <Application.Resources>
+		
 		<ResourceDictionary>
 			<ResourceDictionary.MergedDictionaries>
+			<XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls" />
 				<ResourceDictionary Source="Resources/LayoutResizing.xaml" />
 				<ResourceDictionary Source="Resources/FolderAddButton.xaml" />
 				<ResourceDictionary Source="Resources/FolderStyle.xaml" />				

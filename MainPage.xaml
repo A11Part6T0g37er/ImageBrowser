@@ -16,7 +16,7 @@
 	  Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
 	  NavigationCacheMode="Required"
 	  xmlns:media="using:Microsoft.Toolkit.Uwp.UI.Media"
-	  >
+	  xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls">
 	<!--d:DataContext="{d:DesignInstance Type=helpers:MSGraphQueriesHelper}"-->
 	<Page.Resources>
 		<converters:BooleanToVisibilityConverter x:Key="bool2Visibility" />
@@ -230,6 +230,7 @@
 				</VisualState>
 			</VisualStateGroup>
 		</VisualStateManager.VisualStateGroups>
+		
 		<Pivot x:Name="leftControlPanel"			   
 			   Margin="25,0,0,15"
 			   RelativePanel.Below="TopButtons" >
@@ -270,33 +271,30 @@
 							</Interactions:EventTriggerBehavior>
 						</Interactivity:Interaction.Behaviors>
 
-						<GridView ItemsSource="{Binding Source={StaticResource ImagesCollection}}"
+				<!--ItemsPanel="{StaticResource ImageGridView_ItemsPanelTemplate}"-->	<!--GridView-->
+						<controls:AdaptiveGridView ItemsSource="{Binding Source={StaticResource ImagesCollection}}"
 								  SelectionMode="None"
 								  Name="GroupedGrid"
-								  ItemsPanel="{StaticResource ImageGridView_ItemsPanelTemplate}"
-								  IsItemClickEnabled="True"
+												   DesiredWidth="190"
+												   IsItemClickEnabled="True"
+												   Padding="1"
+												   StretchContentForSingleRow="True"
+												  
 								  RelativePanel.Below="leftControlPanel"
 								  RelativePanel.AlignLeftWithPanel="True"
 								  RelativePanel.AlignRightWithPanel="True"
 								  MinHeight="15"
 								  Margin="15">
-								  <!--SizeChanged="GroupedGrid_SizeChanged"-->
-								  <!--MinWidth="280"-->
+								 
+								  
 							
-							<Interactivity:Interaction.Behaviors>
-								<Interactions:EventTriggerBehavior EventName="SizeChanged">
-									<Interactions:InvokeCommandAction Command="{Binding GridViewSizeChangeCommand,Mode=TwoWay}"
-																	  CommandParameter="{Binding  ElementName=GroupedGrid , Mode=TwoWay}" />
-									
-								</Interactions:EventTriggerBehavior>
+							<Interactivity:Interaction.Behaviors>								
 								<Interactions:EventTriggerBehavior EventName="ItemClick" >
-
 									<Interactions:CallMethodAction MethodName="ClickPictInGrid" TargetObject="{Binding Mode=OneWay}" />
-
 								</Interactions:EventTriggerBehavior>
 							</Interactivity:Interaction.Behaviors>
 							
-							<GridView.GroupStyle>
+							<controls:AdaptiveGridView.GroupStyle>
 								<GroupStyle>
 									<GroupStyle.HeaderTemplate>
 										<DataTemplate>
@@ -307,8 +305,8 @@
 
 									</GroupStyle.HeaderTemplate>
 								</GroupStyle>
-							</GridView.GroupStyle>
-							<GridView.ItemTemplate>
+							</controls:AdaptiveGridView.GroupStyle>
+							<controls:AdaptiveGridView.ItemTemplate>
 								<DataTemplate x:DataType="local:ImageFileInfo">
 									<Grid Margin="{StaticResource LargeItemMargin}" MaxWidth="230">
 										<!--Width="{Binding ItemSize,ElementName=page}"
@@ -322,18 +320,15 @@
 										</Grid.RowDefinitions>
 
 										<Image x:Name="ItemImage"
-											   Stretch="Uniform"
-											   VerticalAlignment="Top"
+											   Stretch="UniformToFill"
+											   VerticalAlignment="Center"
 											   HorizontalAlignment="Center"
 											   Grid.Row="0"
 											   Margin="2"
 											   Source="{Binding Thumbnail, Mode=OneWay}"
 											   MaxWidth="210">
 											<!--Converter={StaticResource ThumbnailToPict},-->
-											
-											
-											   <!--Source="{x:Bind ImagePath, Mode=OneWay}"-->
-											
+											   <!--Source="{x:Bind ImagePath, Mode=OneWay}"-->											
 										</Image>
 										
 										<Grid Grid.Row="1"
@@ -344,7 +339,6 @@
 													   MaxWidth="500" 
 													   HorizontalAlignment="Left"
 													   VerticalAlignment="Top" />
-
 										</Grid>
 
 										<StackPanel Orientation="Vertical"
@@ -378,8 +372,8 @@
 
 									</Grid>
 								</DataTemplate>
-							</GridView.ItemTemplate>
-						</GridView>
+							</controls:AdaptiveGridView.ItemTemplate>
+						</controls:AdaptiveGridView>
 
 					</RefreshContainer>
 
