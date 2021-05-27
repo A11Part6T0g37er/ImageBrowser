@@ -8,41 +8,41 @@ using Windows.UI.Xaml.Data;
 
 namespace ImageBrowser.Common.Converters
 {
-    public class BooleanToVisibilityConverter : IValueConverter
-    {
-        public Visibility OnTrue { get; set; }
+	public class BooleanToVisibilityConverter : IValueConverter
+	{
+		public Visibility OnTrue { get; set; }
 
-        public Visibility OnFalse { get; set; }
+		public Visibility OnFalse { get; set; }
 
-        public BooleanToVisibilityConverter()
-        {
-            OnFalse = Visibility.Collapsed;
-            OnTrue = Visibility.Visible;
-        }
+		public BooleanToVisibilityConverter()
+		{
+			OnFalse = Visibility.Collapsed;
+			OnTrue = Visibility.Visible;
+		}
 
-        public object Convert(object value, Type targetType, object parameter, string language)
-        {
-            bool? visibile = null;
-            if (value is bool)
-            {
+		public object Convert(object value, Type targetType, object parameter, string language)
+		{
+			bool? visibile = null;
+			if (value is bool)
+			{
 
-                visibile = (bool)value;
+				visibile = (bool)value;
 
-              
-            }
-            return (bool)visibile ? OnTrue : OnFalse;
-        }
 
-        public object ConvertBack(object value, Type targetType, object parameter, string language)
-        {
-            if (value is Visibility == false)
-            {
-                return DependencyProperty.UnsetValue;
-            }
+			}
+			return (bool)visibile ? OnTrue : OnFalse;
+		}
 
-            
-                return ((Visibility)value == OnTrue);
-            
-        }
-    }
+		public object ConvertBack(object value, Type targetType, object parameter, string language)
+		{
+			if (value is Visibility == false)
+			{
+				return DependencyProperty.UnsetValue;
+			}
+
+
+			return ((Visibility)value == OnTrue);
+
+		}
+	}
 }

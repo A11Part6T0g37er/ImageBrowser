@@ -8,23 +8,23 @@ using Windows.Storage;
 
 namespace ImageBrowser.Helpers
 {
-    public static class FileRetrieveHelper
-    {
-        public static async Task<StorageFolder> GetParentFolder(FolderInfoModel folderItem)
-        {
-            StorageFolder outerFolder;
-            if ((bool)(folderItem?.FolderList.Any()))
-            {
+	public static class FileRetrieveHelper
+	{
+		public static async Task<StorageFolder> GetParentFolder(FolderInfoModel folderItem)
+		{
+			StorageFolder outerFolder;
+			if ((bool)(folderItem?.FolderList.Any()))
+			{
 
-                outerFolder = await folderItem?.FolderList.First().GetParentAsync();
-            }
-            else
-            {
-                var currentFolder = await StorageFolder.GetFolderFromPathAsync(folderItem?.FolderPath);
-                outerFolder = currentFolder;
-            }
+				outerFolder = await folderItem?.FolderList.First().GetParentAsync();
+			}
+			else
+			{
+				var currentFolder = await StorageFolder.GetFolderFromPathAsync(folderItem?.FolderPath);
+				outerFolder = currentFolder;
+			}
 
-            return outerFolder;
-        }
-    }
+			return outerFolder;
+		}
+	}
 }

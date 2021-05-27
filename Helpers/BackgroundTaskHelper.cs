@@ -4,12 +4,13 @@ using System;
 
 using System.Threading.Tasks;
 using Microsoft.Toolkit.Uwp.Notifications;
+using Windows.UI.Core;
 
 namespace ImageBrowser.Helpers
 {
 	public static class BackgroundTaskHelper
 	{
-		
+
 		/// <summary>
 		/// Register a background task with the specified taskEntryPoint, name, trigger, and condition (optional).
 		/// </summary>
@@ -20,7 +21,7 @@ namespace ImageBrowser.Helpers
 		/// <returns><see cref="BackgroundTaskRegistration"/> </returns>
 		public static async Task<BackgroundTaskRegistration> RegisterBackgroundTaskAsync(string taskEntryPoint,
 																		string taskName,
-																		IBackgroundTrigger trigger ,
+																		IBackgroundTrigger trigger,
 																		IBackgroundCondition condition = null)
 		{
 
@@ -28,9 +29,9 @@ namespace ImageBrowser.Helpers
 			foreach (var cur in BackgroundTaskRegistration.AllTasks.Where(cur => cur.Value.Name == taskName))
 			{
 				cur.Value.Unregister(true);
-			//	return (BackgroundTaskRegistration)(cur.Value);
+				//	return (BackgroundTaskRegistration)(cur.Value);
 			}
-			
+
 			BackgroundTaskRegistration task = await RegisterTaskBuilderAsync(taskEntryPoint, taskName, trigger, condition);
 
 			return task;
@@ -43,7 +44,7 @@ namespace ImageBrowser.Helpers
 				Name = taskName,
 				TaskEntryPoint = taskEntryPoint
 			};
-			
+
 			builder.SetTrigger(trigger);
 
 			if (condition != null)
@@ -53,7 +54,7 @@ namespace ImageBrowser.Helpers
 			}
 
 			builder.AddCondition(new SystemCondition(SystemConditionType.BackgroundWorkCostNotHigh));
-			
+
 			await BackgroundExecutionManager.RequestAccessAsync();
 			BackgroundTaskRegistration task = builder.Register();
 			task.Completed += Task_Completed;
@@ -66,6 +67,22 @@ namespace ImageBrowser.Helpers
 	.AddText("You have no internet!")
 	.AddText("App may not operate normally.")
 	.Show());
+		}
+
+		/// <summary>
+		/// Unregister current task from background execution.
+		/// </summary>
+		private static async void Stop(string taskName)
+		{
+			await CallUIThreadHelper.CallOnUiThreadAsync(() =>
+			{
+				var taskList = BackgroundTaskRegistration.AllTasks.Values;
+				var task = taskList.FirstOrDefault(i => i.Name == taskName);
+				if (task != null)
+				{
+					task.Unregister(true);
+				}
+			});
 		}
 	}
 }

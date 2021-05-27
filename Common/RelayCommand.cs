@@ -10,7 +10,7 @@ namespace ImageBrowser.Common
 	/// RaiseCanExecuteChanged needs to be called whenever
 	/// CanExecute is expected to return a different value.
 	/// </summary>
-	public class RelayCommand: ICommand
+	public class RelayCommand : ICommand
 	{
 		private readonly Action execute;
 		private readonly Action<object> command;
@@ -40,9 +40,7 @@ namespace ImageBrowser.Common
 		/// <param name="canExecute">The execution status logic.</param>
 		public RelayCommand(Action execute, Func<bool> canExecute)
 		{
-			if (execute == null)
-				throw new ArgumentNullException("execute");
-			this.execute = execute;
+			this.execute = execute ?? throw new ArgumentNullException("execute");
 			this.canExecute = canExecute;
 		}
 		public RelayCommand(Action<object> commandAction, Func<bool> canExecute = null)
@@ -78,15 +76,9 @@ namespace ImageBrowser.Common
 		/// </param>
 		public void Execute(object parameter)
 		{
-			if (command != null)
-			{
-				command(parameter);
-			}
-			if (execute != null)
-			{
+			command?.Invoke(parameter);
 
-				execute();
-			}
+			execute?.Invoke();
 			if (defineClickedTheme != null)
 			{
 				var p = parameter as Windows.UI.Xaml.FrameworkElement;

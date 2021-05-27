@@ -5,7 +5,7 @@ using Windows.UI.Popups;
 
 namespace ImageBrowser.Helpers
 {
-    public class DisplayUIHelper
-    {
-    }
+	public class DisplayUIHelper
+	{
+	}
 }

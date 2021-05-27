@@ -8,31 +8,31 @@ using Windows.UI.Xaml.Controls;
 
 namespace ImageBrowser.Services
 {
-    class NavigationService
-    {
-        public void Navigate(Type sourcePage)
-        {
-            var frame = (Frame)Window.Current.Content;
-            frame.Navigate(sourcePage);
-        }
+	class NavigationService
+	{
+		public void Navigate(Type sourcePage)
+		{
+			var frame = (Frame)Window.Current.Content;
+			frame.Navigate(sourcePage);
+		}
 
-        public void Navigate(Type sourcePage, object parameter)
-        {
-            var frame = (Frame)Window.Current.Content;
-            frame.Navigate(sourcePage, parameter);
-        }
+		public void Navigate(Type sourcePage, object parameter)
+		{
+			var frame = (Frame)Window.Current.Content;
+			frame.Navigate(sourcePage, parameter);
+		}
 
-        public void GoBack()
-        {
-            var frame = (Frame)Window.Current.Content;
-            frame.GoBack();
-        }
+		public void GoBack()
+		{
+			var frame = (Frame)Window.Current.Content;
+			frame.GoBack();
+		}
 
-        private NavigationService() { }
+		private NavigationService() { }
 
-        private static readonly Lazy<NavigationService> instance =
-            new Lazy<NavigationService>(() => new NavigationService());
+		private static readonly Lazy<NavigationService> instance =
+			new Lazy<NavigationService>(() => new NavigationService());
 
-        public static NavigationService Instance => instance.Value;
-    }
+		public static NavigationService Instance => instance.Value;
+	}
 }
