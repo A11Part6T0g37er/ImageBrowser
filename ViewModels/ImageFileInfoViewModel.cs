@@ -61,11 +61,7 @@ namespace ImageBrowser.ViewModels
 
 
 		#region DependecyProperties
-		public static readonly DependencyProperty ResultTextProperty = DependencyProperty.Register(
-		nameof(ResultText),
-		typeof(string),
-		typeof(ImageFileInfoViewModel),
-	   new PropertyMetadata(null, new PropertyChangedCallback(OnResultTextChanged)));
+	
 
 		public static readonly DependencyProperty StatusProperty = DependencyProperty.Register(
 		   nameof(IsUserSignedOut),
@@ -169,18 +165,9 @@ namespace ImageBrowser.ViewModels
 			}
 		}
 
-		public string ResultText
-		{
-			get
-			{
-				return (string)GetValue(ResultTextProperty);
-			}
-
-			set
-			{
-				SetValue(ResultTextProperty, value);
-			}
-		}
+		
+		private string resultText;
+		public string ResultText { get => resultText; set => SetProperty(ref resultText, value); }
 
 		public bool IsAnyObservableItem
 		{
@@ -226,20 +213,7 @@ namespace ImageBrowser.ViewModels
 			}
 		}
 
-		private static void OnResultTextChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-		{
-			string oldValue = (string)e.OldValue;
-			string newValue = (string)e.NewValue;
-			ImageFileInfoViewModel resultTextCallBack = d as ImageFileInfoViewModel;
-			resultTextCallBack?.OnResultTextChanged(oldValue, newValue);
-		}
-
-		public virtual void OnResultTextChanged(string oldString, string newString)
-		{
-			if (oldString != newString)
-				ResultText = newString;
-			OnPropertyChanged(nameof(ResultText));
-		}
+		
 
 		private static void OnOneDriveInfoTextChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
 		{
