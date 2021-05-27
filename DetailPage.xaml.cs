@@ -8,38 +8,38 @@ using Windows.UI.Xaml.Navigation;
 
 namespace ImageBrowser
 {
-    /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
-    /// </summary>
-    public sealed partial class DetailPage : Page
-    {
-        BitmapImage ImageSource = null;
-        ImageFileInfo item;
+	/// <summary>
+	/// An empty page that can be used on its own or navigated to within a Frame.
+	/// </summary>
+	public sealed partial class DetailPage : Page
+	{
+		BitmapImage ImageSource = null;
+		ImageFileInfo item;
 
-        public DetailPage()
-        {
-            InitializeComponent();
-        }
+		public DetailPage()
+		{
+			InitializeComponent();
+		}
 
-        protected override async void OnNavigatedTo(NavigationEventArgs e)
-        {
-            item = e?.Parameter as ImageFileInfo;
+		protected override async void OnNavigatedTo(NavigationEventArgs e)
+		{
+			item = e?.Parameter as ImageFileInfo;
 
-          //  ImageSource = await item.GetImageSourceAsync().ConfigureAwait(true);
+			//  ImageSource = await item.GetImageSourceAsync().ConfigureAwait(true);
 
-            ImageSource = await Helpers.ImageFileHelper.GetImageSourceAsync(item?.ImageFile).ConfigureAwait(true);
-            targetImage.Source = ImageSource;
-            targetImage.MaxWidth = ImageSource.PixelWidth;
-            if (this.Frame.CanGoBack)
-            {
-                SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Visible;
-            }
-            else
-            {
-                SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
-            }
+			ImageSource = await Helpers.ImageFileHelper.GetImageSourceAsync(item?.ImageFile).ConfigureAwait(true);
+			targetImage.Source = ImageSource;
+			targetImage.MaxWidth = ImageSource.PixelWidth;
+			if (this.Frame.CanGoBack)
+			{
+				SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Visible;
+			}
+			else
+			{
+				SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
+			}
 
-            base.OnNavigatedTo(e);
-        }
-    }
+			base.OnNavigatedTo(e);
+		}
+	}
 }

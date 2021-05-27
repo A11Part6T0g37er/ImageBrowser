@@ -4,7 +4,6 @@ using ImageBrowser.Models;
 using ImageBrowser.Services;
 using Microsoft.Graph;
 using Microsoft.Identity.Client;
-using Microsoft.Toolkit.Uwp.Notifications;
 using Microsoft.Toolkit.Uwp.UI.Animations;
 using System;
 using System.Collections.Generic;
@@ -19,7 +18,6 @@ using Windows.ApplicationModel.Background;
 using Windows.Storage;
 using Windows.Storage.Pickers;
 using Windows.Storage.Search;
-using Windows.UI.Core;
 using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -393,7 +391,7 @@ namespace ImageBrowser.ViewModels
 
 			//else
 			//{
-		//	AdjustToNewWidth(e, panel);
+			//	AdjustToNewWidth(e, panel);
 			//}
 
 
@@ -417,10 +415,7 @@ namespace ImageBrowser.ViewModels
 							{
 								panel.ItemWidth = e / 2;
 								//AdjustToNewWidth(e, panel);
-								
-								
 							}
-						
 						}
 						//return;
 					}
@@ -436,7 +431,7 @@ namespace ImageBrowser.ViewModels
 			}
 		}
 
-		private static void AdjustToNewWidth(double e, ItemsWrapGrid panel,int maxColumns = 7)
+		private static void AdjustToNewWidth(double e, ItemsWrapGrid panel, int maxColumns = 7)
 		{
 			//TODO: constrain to maxColumn if panel >200  ... = e/--max
 			if (panel.ItemWidth >= 202)
@@ -482,16 +477,13 @@ namespace ImageBrowser.ViewModels
 		private async void RefreshAreaItemsAsyncExecute()
 		{
 			ICollection<StorageFile> files = new Collection<StorageFile>();
-			ICollection<StorageFile> filesReal = new Collection<StorageFile>();
-			ICollection<string> fileWithPaths = new Collection<string>();
+
+
 			for (int i = 0; i < ObservableCollection.Count; i++)
 			{
 
 				files.Add(ObservableCollection[i].ImageFile);
-				fileWithPaths.Add(ObservableCollection[i].ImagePath);
 
-				// Get BitmapImage
-				var p = ObservableCollection[i].GetImageSourceAsync();
 			}
 
 			IReadOnlyCollection<StorageFile> filesReadOnly = (IReadOnlyCollection<StorageFile>)files;
@@ -516,14 +508,14 @@ namespace ImageBrowser.ViewModels
 			}
 			catch (MsalException msalEx)
 			{
-				Trace.WriteLine($"Error Acquiring Token:{System.Environment.NewLine}{msalEx}");
-				ResultText = $"Error Acquiring Token:{System.Environment.NewLine}{msalEx}";
+				Trace.WriteLine($"Error Acquiring Token:{Environment.NewLine}{msalEx}");
+				ResultText = $"Error Acquiring Token:{Environment.NewLine}{msalEx}";
 
 			}
 			catch (Exception ex)
 			{
-				Trace.WriteLine($"Error Acquiring Token Silently:{System.Environment.NewLine}{ex}");
-				ResultText = $"Error Acquiring Token Silently:{System.Environment.NewLine}{ex}";
+				Trace.WriteLine($"Error Acquiring Token Silently:{Environment.NewLine}{ex}");
+				ResultText = $"Error Acquiring Token Silently:{Environment.NewLine}{ex}";
 				IsUserSignedOut = false;
 				return;
 			}
@@ -536,34 +528,10 @@ namespace ImageBrowser.ViewModels
 			SystemCondition conditionNOInternet = new SystemCondition(SystemConditionType.InternetNotAvailable);
 
 			string taskEntryPoint = typeof(BackgroundTaskApp.MyBackgroundTask).ToString();
-			var taska = await BackgroundTaskHelper.RegisterBackgroundTaskAsync(taskEntryPoint, taskName, internet, conditionNOInternet);
+			await BackgroundTaskHelper.RegisterBackgroundTaskAsync(taskEntryPoint, taskName, internet, conditionNOInternet);
 
 		}
-		private async void Task_Completed(BackgroundTaskRegistration sender, BackgroundTaskCompletedEventArgs args)
-		{
-			await CallUIThreadHelper.CallOnUiThreadAsync(() => new ToastContentBuilder().AddArgument("action", "viewConversation")
-	.AddArgument("conversationId", 9813)
-	.AddText("You have no internet!")
-	.AddText("App may not operate normally.")
-	.Show());
-		}
 
-		/// <summary>
-		/// Unregister current task from background execution.
-		/// </summary>
-		private async void Stop(string taskName)
-		{
-			await Dispatcher.RunAsync(CoreDispatcherPriority.Normal,
-			() =>
-			{
-				var taskList = BackgroundTaskRegistration.AllTasks.Values;
-				var task = taskList.FirstOrDefault(i => i.Name == taskName);
-				if (task != null)
-				{
-					task.Unregister(true);
-				}
-			});
-		}
 
 		private async void SigningOutAsyncExecute()
 		{
@@ -617,9 +585,11 @@ namespace ImageBrowser.ViewModels
 
 		private async Task<ObservableCollection<ImageFileInfo>> PickMultiplePictures()
 		{
-			var picker = new Windows.Storage.Pickers.FileOpenPicker();
-			picker.ViewMode = Windows.Storage.Pickers.PickerViewMode.Thumbnail;
-			picker.SuggestedStartLocation = Windows.Storage.Pickers.PickerLocationId.Desktop;
+			var picker = new FileOpenPicker
+			{
+				ViewMode = PickerViewMode.Thumbnail,
+				SuggestedStartLocation = PickerLocationId.Desktop
+			};
 
 			picker.FileTypeFilter.Add(".jpg");
 			picker.FileTypeFilter.Add(".jpeg");
@@ -639,9 +609,11 @@ namespace ImageBrowser.ViewModels
 		private async Task/*<ObservableCollection<ImageFileInfo>>*/ OpenFoldersButtonHandler()
 		{
 
-			FolderPicker folderPicker = new FolderPicker();
-			folderPicker.SuggestedStartLocation = PickerLocationId.Downloads;
-			folderPicker.ViewMode = PickerViewMode.Thumbnail;
+			FolderPicker folderPicker = new FolderPicker
+			{
+				SuggestedStartLocation = PickerLocationId.Downloads,
+				ViewMode = PickerViewMode.Thumbnail
+			};
 
 			folderPicker.FileTypeFilter.Add(".jpg");
 			folderPicker.FileTypeFilter.Add(".jpeg");
@@ -660,6 +632,8 @@ namespace ImageBrowser.ViewModels
 			{
 
 				//queryResult.ContentsChanged += OnContentsChanged;
+
+				// Get token for recently used list
 				var mru = Windows.Storage.AccessCache.StorageApplicationPermissions.MostRecentlyUsedList.Add(folder, "PickedFolderToken");
 
 				var Resultsubfolders = folder.CreateFolderQueryWithOptions(queryOptions);
@@ -726,8 +700,10 @@ namespace ImageBrowser.ViewModels
 
 			foreach (var item in query)
 			{
-				GroupInfoList<object> infoList = new GroupInfoList<object>();
-				infoList.Key = item.GroupName.mm + "/" + item.GroupName.yy + " (" + item.Items.Count() + ")";
+				GroupInfoList<object> infoList = new GroupInfoList<object>
+				{
+					Key = item.GroupName.mm + "/" + item.GroupName.yy + " (" + item.Items.Count() + ")"
+				};
 				foreach (var something in item.Items)
 				{
 					infoList.Add(something);

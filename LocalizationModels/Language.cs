@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace ImageBrowser.LocalizationModels
 {
-    class Language
-    {
-        public string DisplayName { get; set; }
+	class Language
+	{
+		public string DisplayName { get; set; }
 
-        public string LanguageCode { get; set; }
-    }
+		public string LanguageCode { get; set; }
+	}
 }

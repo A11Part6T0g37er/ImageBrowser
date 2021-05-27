@@ -23,46 +23,46 @@ using Windows.UI.Xaml.Navigation;
 
 namespace ImageBrowser.Views
 {
-    /// <summary>
-    /// Page to render file with picture extensions is clicked from file Explorer.
-    /// </summary>
-    public sealed partial class OpenWithPage : Page
-    {
-        public OpenWithPage()
-        {
-            this.InitializeComponent();
-        }
+	/// <summary>
+	/// Page to render file with picture extensions is clicked from file Explorer.
+	/// </summary>
+	public sealed partial class OpenWithPage : Page
+	{
+		public OpenWithPage()
+		{
+			this.InitializeComponent();
+		}
 
-        protected override async void OnNavigatedTo(NavigationEventArgs e)
-        {
-         
-            // when opened by file-extension with arguments
-            base.OnNavigatedTo(e);
-            var args = e?.Parameter as Windows.ApplicationModel.Activation.IActivatedEventArgs;
+		protected override async void OnNavigatedTo(NavigationEventArgs e)
+		{
 
-            if (args?.Kind == Windows.ApplicationModel.Activation.ActivationKind.File)
-            {
+			// when opened by file-extension with arguments
+			base.OnNavigatedTo(e);
+			var args = e?.Parameter as Windows.ApplicationModel.Activation.IActivatedEventArgs;
 
-                var fileArgs = args as Windows.ApplicationModel.Activation.FileActivatedEventArgs;
-                string strFilePath = fileArgs.Files[0].Path;
-                StorageFile firstFile = (StorageFile)fileArgs.Files[0];
+			if (args?.Kind == Windows.ApplicationModel.Activation.ActivationKind.File)
+			{
 
-                using (IRandomAccessStream fileStream = await firstFile.OpenReadAsync())
-                {
-                    // Create a bitmap to be the image source.
-                    var imageSource = new BitmapImage();
-                    imageSource.SetSource(fileStream);
+				var fileArgs = args as Windows.ApplicationModel.Activation.FileActivatedEventArgs;
+				string strFilePath = fileArgs.Files[0].Path;
+				StorageFile firstFile = (StorageFile)fileArgs.Files[0];
 
-                    targetImage.Source = imageSource;
-                }
+				using (IRandomAccessStream fileStream = await firstFile.OpenReadAsync())
+				{
+					// Create a bitmap to be the image source.
+					var imageSource = new BitmapImage();
+					imageSource.SetSource(fileStream);
 
-                TargetName.Text = strFilePath;
-            }
-        }      
+					targetImage.Source = imageSource;
+				}
 
-        private void GoHome_Click(object sender, RoutedEventArgs e)
-        {
-            this.Frame.Navigate(typeof(MainPage), null);
-        }
-    }
+				TargetName.Text = strFilePath;
+			}
+		}
+
+		private void GoHome_Click(object sender, RoutedEventArgs e)
+		{
+			this.Frame.Navigate(typeof(MainPage), null);
+		}
+	}
 }

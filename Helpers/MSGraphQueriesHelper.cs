@@ -17,174 +17,174 @@ using Windows.UI.Xaml;
 
 namespace ImageBrowser.Helpers
 {
-    public class MSGraphQueriesHelper
-    {
-        #region MSGraphAPI
+	public class MSGraphQueriesHelper
+	{
+		#region MSGraphAPI
 
-        // The MSAL Public client app
-        private const string ClientId = "c6e3c937-e10d-4e7c-94d7-bbaaafc514aa";
-        private const string Tenant = "consumers";
-        private const string Authority = "https://login.microsoftonline.com/" + Tenant;
-        private static readonly string[] Scopes = new string[] { "user.read Files.Read" };
-        private static readonly string MSGraphURL = "https://graph.microsoft.com/v1.0/";
-        private static IPublicClientApplication publicClientApp;
-        private static AuthenticationResult authResult;
+		// The MSAL Public client app
+		private const string ClientId = "c6e3c937-e10d-4e7c-94d7-bbaaafc514aa";
+		private const string Tenant = "consumers";
+		private const string Authority = "https://login.microsoftonline.com/" + Tenant;
+		private static readonly string[] Scopes = new string[] { "user.read Files.Read" };
+		private static readonly string MSGraphURL = "https://graph.microsoft.com/v1.0/";
+		private static IPublicClientApplication publicClientApp;
+		private static AuthenticationResult authResult;
 
-        #endregion
-        private static IDriveItemSearchCollectionPage search;
-        public static bool UserSignedOut;
+		#endregion
+		private static IDriveItemSearchCollectionPage search;
+		public static bool UserSignedOut;
 
-        public bool UserDefenitlySignedOut { get; set; }
+		public bool UserDefenitlySignedOut { get; set; }
 
-        public static event PropertyChangedEventHandler PropertyChanged;
+		public static event PropertyChangedEventHandler PropertyChanged;
 
-        /// <summary>
-        /// Establish connection to OneDrive, get authentication, obtains links of files with query option, downloads files in temporary place.
-        /// </summary>
-        /// <returns>Returnsl List of files.</returns>
-        public static async Task<List<StorageFile>> DownloadAllFilesFromOneDrive()
-        {
-            GraphServiceClient grSC = await SignInAndInitializeGraphServiceClient().ConfigureAwait(false);
+		/// <summary>
+		/// Establish connection to OneDrive, get authentication, obtains links of files with query option, downloads files in temporary place.
+		/// </summary>
+		/// <returns>Returnsl List of files.</returns>
+		public static async Task<List<StorageFile>> DownloadAllFilesFromOneDrive()
+		{
+			GraphServiceClient grSC = await SignInAndInitializeGraphServiceClient().ConfigureAwait(false);
 
-            search = await GetFilesByQuery(grSC).ConfigureAwait(false);
+			search = await GetFilesByQuery(grSC).ConfigureAwait(false);
 
-            List<DriveItem> oneDriveItems = search.CurrentPage.Select(x => x).ToList();
-            StorageFile storageFile;
-            string newPath = string.Empty;
-            List<StorageFile> downloadedFiles = new List<StorageFile>();
+			List<DriveItem> oneDriveItems = search.CurrentPage.Select(x => x).ToList();
+			StorageFile storageFile;
+			string newPath = string.Empty;
+			List<StorageFile> downloadedFiles = new List<StorageFile>();
 
-            foreach (var item in oneDriveItems)
-            {
-                var itemUrl = item.AdditionalData.Values.FirstOrDefault().ToString();
-                var itemName = item.Name;
-                newPath = await ImageDownloadHelper.DownloadImage(
-                    itemUrl,
-                    itemName).ConfigureAwait(false);
-                storageFile = await StorageFile.GetFileFromApplicationUriAsync(new Uri(newPath));
-                downloadedFiles.Add(storageFile);
-            }
+			foreach (var item in oneDriveItems)
+			{
+				var itemUrl = item.AdditionalData.Values.FirstOrDefault().ToString();
+				var itemName = item.Name;
+				newPath = await ImageDownloadHelper.DownloadImage(
+					itemUrl,
+					itemName).ConfigureAwait(false);
+				storageFile = await StorageFile.GetFileFromApplicationUriAsync(new Uri(newPath));
+				downloadedFiles.Add(storageFile);
+			}
 
-            return downloadedFiles;
-        }
+			return downloadedFiles;
+		}
 
-        public bool IsSignedOut()
-        {
-            return UserSignedOut;
-        }
+		public bool IsSignedOut()
+		{
+			return UserSignedOut;
+		}
 
-        public static string CountFiles()
-        {
-            return GetFilesCount(search);
-        }
+		public static string CountFiles()
+		{
+			return GetFilesCount(search);
+		}
 
-        public static async Task<IEnumerable<IAccount>> GetMSGraphAccouts()
-        {
+		public static async Task<IEnumerable<IAccount>> GetMSGraphAccouts()
+		{
 			return publicClientApp != null ? await publicClientApp.GetAccountsAsync().ConfigureAwait(false) : null;
 		}
 
 		public static async Task SingOutMSGraphAccount(IAccount firstAccount)
-        {
-            SetProperty(ref UserSignedOut, false);
+		{
+			SetProperty(ref UserSignedOut, false);
 
-            await publicClientApp.RemoveAsync(firstAccount).ConfigureAwait(false);
-        }
+			await publicClientApp.RemoveAsync(firstAccount).ConfigureAwait(false);
+		}
 
-        /// <summary>
-        /// Sign in user using MSAL and obtain a token for Microsoft Graph.
-        /// </summary>
-        /// <returns>GraphServiceClient.</returns>
-        public static async Task<GraphServiceClient> SignInAndInitializeGraphServiceClient()
-        {
+		/// <summary>
+		/// Sign in user using MSAL and obtain a token for Microsoft Graph.
+		/// </summary>
+		/// <returns>GraphServiceClient.</returns>
+		public static async Task<GraphServiceClient> SignInAndInitializeGraphServiceClient()
+		{
 
-            GraphServiceClient graphClient = new GraphServiceClient(MSGraphURL,
-                new DelegateAuthenticationProvider(async (requestMessage) =>
-                {
-                    await Task.Run(async () => requestMessage.Headers.Authorization = new AuthenticationHeaderValue("bearer", await SignInUserAndGetTokenUsingMSAL(Scopes).ConfigureAwait(false))).ConfigureAwait(false);
-                }));
-           // SetProperty(ref UserSignedOut, true);
-            return await Task.FromResult(graphClient).ConfigureAwait(false);
-        }
+			GraphServiceClient graphClient = new GraphServiceClient(MSGraphURL,
+				new DelegateAuthenticationProvider(async (requestMessage) =>
+				{
+					await Task.Run(async () => requestMessage.Headers.Authorization = new AuthenticationHeaderValue("bearer", await SignInUserAndGetTokenUsingMSAL(Scopes).ConfigureAwait(false))).ConfigureAwait(false);
+				}));
+			// SetProperty(ref UserSignedOut, true);
+			return await Task.FromResult(graphClient).ConfigureAwait(false);
+		}
 
-        /// <summary>
-        /// Signs in the user and obtains an Access token for MS Graph.
-        /// </summary>
-        /// <param name="scopes">Used default const values.</param>
-        /// <returns> Access Token.</returns>
-        public static async Task<string> SignInUserAndGetTokenUsingMSAL(string[] scopes)
-        {
-            // Initialize the MSAL library by building a public client application
-            publicClientApp = PublicClientApplicationBuilder.Create(ClientId)
-                .WithAuthority(Authority)
-                .WithUseCorporateNetwork(false)
-                .WithRedirectUri(DefaultRedirectUri.Value)
-                 .WithLogging(
-                     (level, message, containsPii) =>
-                     {
-                         Debug.WriteLine($"MSAL: {level} {message} ");
-                     }, LogLevel.Warning, enablePiiLogging: false, enableDefaultPlatformLogging: true)
-                    .Build();
+		/// <summary>
+		/// Signs in the user and obtains an Access token for MS Graph.
+		/// </summary>
+		/// <param name="scopes">Used default const values.</param>
+		/// <returns> Access Token.</returns>
+		public static async Task<string> SignInUserAndGetTokenUsingMSAL(string[] scopes)
+		{
+			// Initialize the MSAL library by building a public client application
+			publicClientApp = PublicClientApplicationBuilder.Create(ClientId)
+				.WithAuthority(Authority)
+				.WithUseCorporateNetwork(false)
+				.WithRedirectUri(DefaultRedirectUri.Value)
+				 .WithLogging(
+					 (level, message, containsPii) =>
+					 {
+						 Debug.WriteLine($"MSAL: {level} {message} ");
+					 }, LogLevel.Warning, enablePiiLogging: false, enableDefaultPlatformLogging: true)
+					.Build();
 
-            // It's good practice to not do work on the UI thread, so use ConfigureAwait(false) whenever possible.
-            IEnumerable<IAccount> accounts = await publicClientApp.GetAccountsAsync().ConfigureAwait(false);
-            IAccount firstAccount = accounts.FirstOrDefault();
+			// It's good practice to not do work on the UI thread, so use ConfigureAwait(false) whenever possible.
+			IEnumerable<IAccount> accounts = await publicClientApp.GetAccountsAsync().ConfigureAwait(false);
+			IAccount firstAccount = accounts.FirstOrDefault();
 
-            try
-            {
-                authResult = await publicClientApp.AcquireTokenSilent(scopes, firstAccount)
-                                                  .ExecuteAsync().ConfigureAwait(false);
-               
-            }
-            catch (MsalUiRequiredException ex)
-            {
-                // A MsalUiRequiredException happened on AcquireTokenSilentAsync. This indicates you need to call AcquireTokenAsync to acquire a token
-                Debug.WriteLine($"MsalUiRequiredException: {ex.Message}");
+			try
+			{
+				authResult = await publicClientApp.AcquireTokenSilent(scopes, firstAccount)
+												  .ExecuteAsync().ConfigureAwait(false);
 
-                authResult = await publicClientApp.AcquireTokenInteractive(scopes)
-                                                  .ExecuteAsync()
-                                                  .ConfigureAwait(false);
-                
-            }
+			}
+			catch (MsalUiRequiredException ex)
+			{
+				// A MsalUiRequiredException happened on AcquireTokenSilentAsync. This indicates you need to call AcquireTokenAsync to acquire a token
+				Debug.WriteLine($"MsalUiRequiredException: {ex.Message}");
 
-            
-            return authResult.AccessToken;
-        }
+				authResult = await publicClientApp.AcquireTokenInteractive(scopes)
+												  .ExecuteAsync()
+												  .ConfigureAwait(false);
 
-        private static async Task<IDriveItemSearchCollectionPage> GetFilesByQuery(GraphServiceClient grSC)
-        {
-            var queryOptions = new List<QueryOption>()
-            {
-                new QueryOption("select", "*")
-            };
+			}
 
-            var search = await grSC.Me.Drive.Root.ItemWithPath("/Pictures")
-                .Search("jpg")
-                .Request(queryOptions)
-                .GetAsync().ConfigureAwait(false);
-            return search;
-        }
 
-        private static string GetFilesCount(IDriveItemSearchCollectionPage search)
-        {
-            return search.Count.ToString();
-        }
+			return authResult.AccessToken;
+		}
 
-        protected static void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(MSGraphQueriesHelper.UserSignedOut, new PropertyChangedEventArgs(propertyName));
-        }
+		private static async Task<IDriveItemSearchCollectionPage> GetFilesByQuery(GraphServiceClient grSC)
+		{
+			var queryOptions = new List<QueryOption>()
+			{
+				new QueryOption("select", "*")
+			};
 
-        protected static bool SetProperty<T>(ref T storage, T value, [CallerMemberName] string propertyName = null)
-        {
-            if (object.Equals(storage, value))
-            {
-                return false;
-            }
-            else
-            {
-                storage = value;
-                OnPropertyChanged(propertyName);
-                return true;
-            }
-        }
-    }
+			var search = await grSC.Me.Drive.Root.ItemWithPath("/Pictures")
+				.Search("jpg")
+				.Request(queryOptions)
+				.GetAsync().ConfigureAwait(false);
+			return search;
+		}
+
+		private static string GetFilesCount(IDriveItemSearchCollectionPage search)
+		{
+			return search.Count.ToString();
+		}
+
+		protected static void OnPropertyChanged([CallerMemberName] string propertyName = null)
+		{
+			PropertyChanged?.Invoke(MSGraphQueriesHelper.UserSignedOut, new PropertyChangedEventArgs(propertyName));
+		}
+
+		protected static bool SetProperty<T>(ref T storage, T value, [CallerMemberName] string propertyName = null)
+		{
+			if (object.Equals(storage, value))
+			{
+				return false;
+			}
+			else
+			{
+				storage = value;
+				OnPropertyChanged(propertyName);
+				return true;
+			}
+		}
+	}
 }

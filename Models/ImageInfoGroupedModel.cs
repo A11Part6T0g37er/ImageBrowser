@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ImageBrowser.Models
 {
-    class ImageInfoGroupedModel : ModelGroupBase<ImageFileInfo>
-    {
-    }
+	class ImageInfoGroupedModel : ModelGroupBase<ImageFileInfo>
+	{
+	}
 }

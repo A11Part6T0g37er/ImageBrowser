@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace ImageBrowser.Models
 {
-    public class GroupInfoList<T> : List<T>
-    {
-        public T Key { get; set; }
-    }
+	public class GroupInfoList<T> : List<T>
+	{
+		public T Key { get; set; }
+	}
 }
