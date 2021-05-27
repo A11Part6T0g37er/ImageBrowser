@@ -28,6 +28,7 @@ namespace ImageBrowser.Helpers
 		private static AuthenticationResult authResult;
 
 		#endregion
+
 		private static IDriveItemSearchCollectionPage search;
 		public static bool UserSignedOut;
 
@@ -153,11 +154,11 @@ namespace ImageBrowser.Helpers
 				new QueryOption("select", "*")
 			};
 
-			var search = await grSC.Me.Drive.Root.ItemWithPath("/Pictures")
+			var FoundPicts = await grSC.Me.Drive.Root.ItemWithPath("/Pictures")
 				.Search("jpg")
 				.Request(queryOptions)
 				.GetAsync().ConfigureAwait(false);
-			return search;
+			return FoundPicts;
 		}
 
 		private static string GetFilesCount(IDriveItemSearchCollectionPage search)

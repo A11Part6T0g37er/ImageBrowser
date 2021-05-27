@@ -552,21 +552,6 @@ namespace ImageBrowser.ViewModels
 			}
 
 		}
-		// StorageFileQueryResult 
-		async void OnContentsChanged(IStorageQueryResultBase sender, object args)
-		{
-			// TODO: Do stuff, e.g. check for changes
-		}
-
-		// TODO: catch main UI thread and extract into helper class
-		private async Task ShowPopUpMessage(string message)
-		{
-			await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal,
-		  () =>
-		  {
-			  new MessageDialog(@"ERROR occures! {0}", message);
-		  });
-		}
 
 		public void ChangeObservCollection(ObservableCollection<ImageFileInfo> images)
 		{
