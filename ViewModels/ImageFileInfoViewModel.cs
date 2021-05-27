@@ -22,6 +22,7 @@ using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Microsoft.Toolkit.Mvvm.Input;
+using ImageBrowser.Common.RelayCommandProviders;
 
 namespace ImageBrowser.ViewModels
 {
@@ -102,25 +103,11 @@ namespace ImageBrowser.ViewModels
 			OpenCLickCommand = new RelayCommand(OpenClickAsyncExecute);
 			OpenFoldersCommand = new RelayCommand(OpenFoldersAsyncExecute);
 			RefreshCommand = new RelayCommand(RefreshAreaItemsAsyncExecute);
-
-			//ThemeChangeCommand = new RelaySenderCommand(DefineClickedThemeExecute);
-			ThemeChangeCommand = new RelayCommand<ThemeSendingArgs>(DefineClickedThemeExecute);
+			ThemeChangeCommand = new RelayCommand<ThemeSendingArgs>(CommandInstantiator.DefineClickedThemeExecute);
 
 			SettingsNavigateCommand = new RelayCommand(() => { Services.NavigationService.Instance.Navigate(typeof(Settings)); });
 
-
 			MSGraphQueriesHelper.PropertyChanged += SigningStatusViewModel_OnStatusChanged;
-
-			var DefaultTheme = new Windows.UI.ViewManagement.UISettings();
-			var uiTheme = DefaultTheme.GetColorValue(Windows.UI.ViewManagement.UIColorType.Background).ToString();
-			if (uiTheme == "#FF000000")
-			{
-				defaultWinTheme = "Dark";
-			}
-			else if (uiTheme == "#FFFFFFFF")
-			{
-				defaultWinTheme = "Light";
-			}
 
 			Task.Run(async () => await RegisterTaskAsync().ConfigureAwait(true));
 
@@ -370,27 +357,6 @@ namespace ImageBrowser.ViewModels
 		}
 
 		#region Actions for commands in ctor
-
-		/// <summary>
-		/// Imlemented switching between <see cref="ElementTheme"/> .
-		/// </summary>
-		/// <param name="sender">Button that is clicked.</param>
-		/// <param name="selectedTheme">Button`s <see cref="string"/> tag property.</param>
-		private void DefineClickedThemeExecute(object sender, string selectedTheme)
-		{
-			if (selectedTheme != null)
-			{
-				((sender as Button).XamlRoot.Content as Frame).RequestedTheme = selectedTheme == "Default"
-					? EnumHelper.GetEnum<ElementTheme>(defaultWinTheme)
-					: EnumHelper.GetEnum<ElementTheme>(selectedTheme);
-			}
-		}
-		private void DefineClickedThemeExecute(ThemeSendingArgs obj)
-		{
-			((obj.sender as Button).XamlRoot.Content as Frame).RequestedTheme = obj.Selection == "Default"
-					? EnumHelper.GetEnum<ElementTheme>(defaultWinTheme)
-					: EnumHelper.GetEnum<ElementTheme>(obj.Selection);
-		}
 
 
 		/// <summary>

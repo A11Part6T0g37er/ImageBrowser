@@ -135,6 +135,7 @@
     <Compile Include="Common\Converters\ThumbnailToImageConverter.cs" />
     <Compile Include="Common\Converters\UIElementToThemeThendingConverter.cs" />
     <Compile Include="Common\DefaultRedirectUri.cs" />
+    <Compile Include="Common\RelayCommandProviders\CommandInstantiator.cs" />
     <Compile Include="DetailPage.xaml.cs">
       <DependentUpon>DetailPage.xaml</DependentUpon>
     </Compile>
