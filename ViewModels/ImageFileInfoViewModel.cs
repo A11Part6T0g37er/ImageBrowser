@@ -21,7 +21,7 @@ using Windows.Storage.Search;
 using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using RelayCommand = Microsoft.Toolkit.Mvvm.Input.RelayCommand;
+using Microsoft.Toolkit.Mvvm.Input;
 
 namespace ImageBrowser.ViewModels
 {
@@ -94,10 +94,7 @@ namespace ImageBrowser.ViewModels
 		/// signup event and initializes commands.
 		/// </summary>
 		public ImageFileInfoViewModel()
-
 		{
-
-
 			OneDriveOpenCommand = new RelayCommand(OneDriveOpenAsyncExecute);
 
 			SignOutCommand = new RelayCommand(SigningOutAsyncExecute);
@@ -106,8 +103,8 @@ namespace ImageBrowser.ViewModels
 			OpenFoldersCommand = new RelayCommand(OpenFoldersAsyncExecute);
 			RefreshCommand = new RelayCommand(RefreshAreaItemsAsyncExecute);
 
-			ThemeChangeCommand = new RelaySenderCommand(DefineClickedThemeExecute);
-
+			//ThemeChangeCommand = new RelaySenderCommand(DefineClickedThemeExecute);
+			ThemeChangeCommand = new RelayCommand<ThemeSendingArgs>(DefineClickedThemeExecute);
 
 			SettingsNavigateCommand = new RelayCommand(() => { Services.NavigationService.Instance.Navigate(typeof(Settings)); });
 
@@ -388,6 +385,13 @@ namespace ImageBrowser.ViewModels
 					: EnumHelper.GetEnum<ElementTheme>(selectedTheme);
 			}
 		}
+		private void DefineClickedThemeExecute(ThemeSendingArgs obj)
+		{
+			((obj.sender as Button).XamlRoot.Content as Frame).RequestedTheme = obj.Selection == "Default"
+					? EnumHelper.GetEnum<ElementTheme>(defaultWinTheme)
+					: EnumHelper.GetEnum<ElementTheme>(obj.Selection);
+		}
+
 
 		/// <summary>
 		/// Reload collections of user added files.

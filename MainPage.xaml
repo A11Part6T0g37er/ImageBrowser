@@ -24,6 +24,7 @@
 												 OnTrue="Collapsed"
 												 OnFalse="Visible" />
 		<converters:ThumbnailToImageConverter x:Key="ThumbnailToPict" />
+		<converters:UIElementToThemeThendingConverter x:Key="UIToTheme" />
 		<viewModels:ImageFileInfoViewModel x:Key="ImageViewModel" />
 
 		<Thickness x:Key="LargeItemMargin">8,8,8,0</Thickness>
@@ -767,7 +768,7 @@ MaxWidth="200"
 							<Interactions:EventTriggerBehavior EventName="Click"
 															   SourceObject="{Binding ElementName=Dark}">
 								<Interactions:InvokeCommandAction Command="{Binding ThemeChangeCommand, Mode=TwoWay}"
-																  CommandParameter="{Binding ElementName=Dark, Mode=TwoWay}" />
+																  CommandParameter="{Binding ElementName=Dark,Converter={StaticResource UIToTheme}, Mode=TwoWay}" />
 							</Interactions:EventTriggerBehavior>
 						</Interactivity:Interaction.Behaviors>
 					</AppBarButton>
@@ -780,7 +781,7 @@ MaxWidth="200"
 							<Interactions:EventTriggerBehavior EventName="Click"
 															   SourceObject="{Binding ElementName=Light}">
 								<Interactions:InvokeCommandAction Command="{Binding ThemeChangeCommand, Mode=TwoWay}"
-																  CommandParameter="{Binding ElementName=Light, Mode=TwoWay}" />
+																  CommandParameter="{Binding ElementName=Light,Converter={StaticResource UIToTheme}, Mode=TwoWay}" />
 							</Interactions:EventTriggerBehavior>
 						</Interactivity:Interaction.Behaviors>
 					</AppBarButton>
@@ -793,7 +794,7 @@ MaxWidth="200"
 							<Interactions:EventTriggerBehavior EventName="Click"
 															   SourceObject="{Binding ElementName=Default}">
 								<Interactions:InvokeCommandAction Command="{Binding ThemeChangeCommand, Mode=TwoWay}"
-																  CommandParameter="{Binding ElementName=Default, Mode=TwoWay}" />
+																  CommandParameter="{Binding ElementName=Default,Converter={StaticResource UIToTheme}, Mode=TwoWay}" />
 							</Interactions:EventTriggerBehavior>
 						</Interactivity:Interaction.Behaviors>
 					</AppBarButton>
