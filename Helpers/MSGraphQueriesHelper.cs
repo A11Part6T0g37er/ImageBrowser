@@ -10,14 +10,11 @@ using System.Linq;
 using System.Net.Http.Headers;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
-using System.Windows.Input;
 using Windows.Storage;
-using Windows.UI.Popups;
-using Windows.UI.Xaml;
 
 namespace ImageBrowser.Helpers
 {
-	public class MSGraphQueriesHelper
+	public class MSGraphQueriesHelper 
 	{
 		#region MSGraphAPI
 

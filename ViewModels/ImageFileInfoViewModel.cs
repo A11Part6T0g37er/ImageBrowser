@@ -293,8 +293,6 @@ namespace ImageBrowser.ViewModels
 		}
 		#endregion
 
-		protected void OnPropertyChanged([CallerMemberName] string propertyName = null) =>
-			   PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 
 
 		public async void ClickPictInGrid(object sender, object parameter)
@@ -657,6 +655,8 @@ namespace ImageBrowser.ViewModels
 			return ObservableCollection.Count > 0;
 		}
 
+		protected void OnPropertyChanged([CallerMemberName] string propertyName = null) =>
+			   PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 		protected bool SetProperty<T>(ref T storage, T value, [CallerMemberName] string propertyName = null)
 		{
 			if (object.Equals(storage, value))
