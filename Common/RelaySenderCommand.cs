@@ -12,7 +12,7 @@ namespace ImageBrowser.Common
 
 
 		/// <summary>
-		/// Initializes a new instance of the <see cref="RelayCommand"/> class.
+		/// Initializes a new instance of the <see cref="RelaySenderCommand"/> class.
 		/// Creates a new command.
 		/// </summary>
 		/// <param name="execute">The execution logic.</param>

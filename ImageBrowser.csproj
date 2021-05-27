@@ -134,7 +134,6 @@
     <Compile Include="Common\Converters\BooleanToVisibilityConverter.cs" />
     <Compile Include="Common\Converters\ThumbnailToImageConverter.cs" />
     <Compile Include="Common\DefaultRedirectUri.cs" />
-    <Compile Include="Common\RelayCommand.cs" />
     <Compile Include="Common\RelayCommandGeneric.cs" />
     <Compile Include="Common\RelaySenderCommand.cs" />
     <Compile Include="DetailPage.xaml.cs">
@@ -170,7 +169,6 @@
     <Compile Include="ViewModels\FoldersItemsCollection.cs" />
     <Compile Include="ViewModels\ImageFileInfoViewModel.cs" />
     <Compile Include="ViewModels\LanguageViewModel.cs" />
-    <Compile Include="Common\RelayMultipleCommand.cs" />
     <Compile Include="Views\OpenWithPage.xaml.cs">
       <DependentUpon>OpenWithPage.xaml</DependentUpon>
     </Compile>
@@ -263,6 +261,9 @@
       <Version>7.0.2</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Toolkit.Uwp.UI.Animations">
+      <Version>7.0.2</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Toolkit.Uwp.UI.Controls">
       <Version>7.0.2</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Toolkit.Uwp.UI.Media">
