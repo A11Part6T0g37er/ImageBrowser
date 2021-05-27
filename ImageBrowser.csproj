@@ -133,9 +133,8 @@
     <Compile Include="AppSettings.cs" />
     <Compile Include="Common\Converters\BooleanToVisibilityConverter.cs" />
     <Compile Include="Common\Converters\ThumbnailToImageConverter.cs" />
+    <Compile Include="Common\Converters\UIElementToThemeThendingConverter.cs" />
     <Compile Include="Common\DefaultRedirectUri.cs" />
-    <Compile Include="Common\RelayCommandGeneric.cs" />
-    <Compile Include="Common\RelaySenderCommand.cs" />
     <Compile Include="DetailPage.xaml.cs">
       <DependentUpon>DetailPage.xaml</DependentUpon>
     </Compile>
@@ -169,6 +168,7 @@
     <Compile Include="ViewModels\FoldersItemsCollection.cs" />
     <Compile Include="ViewModels\ImageFileInfoViewModel.cs" />
     <Compile Include="ViewModels\LanguageViewModel.cs" />
+    <Compile Include="Common\ThemeSendingArgs.cs" />
     <Compile Include="Views\OpenWithPage.xaml.cs">
       <DependentUpon>OpenWithPage.xaml</DependentUpon>
     </Compile>
