@@ -24,7 +24,7 @@ namespace ImageBrowser.ViewModels
 	internal class ImageFileInfoViewModel : DependencyObject, INotifyPropertyChanged
 	{
 		private static readonly string EmptyOneDrive = LocalizationHelper.GetLocalizedStrings("oneDriveDownloadedInfoDefault");
-		private static readonly string UserSignedOutNormal = LocalizationHelper.GetLocalizedStrings("normalSignOut");
+		private static readonly string CountedFiles = LocalizationHelper.GetLocalizedStrings("CountFiles/Text");
 
 		private ObservableCollection<ImageFileInfo> observableCollection = new ObservableCollection<ImageFileInfo>();
 		public IList<ImageFileInfo> ObservableCollection { get => observableCollection; }
@@ -100,7 +100,7 @@ namespace ImageBrowser.ViewModels
 			MSGraphQueriesHelper.PropertyChanged += SigningStatusViewModel_OnStatusChanged;
 
 		}
-
+		
 		#region XamlListningProperties
 
 		public bool IsFolderDived
@@ -163,6 +163,9 @@ namespace ImageBrowser.ViewModels
 
 			set => SetValue(AnyObservableItemsProperty, value);
 		}
+
+		private bool longLoad;
+		public bool LongLoad { get => longLoad; set => SetProperty(ref longLoad, value); }
 
 		#endregion
 		#region DependecyProperties handlers
@@ -325,7 +328,7 @@ namespace ImageBrowser.ViewModels
 		private async void RefreshAreaItemsAsyncExecute()
 		{
 			ICollection<StorageFile> files = new Collection<StorageFile>();
-
+			LongLoad = true;
 
 			for (int i = 0; i < ObservableCollection.Count; i++)
 			{
@@ -339,42 +342,47 @@ namespace ImageBrowser.ViewModels
 
 			Trace.WriteLine("REFRESHED by button in command");
 			await PopulateObservableCollectionOfImages(filesReadOnly);
-
+			LongLoad = false;
 		}
 
 		private async void SigningInAsyncExecute()
 		{
+			LongLoad = true;
 			(ResultText, IsUserSignedOut) = await MSGraphQueriesHelper.TrySignInUser();
+			LongLoad = false;
 
 		}
 
 		private async void SigningOutAsyncExecute()
 		{
+			LongLoad = true;
 			(ResultText, IsUserSignedOut, OneDriveInfoText) = await MSGraphQueriesHelper.TrySignOutUser(OneDriveInfoText).ConfigureAwait(false);
 			FlushObservableCollectionOfImages();
+			LongLoad = false;
 
 		}
 
 		private async void OneDriveOpenAsyncExecute()
 		{
-			/*return async () =>
-			{*/
+			LongLoad = true;
+
 			List<StorageFile> downloadedFiles = await MSGraphQueriesHelper.DownloadAllFilesFromOneDrive();
 
-			if (Windows.UI.Core.CoreWindow.GetForCurrentThread() != null)
-			{
-				var resourceLoader = Windows.ApplicationModel.Resources.ResourceLoader.GetForCurrentView();
 
-				OneDriveInfoText = resourceLoader.GetString("CountFiles/Text").ToString() + MSGraphQueriesHelper.CountFiles();
-			}
+			OneDriveInfoText = CountedFiles + MSGraphQueriesHelper.CountFiles();
+			
 
-			await PopulateObservableCollectionOfImages(downloadedFiles).ConfigureAwait(false);
-			/*};*/
+			 await PopulateObservableCollectionOfImages(downloadedFiles).ConfigureAwait(true);
+			LongLoad = false;
+			
 		}
 
 		private async void OpenClickAsyncExecute()
 		{
+			LongLoad = true;
 			await PickMultiplePictures();
+			LongLoad = false;
+
 		}
 
 		private async Task<ObservableCollection<ImageFileInfo>> PickMultiplePictures()
@@ -394,8 +402,10 @@ namespace ImageBrowser.ViewModels
 
 		private async void OpenFoldersAsyncExecute()
 		{
-			/*return async () =>*/
-			await OpenFoldersButtonHandler().ConfigureAwait(false);
+			LongLoad = true;
+			await OpenFoldersButtonHandler().ConfigureAwait(true);
+			LongLoad = false;
+
 		}
 
 		#endregion
@@ -456,7 +466,7 @@ namespace ImageBrowser.ViewModels
 				//else{
 				//	MirorData.AddRange(FoldersItem.FoldersPath.ToList()); }
 
-				await PopulateObservableCollectionOfImages(storageFiles).ConfigureAwait(false);
+				await PopulateObservableCollectionOfImages(storageFiles).ConfigureAwait(true);
 			}
 
 		}

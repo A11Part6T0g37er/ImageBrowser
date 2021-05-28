@@ -226,7 +226,7 @@
 				</VisualState>
 				<VisualState x:Name="Enlarge">
 					<VisualState.StateTriggers>
-						<AdaptiveTrigger MinWindowWidth="750" />
+						<AdaptiveTrigger MinWindowWidth="800" />
 					</VisualState.StateTriggers>
 					<VisualState.Setters>
 						<Setter Target="OneDriveCommandBar.DefaultLabelPosition"
@@ -690,7 +690,18 @@
 						  Command="{Binding OpenCLickCommand, Mode=TwoWay}" />
 
 		</CommandBar>
-
+		<controls:Loading x:Name="LoadingControl"
+						 RelativePanel.AlignVerticalCenterWith="TopButtons"
+						  Margin="20,0,0,5"
+						  RelativePanel.RightOf="TopButtons"						  
+			IsLoading="{Binding LongLoad}">
+			<ContentControl x:Name="LoadingContentControl"
+							>
+				<ProgressRing IsActive="True"
+							  Margin="0,5,8,0"
+							  Foreground="Blue" />
+			</ContentControl>
+		</controls:Loading>
 		<Grid x:Name="startingGreetingScreen"
 			  RelativePanel.AlignVerticalCenterWithPanel="True"
 			  RelativePanel.AlignHorizontalCenterWithPanel="True"
@@ -715,7 +726,8 @@
 					RelativePanel.AlignRightWith="TopButtons"
 					HorizontalAlignment="Right"
 					RelativePanel.AlignRightWithPanel="True"
-					Margin="10,0,0,0">
+					Margin="10,0,0,0"
+					MaxWidth="700">
 			<CommandBar DefaultLabelPosition="Right"
 						IsOpen="False"
 						x:Name="OneDriveCommandBar">
