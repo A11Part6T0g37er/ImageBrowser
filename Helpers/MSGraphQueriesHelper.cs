@@ -28,6 +28,8 @@ namespace ImageBrowser.Helpers
 		private static AuthenticationResult authResult;
 
 		#endregion
+		private static readonly string EmptyOneDrive = LocalizationHelper.GetLocalizedStrings("oneDriveDownloadedInfoDefault");
+		private static readonly string UserSignedOutNormal = LocalizationHelper.GetLocalizedStrings("normalSignOut");
 
 		private static IDriveItemSearchCollectionPage search;
 		public static bool UserSignedOut;
@@ -212,6 +214,39 @@ namespace ImageBrowser.Helpers
 				ResultText = $"Error Acquiring Token Silently:{Environment.NewLine}{ex}";
 				IsUserSignedOut = false;
 				return Tuple.Create(ResultText, IsUserSignedOut);
+			}
+		}
+
+
+		public static async Task<Tuple<string, bool, string>> TrySignOutUser(string oneDriveInfoText)
+		{
+			string ResultText, OneDriveInfoText;
+			bool IsUserSignedOut;
+			IEnumerable<IAccount> accounts = await MSGraphQueriesHelper.GetMSGraphAccouts();
+			if (accounts == null)
+				throw new Exception("No user found!");
+			IAccount firstAccount = accounts.FirstOrDefault();
+
+			try
+			{
+				await MSGraphQueriesHelper.SingOutMSGraphAccount(firstAccount).ConfigureAwait(false);
+				string message = LocalizationHelper.GetLocalizedStrings("normalSignOut");
+				IsUserSignedOut = false;
+				ResultText = UserSignedOutNormal;
+				Trace.WriteLine("From ImageViewModel");
+
+				OneDriveInfoText = EmptyOneDrive;
+
+
+
+				return Tuple.Create(ResultText, IsUserSignedOut, OneDriveInfoText);
+			}
+			catch (MsalException ex)
+			{
+				Trace.WriteLine(ex.ToString());
+				IsUserSignedOut = true;
+				ResultText = $"Error signing-out user: {ex.Message}";
+				return Tuple.Create(ResultText, IsUserSignedOut, oneDriveInfoText);
 			}
 		}
 

@@ -755,6 +755,7 @@
 				<CommandBar.Content>
 					<StackPanel>
 						<TextBlock x:Name="ResultText"
+								   Margin="5,0"
 								   Text="{Binding ResultText,Mode=TwoWay}"
 								   MaxLines="2" />
 

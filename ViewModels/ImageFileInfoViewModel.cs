@@ -1,9 +1,10 @@
 ﻿using ImageBrowser.Common;
+using ImageBrowser.Common.RelayCommandProviders;
 using ImageBrowser.Helpers;
 using ImageBrowser.Models;
 using ImageBrowser.Services;
-using Microsoft.Graph;
 using Microsoft.Identity.Client;
+using Microsoft.Toolkit.Mvvm.Input;
 using Microsoft.Toolkit.Uwp.UI.Animations;
 using System;
 using System.Collections.Generic;
@@ -14,15 +15,10 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using Windows.ApplicationModel.Background;
 using Windows.Storage;
 using Windows.Storage.Pickers;
 using Windows.Storage.Search;
-using Windows.UI.Popups;
 using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Microsoft.Toolkit.Mvvm.Input;
-using ImageBrowser.Common.RelayCommandProviders;
 
 namespace ImageBrowser.ViewModels
 {
@@ -61,7 +57,7 @@ namespace ImageBrowser.ViewModels
 
 
 		#region DependecyProperties
-	
+
 
 		public static readonly DependencyProperty StatusProperty = DependencyProperty.Register(
 		   nameof(IsUserSignedOut),
@@ -104,7 +100,7 @@ namespace ImageBrowser.ViewModels
 			SettingsNavigateCommand = new RelayCommand(() => { Services.NavigationService.Instance.Navigate(typeof(Settings)); });
 
 			MSGraphQueriesHelper.PropertyChanged += SigningStatusViewModel_OnStatusChanged;
-		
+
 		}
 
 		#region XamlListningProperties
@@ -163,7 +159,7 @@ namespace ImageBrowser.ViewModels
 			}
 		}
 
-		
+
 		private string resultText;
 		public string ResultText { get => resultText; set => SetProperty(ref resultText, value); }
 
@@ -211,7 +207,7 @@ namespace ImageBrowser.ViewModels
 			}
 		}
 
-		
+
 
 		private static void OnOneDriveInfoTextChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
 		{
@@ -360,31 +356,10 @@ namespace ImageBrowser.ViewModels
 
 		private async void SigningOutAsyncExecute()
 		{
-			/*return async () =>
-			{*/
-			IEnumerable<IAccount> accounts = await MSGraphQueriesHelper.GetMSGraphAccouts();
-			if (accounts == null)
-				return;
-			IAccount firstAccount = accounts.FirstOrDefault();
+			(ResultText, IsUserSignedOut, OneDriveInfoText) = await MSGraphQueriesHelper.TrySignOutUser(OneDriveInfoText).ConfigureAwait(false);
+			FlushObservableCollectionOfImages();
 
-			try
-			{
-				await MSGraphQueriesHelper.SingOutMSGraphAccount(firstAccount).ConfigureAwait(false);
-				string message = LocalizationHelper.GetLocalizedStrings("normalSignOut");
-				IsUserSignedOut = false;
-				ResultText = UserSignedOutNormal;
-				Trace.WriteLine("From ImageViewModel");
-
-				OneDriveInfoText = EmptyOneDrive;
-				FlushObservableCollectionOfImages();
-			}
-			catch (MsalException ex)
-			{
-				Trace.WriteLine(ex.ToString());
-				ResultText = $"Error signing-out user: {ex.Message}";
-			}
-			/*};*/
-		}
+		}		
 
 		private async void OneDriveOpenAsyncExecute()
 		{
