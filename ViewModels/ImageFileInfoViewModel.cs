@@ -104,9 +104,7 @@ namespace ImageBrowser.ViewModels
 			SettingsNavigateCommand = new RelayCommand(() => { Services.NavigationService.Instance.Navigate(typeof(Settings)); });
 
 			MSGraphQueriesHelper.PropertyChanged += SigningStatusViewModel_OnStatusChanged;
-
-			Task.Run(async () => await RegisterTaskAsync().ConfigureAwait(true));
-
+		
 		}
 
 		#region XamlListningProperties
@@ -358,19 +356,7 @@ namespace ImageBrowser.ViewModels
 		{
 			(ResultText, IsUserSignedOut) = await MSGraphQueriesHelper.TrySignInUser();
 
-		}	
-
-		private async Task RegisterTaskAsync()
-		{
-			string taskName = "NoInternet";
-			SystemTrigger internet = new SystemTrigger(SystemTriggerType.NetworkStateChange, false);
-			SystemCondition conditionNOInternet = new SystemCondition(SystemConditionType.InternetNotAvailable);
-
-			string taskEntryPoint = typeof(BackgroundTaskApp.MyBackgroundTask).ToString();
-			await BackgroundTaskHelper.RegisterBackgroundTaskAsync(taskEntryPoint, taskName, internet, conditionNOInternet);
-
 		}
-
 
 		private async void SigningOutAsyncExecute()
 		{

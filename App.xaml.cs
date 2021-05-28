@@ -1,9 +1,11 @@
-﻿using ImageBrowser.Views;
+﻿using ImageBrowser.Helpers;
+using ImageBrowser.Views;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.Foundation;
@@ -42,6 +44,8 @@ namespace ImageBrowser
 		protected override void OnLaunched(LaunchActivatedEventArgs e)
 		{
 			Frame rootFrame = Window.Current.Content as Frame;
+
+			Task.Run(async () => await BackgroundTaskHelper.RegisterTaskAsync().ConfigureAwait(true));
 
 			// Do not repeat app initialization when the Window already has content,
 			// just ensure that the window is active

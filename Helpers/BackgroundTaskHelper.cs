@@ -84,5 +84,20 @@ namespace ImageBrowser.Helpers
 				}
 			});
 		}
+
+		/// <summary>
+		/// Subscribe background task to inform no internet connection.
+		/// </summary>
+		/// <returns></returns>
+		public static async Task RegisterTaskAsync()
+		{
+			string taskName = "NoInternet";
+			SystemTrigger internet = new SystemTrigger(SystemTriggerType.NetworkStateChange, false);
+			SystemCondition conditionNOInternet = new SystemCondition(SystemConditionType.InternetNotAvailable);
+
+			string taskEntryPoint = typeof(BackgroundTaskApp.MyBackgroundTask).ToString();
+			await BackgroundTaskHelper.RegisterBackgroundTaskAsync(taskEntryPoint, taskName, internet, conditionNOInternet);
+
+		}
 	}
 }
