@@ -410,10 +410,7 @@
 						<TextBlock Text="{Binding GroupedImagesInfos.Count, Mode=OneWay}" />
 						<TextBlock x:Uid="groupedListDefinition"
 								   Text="" />
-
 					</StackPanel>
-
-
 
 					<ListView ItemsSource="{Binding Source={StaticResource ImagesCollection} }"
 							  RelativePanel.Below="button"
@@ -422,10 +419,8 @@
 							  Grid.Row="1">
 						<Interactivity:Interaction.Behaviors>
 							<Interactions:EventTriggerBehavior EventName="ItemClick">
-
 								<Interactions:CallMethodAction MethodName="ClickPictInGrid"
 															   TargetObject="{Binding Mode=OneWay}" />
-
 							</Interactions:EventTriggerBehavior>
 						</Interactivity:Interaction.Behaviors>
 

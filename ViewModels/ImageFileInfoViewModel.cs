@@ -28,13 +28,10 @@ namespace ImageBrowser.ViewModels
 
 		private ObservableCollection<ImageFileInfo> observableCollection = new ObservableCollection<ImageFileInfo>();
 		public IList<ImageFileInfo> ObservableCollection { get => observableCollection; }
-
-		//  private ObservableCollection<GroupInfoList<object>> groupedImagesInfos = new ObservableCollection<GroupInfoList<object>>();
-		public ObservableCollection<GroupInfoList<object>> GroupedImagesInfos { get /*=> groupedImagesInfos*/; } = new ObservableCollection<GroupInfoList<object>>();
+		public ObservableCollection<GroupInfoList<object>> GroupedImagesInfos { get; } = new ObservableCollection<GroupInfoList<object>>();
 
 		private FoldersItemsCollection foldersItem = new FoldersItemsCollection();
 		public FoldersItemsCollection FoldersItem { get => foldersItem; }
-
 
 		public List<FolderInfoModel> MirorData = new List<FolderInfoModel>();
 
@@ -44,9 +41,7 @@ namespace ImageBrowser.ViewModels
 		public event PropertyChangedEventHandler PropertyChanged;
 
 		public ICommand OneDriveOpenCommand { get; set; }
-
 		public ICommand SignOutCommand { get; set; }
-
 		public ICommand SignInCommand { get; set; }
 		public ICommand OpenCLickCommand { get; set; }
 		public ICommand OpenFoldersCommand { get; set; }
@@ -98,11 +93,9 @@ namespace ImageBrowser.ViewModels
 			SettingsNavigateCommand = new RelayCommand(() => { Services.NavigationService.Instance.Navigate(typeof(Settings)); });
 
 			MSGraphQueriesHelper.PropertyChanged += SigningStatusViewModel_OnStatusChanged;
-
 		}
-		
-		#region XamlListningProperties
 
+		#region XamlListningProperties
 		public bool IsFolderDived
 		{
 			get
@@ -115,7 +108,6 @@ namespace ImageBrowser.ViewModels
 			}
 		}
 
-
 		public bool IsNoItemsToShow
 		{
 			get
@@ -127,20 +119,17 @@ namespace ImageBrowser.ViewModels
 				SetValue(ItemsToShowProperty, value);
 			}
 		}
-
 		public bool IsUserSignedOut
 		{
 			get
 			{
 				return (bool)GetValue(StatusProperty);
 			}
-
 			set
 			{
 				SetValue(StatusProperty, value);
 			}
 		}
-
 		public string OneDriveInfoText
 		{
 			get
@@ -152,7 +141,6 @@ namespace ImageBrowser.ViewModels
 				SetValue(OneDriveInfoTextProperty, value);
 			}
 		}
-
 
 		private string resultText;
 		public string ResultText { get => resultText; set => SetProperty(ref resultText, value); }
@@ -203,8 +191,6 @@ namespace ImageBrowser.ViewModels
 				OnPropertyChanged(nameof(IsFolderDived));
 			}
 		}
-
-
 
 		private static void OnOneDriveInfoTextChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
 		{
@@ -258,8 +244,6 @@ namespace ImageBrowser.ViewModels
 		}
 		#endregion
 
-
-
 		public async void ClickPictInGrid(object sender, object parameter)
 		{
 			var arg = parameter as Windows.UI.Xaml.Controls.ItemClickEventArgs;
@@ -283,7 +267,6 @@ namespace ImageBrowser.ViewModels
 
 		public async void ClickFoldersInGrid(object sender, object parameter)
 		{
-
 			var arg = parameter as Windows.UI.Xaml.Controls.ItemClickEventArgs;
 			var item = arg.ClickedItem as FolderInfoModel;
 			IsNoItemsToShow = false;
@@ -309,14 +292,13 @@ namespace ImageBrowser.ViewModels
 				{
 					FoldersItem.PictsFromFolders.Add(await ImageFileHelper.LoadImageInfo(pictOfFolder));
 				}
-				//return;
+
 			}
 			else
 			{
 				if (FoldersItem.FoldersPath.Count <= 0)
 					IsNoItemsToShow = true;
 			}
-
 		}
 
 		#region Actions for commands in ctor
@@ -338,10 +320,10 @@ namespace ImageBrowser.ViewModels
 			}
 
 			IReadOnlyCollection<StorageFile> filesReadOnly = (IReadOnlyCollection<StorageFile>)files;
-			GC.Collect();
 
 			Trace.WriteLine("REFRESHED by button in command");
 			await PopulateObservableCollectionOfImages(filesReadOnly);
+			GC.Collect();
 			LongLoad = false;
 		}
 
@@ -370,11 +352,11 @@ namespace ImageBrowser.ViewModels
 
 
 			OneDriveInfoText = CountedFiles + MSGraphQueriesHelper.CountFiles();
-			
 
-			 await PopulateObservableCollectionOfImages(downloadedFiles).ConfigureAwait(true);
+
+			await PopulateObservableCollectionOfImages(downloadedFiles).ConfigureAwait(true);
 			LongLoad = false;
-			
+
 		}
 
 		private async void OpenClickAsyncExecute()
