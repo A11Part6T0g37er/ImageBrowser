@@ -14,7 +14,7 @@ using Windows.Storage;
 
 namespace ImageBrowser.Helpers
 {
-	public class MSGraphQueriesHelper 
+	public class MSGraphQueriesHelper
 	{
 		#region MSGraphAPI
 
@@ -184,5 +184,36 @@ namespace ImageBrowser.Helpers
 				return true;
 			}
 		}
+
+		public static async Task<Tuple<string, bool>> TrySignInUser()
+		{
+			bool IsUserSignedOut;
+			string ResultText;
+			try
+			{
+				// Sign-in user using MSAL and obtain an access token for MS Graph
+				GraphServiceClient graphClient = await MSGraphQueriesHelper.SignInAndInitializeGraphServiceClient();
+				// Call the /me endpoint of Graph
+				User graphUser = await graphClient.Me.Request().GetAsync();
+				ResultText = "Display Name: " + graphUser.UserPrincipalName + "\nid: " + graphUser.Id;
+				IsUserSignedOut = true;
+				return Tuple.Create(ResultText, IsUserSignedOut);
+			}
+			catch (MsalException msalEx)
+			{
+				Trace.WriteLine($"Error Acquiring Token:{Environment.NewLine}{msalEx}");
+				ResultText = $"Error Acquiring Token:{Environment.NewLine}{msalEx}";
+				IsUserSignedOut = false;
+				return Tuple.Create(ResultText, IsUserSignedOut);
+			}
+			catch (Exception ex)
+			{
+				Trace.WriteLine($"Error Acquiring Token Silently:{Environment.NewLine}{ex}");
+				ResultText = $"Error Acquiring Token Silently:{Environment.NewLine}{ex}";
+				IsUserSignedOut = false;
+				return Tuple.Create(ResultText, IsUserSignedOut);
+			}
+		}
+
 	}
 }

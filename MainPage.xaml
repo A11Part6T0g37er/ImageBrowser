@@ -587,7 +587,7 @@
 											<Image Source="/Assets/Square150x150Logo.scale-200.png"
 												   Stretch="UniformToFill"
 												   VerticalAlignment="Center" />
-											<!--TODO: add picts-->
+											
 											<Border Grid.Row="0">
 												<Border.Background>
 													<media:BackdropBlurBrush Amount="9" />

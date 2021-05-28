@@ -356,31 +356,10 @@ namespace ImageBrowser.ViewModels
 
 		private async void SigningInAsyncExecute()
 		{
+			(ResultText, IsUserSignedOut) = await MSGraphQueriesHelper.TrySignInUser();
 
-			try
-			{
-				// Sign-in user using MSAL and obtain an access token for MS Graph
-				GraphServiceClient graphClient = await MSGraphQueriesHelper.SignInAndInitializeGraphServiceClient();
-				// Call the /me endpoint of Graph
-				User graphUser = await graphClient.Me.Request().GetAsync();
-				ResultText = "Display Name: " + graphUser.UserPrincipalName + "\nid: " + graphUser.Id;
-				IsUserSignedOut = true;
-			}
-			catch (MsalException msalEx)
-			{
-				Trace.WriteLine($"Error Acquiring Token:{Environment.NewLine}{msalEx}");
-				ResultText = $"Error Acquiring Token:{Environment.NewLine}{msalEx}";
+		}	
 
-			}
-			catch (Exception ex)
-			{
-				Trace.WriteLine($"Error Acquiring Token Silently:{Environment.NewLine}{ex}");
-				ResultText = $"Error Acquiring Token Silently:{Environment.NewLine}{ex}";
-				IsUserSignedOut = false;
-				return;
-			}
-
-		}
 		private async Task RegisterTaskAsync()
 		{
 			string taskName = "NoInternet";
@@ -466,7 +445,7 @@ namespace ImageBrowser.ViewModels
 
 		#endregion
 
-		private async Task/*<ObservableCollection<ImageFileInfo>>*/ OpenFoldersButtonHandler()
+		private async Task OpenFoldersButtonHandler()
 		{
 
 			FolderPicker folderPicker = new FolderPicker
