@@ -3,7 +3,6 @@ using ImageBrowser.Common.RelayCommandProviders;
 using ImageBrowser.Helpers;
 using ImageBrowser.Models;
 using ImageBrowser.Services;
-using Microsoft.Identity.Client;
 using Microsoft.Toolkit.Mvvm.Input;
 using Microsoft.Toolkit.Uwp.UI.Animations;
 using System;
@@ -80,7 +79,6 @@ namespace ImageBrowser.ViewModels
 			nameof(IsAnyObservableItem), typeof(bool), typeof(ImageFileInfoViewModel), new PropertyMetadata(false, new PropertyChangedCallback(OnObservableItemsCountChanged)));
 
 		#endregion
-		string defaultWinTheme = string.Empty;
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="ImageFileInfoViewModel"/> class,
@@ -139,8 +137,6 @@ namespace ImageBrowser.ViewModels
 
 			set
 			{
-
-				//  SetValue(StatusProperty, MSGraphQueriesHelper.UserSignedOut);
 				SetValue(StatusProperty, value);
 			}
 		}
@@ -151,10 +147,8 @@ namespace ImageBrowser.ViewModels
 			{
 				return (string)GetValue(OneDriveInfoTextProperty);
 			}
-
 			set
 			{
-
 				SetValue(OneDriveInfoTextProperty, value);
 			}
 		}
@@ -359,7 +353,7 @@ namespace ImageBrowser.ViewModels
 			(ResultText, IsUserSignedOut, OneDriveInfoText) = await MSGraphQueriesHelper.TrySignOutUser(OneDriveInfoText).ConfigureAwait(false);
 			FlushObservableCollectionOfImages();
 
-		}		
+		}
 
 		private async void OneDriveOpenAsyncExecute()
 		{
