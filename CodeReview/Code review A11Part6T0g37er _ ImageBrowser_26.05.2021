@@ -1,0 +1,15 @@
+v	Для адаптивности размера картинки в GridView лучше использовать не самописное, а готовое решение - AdaptiveGridView из Microsoft.Toolkit.Uwp.UI.Controls
+Логику по работу с облаком отделить от ImageFileInfoViewModel - в отдельную ViewModel или отдельный провайдер. ImageFileInfoViewModel сейчас уже перегружена разнородным функционалом - работа с коллекциями/с облаком/с настройками и темами
+v 	Желательно сделать прогрессы на длительные действия (кольцо или прогресс бары) - открытие большой коллекции картинок, логин в облако, загрузка картинок.
+Не очень понял зачем нужны Dependency Property в ImageFileInfoViewModel. Постараться либо использовать обычные свойства либо если без них никак - рассмотреть их вынос в отдельные Behaviors
+
+v+-		Один и тот же метод SetProperty<T> определен во многих моделях или вьюмоделях, лучше оставить только в базовом классе для них - BindableBase и наследоваться от него где можно.
+MSGRAPH use static version;
+ViewModel already use DependencyObject inheritance.
+
+v	Постараться не использовать специфические конструкторы RelayCommand нестандартной сигнатуры, в том числе такие, которые принимают параметром EventHandler (напрямую сигнатуру обработчика событий контролов), например RelayMultipleCommand(Action<object, double> groupedGrid_SizeChanged)
+v	public RelaySenderCommand(Action<object, string> defineTheme). В ThemeChangeCommand использовать стандартную реализацию RelayCommand с одним параметром (enum выбранной темы). 
+v	Логику по обработке темы default вынести из ImageFileInfoViewModel и реализации RelayCommand в отдельный хелпер или провайдер.
+Во ViewModel должно быть использовано по минимуму работы с UI контролами или их событиями напрямую, например обработку кликов вместо вызова дергания метода (например ClickPictInGrid) можно делать через Binding на GridView.SelectedItem или вызовом команд (например RestoreFoldersInGrid)
+v	У Button (AppBarButton) есть сразу свойство Command, на которое можно сделать Binding. Behavior на ивент Click излишен, (AppBarButton x:Name="Refresh")
+По проекту встречаются неиспользуемые методы, или пустые классы, косяки с форматированием. Использовать автоматическую чистку кода комбинациями Ctrl+K Ctrl+E и Ctrl+K Ctrl+D
