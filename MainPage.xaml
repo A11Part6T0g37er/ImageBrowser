@@ -330,7 +330,7 @@
 										</Grid.RowDefinitions>
 
 										<Image x:Name="ItemImage"
-											   Stretch="UniformToFill"
+											   Stretch="Uniform"
 											   VerticalAlignment="Center"
 											   HorizontalAlignment="Center"
 											   Grid.Row="0"
